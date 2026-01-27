@@ -1,0 +1,240 @@
+﻿<Window x:Class="RimKeeperModOrganizerWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RimKeeperModOrganizerWPF"
+        xmlns:vc="clr-namespace:RimKeeperModOrganizerWPF.Views.ValueConverter"
+        xmlns:ex="clr-namespace:RimKeeperModOrganizerWPF.Views.Extensions"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        mc:Ignorable="d"
+        xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" xmlns:sdl="http://schemas.sdl.com/xaml"
+        DataContext="{StaticResource MainViewModel}"
+        Title="RimKeeper - ModOrganizer" Height="450" Width="800">
+    <Window.Resources>
+        <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GridSplitter Grid.Column="1" Grid.Row="1"
+                      Width="5"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="Gray"
+                      ShowsPreview="True"/>
+
+        <GridSplitter Grid.Column="3" Grid.Row="1"
+                      Width="5"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="Gray"
+                      ShowsPreview="True"/>
+
+        <ToolBar Grid.Row="0" Grid.ColumnSpan="5">
+            <Button Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <Button Content="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <Button Content="Import" Command="{Binding LoadConfigCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <Button Content="Export" Command="{Binding SaveConfigCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <Button Content="Options" Command="{Binding OptionsCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <Button Content="ChangeColor" Command="{Binding ChangeColorCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <TextBlock Text="{Binding GetModConfigStaticLable}" Padding="5" Background="{Binding GetModConfigStaticColor}" />
+        </ToolBar>
+
+        <fdg:FilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
+                  IsEnabled="{Binding IsUIListEnabled}"          
+                  ItemsSource="{Binding ModsCollection}"
+                  SelectedItem="{Binding SelectedMod}"
+                  dd:DragDrop.IsDragSource="True"
+                  dd:DragDrop.IsDropTarget="True"
+                  SelectionMode="Extended"
+                  AutoGenerateColumns="False"
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"          
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+            <fdg:FilterDataGrid.Columns>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}" IsReadOnly="True"/>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Grupa" Binding="{Binding Data.Group, Mode=OneWay}" Width="*" IsReadOnly="False"/>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Nazwa" Binding="{Binding Label}" Width="*" IsReadOnly="True"/>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Autor" Binding="{Binding About.Author}"  IsReadOnly="True" Width="200"/>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="PackageId" Binding="{Binding About.PackageId}" IsReadOnly="True" Width="150"/>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Varsion" Binding="{Binding Versions}" IsReadOnly="True" Width="150"/>
+                <!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>-->
+            </fdg:FilterDataGrid.Columns>
+            <fdg:FilterDataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Selected}" Value="True">
+                            <Setter Property="Background" Value="LightGreen"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </fdg:FilterDataGrid.RowStyle>
+        </fdg:FilterDataGrid>
+
+        <DataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
+                IsEnabled="{Binding IsUIListEnabled}"
+                ItemsSource="{Binding ModsConfigCollection}"
+                SelectedItem="{Binding SelectedMod}"
+                dd:DragDrop.IsDragSource="True"
+                dd:DragDrop.IsDropTarget="True"
+                SelectionMode="Extended"
+                CanUserSortColumns="False"
+                AutoGenerateColumns="False"
+                EnableRowVirtualization="True"
+                EnableColumnVirtualization="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+                IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="N" Binding="{Binding Position}"/>
+                <DataGridTextColumn Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
+                <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding Data.Color}"/>
+                    <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
+                    <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
+                    <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <Border Padding="5" Background="White" BorderBrush="DarkRed" BorderThickness="1" CornerRadius="4">
+                                <StackPanel>
+                                    <ItemsControl ItemsSource="{Binding Alert}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasAlert}" Value="False">
+                            <Setter Property="ToolTip" Value="{x:Null}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding HasAlert}" Value="True">
+                            <Setter Property="Background" Value="LightCoral"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+
+        <ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Image Source="{Binding SelectedMod.ThumbnailPath}" 
+                   Stretch="UniformToFill"
+                   Margin="0,0,0,10"/>
+
+
+                <!--<DockPanel Margin="20">
+                    <TextBlock Text="Group:" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="ModGroupsComboBox"
+                        IsEditable="True"
+                        ItemsSource="{Binding ModGroups}"
+                        PreviewKeyDown="ModGroupsComboBox_PreviewKeyDown"/>
+                </DockPanel>-->
+
+                <sdl:MultiSelectComboBox 
+                    x:Name="MyMultiSelect"
+                    ItemsSource="{Binding ModGroups}"
+                    SelectedItems="{Binding SelectedMod.Data.Groups}"
+                    KeyDown="MultiSelect_KeyDown"
+                    IsEditable="True"
+                    EnableFiltering="True"
+                    SelectionMode="Multiple"
+                    Width="300">
+                </sdl:MultiSelectComboBox>
+
+                <TextBlock>
+                    <Hyperlink
+                        ToolTip="{Binding SelectedMod.SteamLink}"
+                        CommandParameter="{Binding SelectedMod.SteamLink}"
+                        Command="{Binding OpenLinkCommand}">
+                        Steamlink
+                    </Hyperlink>
+                    <Hyperlink
+                        ToolTip="{Binding SelectedMod.Path}"
+                        CommandParameter="{Binding SelectedMod.Path}"
+                        Command="{Binding OpenLinkCommand}">
+                        Localdir
+                    </Hyperlink>
+                </TextBlock>
+
+                <TextBlock Text="Szczegóły mod'a" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <TextBlock Text="Nazwa:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedMod.About.Name}" Margin="0,0,0,10"/>
+                <TextBlock Text="Autor:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedMod.About.Author}" Margin="0,0,0,10"/>
+                <TextBlock Text="PackageId:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedMod.About.PackageId}" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Obsługiwane wersje:" FontWeight="Bold"/>
+                <TextBlock>
+                    <ItemsControl ItemsSource="{Binding SelectedMod.About.SupportedVersions}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </TextBlock>
+
+                <TextBlock Text="Ładować po:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., StringFormat=• {0}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Ładować przed:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., StringFormat=• {0}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Niezgodne z:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., StringFormat=• {0}}" Foreground="Red"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Opis:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>                
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
