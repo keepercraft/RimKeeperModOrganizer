@@ -1,5 +1,5 @@
 ﻿using KeeperBaseLib.Model;
-namespace RimKeeperModOrganizerWPF.Models;
+namespace RimKeeperModOrganizerLib.Models;
 
 public class SettingsModel : PropertyModel
 {

@@ -4,10 +4,11 @@ namespace RimKeeperModOrganizerWPF.Views;
 
 public partial class SettingsWindow : Window
 {
-    public SettingsWindow()
+    public SettingsWindow(SettingsViewModel vm)
     {
         this.DataContextChanged += SettingsWindow_DataContextChanged;
         InitializeComponent();
+        DataContext = vm;
     }
 
     private void SettingsWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

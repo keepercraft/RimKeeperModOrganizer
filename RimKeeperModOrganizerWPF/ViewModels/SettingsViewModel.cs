@@ -1,15 +1,13 @@
 ﻿using KeeperBaseLib.Model;
 using KeeperBaseWPFLib.MVVM;
-using RimKeeperModOrganizerWPF.Models;
-using RimKeeperModOrganizerWPF.Services;
+using RimKeeperModOrganizerLib.Models;
+using RimKeeperModOrganizerLib.Services;
 namespace RimKeeperModOrganizerWPF.ViewModels;
 
 public class SettingsViewModel : PropertyModel
 {
     public SettingsModel Data {  get; set; } = new SettingsModel();
-
     private readonly SettingsService _settingsService;
-    public SettingsViewModel() : this(App.SettingsService) { }
     public SettingsViewModel(SettingsService SettingsService)
     {
         _settingsService = SettingsService;

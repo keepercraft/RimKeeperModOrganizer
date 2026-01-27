@@ -9,7 +9,6 @@
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
         xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" xmlns:sdl="http://schemas.sdl.com/xaml"
-        DataContext="{StaticResource MainViewModel}"
         Title="RimKeeper - ModOrganizer" Height="450" Width="800">
     <Window.Resources>
         <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>

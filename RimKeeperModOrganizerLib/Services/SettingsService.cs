@@ -1,0 +1,88 @@
+﻿using RimKeeperModOrganizerLib.Helpers;
+using RimKeeperModOrganizerLib.Models;
+using System.Text.Json;
+namespace RimKeeperModOrganizerLib.Services;
+
+public class SettingsService
+{
+    public string PathSettings { get; } = Path.Combine(AppContext.BaseDirectory, "AppSettings3.json");
+    public Dictionary<string,object> DataSettings { get; } = new() { {"SETTING", new SettingsModel()} };
+    public SettingsModel Settings => (SettingsModel)DataSettings["SETTING"];
+    public SettingsService()
+    {
+        StartLoad();
+    }
+    public void Load()
+    {
+        try
+        {
+            if (!File.Exists(PathSettings)) return;
+            string json = File.ReadAllText(PathSettings);
+            var doc = JsonDocument.Parse(json);
+            foreach (var item in DataSettings)
+            {
+                if (doc.RootElement.TryGetProperty(item.Key, out var uiNode))
+                {
+                    var temp = JsonSerializer.Deserialize(uiNode, item.Value.GetType());
+                    foreach (var prop in item.Value.GetType().GetProperties().Where(p => p.CanWrite))
+                    {                      
+                        var value = prop.GetValue(temp);
+                        prop.SetValue(DataSettings[item.Key], value);
+                    }
+                }
+            }
+        }
+        catch { }
+    }
+    public void Save()
+    {
+        try
+        {
+            string json = JsonSerializer.Serialize(DataSettings, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(PathSettings, json);
+        }
+        catch { }
+    }
+    public void StartLoad()
+    {
+        if (File.Exists(PathSettings)) 
+            Load(); 
+        else 
+            AutoFind();
+        Save();
+    }
+    public void AutoFind()
+    {
+        if (string.IsNullOrEmpty(Settings.PathDirGame))
+            Settings.PathDirGame = FileHelper.FindRimWorldGamePath() ?? "";
+        if (string.IsNullOrEmpty(Settings.PathDirGameConfig))
+            Settings.PathDirGameConfig = FileHelper.FindRimWorldConfigPath() ?? "";
+        if (string.IsNullOrEmpty(Settings.PathDirModsSteam))
+            Settings.PathDirModsSteam = FileHelper.FindRimWorldWorkshopModsPaths().FirstOrDefault() ?? "";
+        if (string.IsNullOrEmpty(Settings.PathDirModsLocal))
+            Settings.PathDirModsLocal = FileHelper.FindRimWorldLocalModsPath() ?? "";
+
+        Settings.GameVersion = FileHelper.GetRimworldVersion(Settings.PathDirGame) ?? "0";
+    }
+
+    public void CreateCopy<T>(T copy) where T : class => CopyTo<T>(copy, GetValueOfType<T>(DataSettings));
+    public void ApplyChanges<T>(T source) where T : class => CopyTo<T>(GetValueOfType<T>(DataSettings), source);
+    private void CopyTo<T>(T? target, T? source) where T : class
+    {
+        if (target == null) return; 
+        if (source == null) return;
+        foreach (var prop in typeof(T).GetProperties().Where(p => p.CanRead && p.CanWrite))
+        {
+            var value = prop.GetValue(source);
+            prop.SetValue(target, value);
+        }
+    }
+    public static T? GetValueOfType<T>(Dictionary<string, object> dict) where T : class
+    {
+        foreach (var kvp in dict)
+        {
+            if (kvp.Value is T value) return value;
+        }
+        return null;
+    }
+}

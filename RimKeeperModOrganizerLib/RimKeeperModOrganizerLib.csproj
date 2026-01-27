@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Keeper\KeeperBaseLib\KeeperBaseLib\KeeperBaseLib.csproj" />
   </ItemGroup>
 
 </Project>

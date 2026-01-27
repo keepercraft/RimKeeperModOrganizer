@@ -5,7 +5,7 @@ namespace RimKeeperModOrganizerWPF.Extensions;
 
 public static class ListExtension
 {
-    public static void SortCollectionByConfig(this ObservableCollection<ModModel>? mods, ModsConfigModel? config)
+    public static void SortCollectionByConfig(this IList<ModModel>? mods, ModsConfigModel? config)
     {
         if (config == null || mods == null || config.ActiveMods == null) return;
         for (int i = 0; i < config.ActiveMods.Count; i++)

@@ -17,11 +17,14 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FilterDataGrid" Version="1.2.9" />
     <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.2" />
     <PackageReference Include="PixiEditor.ColorPicker" Version="3.4.2.2" />
     <PackageReference Include="Sdl.MultiSelectComboBox" Version="1.0.103" />
   </ItemGroup>

@@ -20,7 +20,9 @@ public class ModModel : INotifyPropertyChanged
     public List<string> Alert { get; } = new List<string>();
     public bool HasAlert => Alert.Any() == true;
 
-    public string Versions => About?.SupportedVersions?.Order().Aggregate((a,b) => a+","+b) ?? "";
+    public string Versions => About?.SupportedVersions != null && About.SupportedVersions.Any()
+        ? string.Join(",", About.SupportedVersions.OrderBy(v => v))
+        : "";
 
     public string SteamLink => string.Format(@"https://steamcommunity.com/sharedfiles/filedetails/?id={0}", About?.SteamId);
 
