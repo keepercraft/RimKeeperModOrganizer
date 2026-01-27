@@ -53,7 +53,7 @@
         <fdg:FilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
                   IsEnabled="{Binding IsUIListEnabled}"          
                   ItemsSource="{Binding ModsCollection}"
-                  SelectedItem="{Binding SelectedMod}"
+                  SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
                   dd:DragDrop.IsDragSource="True"
                   dd:DragDrop.IsDropTarget="True"
                   SelectionMode="Extended"
@@ -73,6 +73,11 @@
                 <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Varsion" Binding="{Binding Versions}" IsReadOnly="True" Width="150"/>
                 <!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>-->
             </fdg:FilterDataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <fdg:FilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -82,12 +87,24 @@
                     </Style.Triggers>
                 </Style>
             </fdg:FilterDataGrid.RowStyle>
+            <fdg:FilterDataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FF3399FF"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </fdg:FilterDataGrid.CellStyle>
         </fdg:FilterDataGrid>
 
         <DataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
                 IsEnabled="{Binding IsUIListEnabled}"
                 ItemsSource="{Binding ModsConfigCollection}"
-                SelectedItem="{Binding SelectedMod}"
+                SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
                 dd:DragDrop.IsDragSource="True"
                 dd:DragDrop.IsDropTarget="True"
                 SelectionMode="Extended"
@@ -104,6 +121,23 @@
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FF3399FF"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="{Binding Data.Color}"/>
@@ -132,6 +166,13 @@
                         <DataTrigger Binding="{Binding HasAlert}" Value="True">
                             <Setter Property="Background" Value="LightCoral"/>
                         </DataTrigger>
+                        <!--<Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FF3399FF"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Orange"/>
+                        </Trigger>-->
+
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
