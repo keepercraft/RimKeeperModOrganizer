@@ -5,7 +5,7 @@ namespace RimKeeperModOrganizerLib.Services;
 
 public class SettingsService
 {
-    public string PathSettings { get; } = Path.Combine(AppContext.BaseDirectory, "AppSettings3.json");
+    public string PathSettings { get; } = Path.Combine(AppContext.BaseDirectory, "AppSettings.json");
     public Dictionary<string,object> DataSettings { get; } = new() { {"SETTING", new SettingsModel()} };
     public SettingsModel Settings => (SettingsModel)DataSettings["SETTING"];
     public SettingsService()
@@ -45,22 +45,23 @@ public class SettingsService
     }
     public void StartLoad()
     {
-        if (File.Exists(PathSettings)) 
-            Load(); 
-        else 
-            AutoFind();
+        bool fexist = File.Exists(PathSettings);
+        if (fexist) Load(); 
+        if(!fexist || string.IsNullOrEmpty(Settings.PathDirGame)) AutoFind();
         Save();
     }
     public void AutoFind()
     {
+        if (string.IsNullOrEmpty(Settings.PathDirSteam))
+            Settings.PathDirSteam = FileHelper.FindSteamInstallPath() ?? "";
         if (string.IsNullOrEmpty(Settings.PathDirGame))
-            Settings.PathDirGame = FileHelper.FindRimWorldGamePath() ?? "";
+            Settings.PathDirGame = FileHelper.FindRimWorldGamePath(Settings.PathDirSteam) ?? "";
+        if (string.IsNullOrEmpty(Settings.PathDirModsSteam))
+            Settings.PathDirModsSteam = FileHelper.FindRimWorldWorkshopModsPaths(Settings.PathDirSteam).FirstOrDefault() ?? "";
+        if (string.IsNullOrEmpty(Settings.PathDirModsLocal))
+            Settings.PathDirModsLocal = FileHelper.FindRimWorldLocalModsPath(Settings.PathDirGame) ?? "";
         if (string.IsNullOrEmpty(Settings.PathDirGameConfig))
             Settings.PathDirGameConfig = FileHelper.FindRimWorldConfigPath() ?? "";
-        if (string.IsNullOrEmpty(Settings.PathDirModsSteam))
-            Settings.PathDirModsSteam = FileHelper.FindRimWorldWorkshopModsPaths().FirstOrDefault() ?? "";
-        if (string.IsNullOrEmpty(Settings.PathDirModsLocal))
-            Settings.PathDirModsLocal = FileHelper.FindRimWorldLocalModsPath() ?? "";
 
         Settings.GameVersion = FileHelper.GetRimworldVersion(Settings.PathDirGame) ?? "0";
     }

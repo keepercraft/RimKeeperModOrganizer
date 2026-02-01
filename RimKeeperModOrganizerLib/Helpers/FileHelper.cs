@@ -1,17 +1,53 @@
-﻿using RimKeeperModOrganizerLib.Models;
-using System.Reflection;
+﻿using Microsoft.Win32;
+using RimKeeperModOrganizerLib.Models;
 using System.Text.RegularExpressions;
 
 namespace RimKeeperModOrganizerLib.Helpers;
 
 public static class FileHelper
 {
-    public static string? FindRimWorldGamePath()
+    public static string? FindSteamInstallPath()
     {
-        string steamPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-            "Steam"
-        );
+        if (OperatingSystem.IsWindows())
+        {
+            using var key =
+                Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Valve\Steam") ??
+                Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Valve\Steam");
+
+            return key?.GetValue("InstallPath") as string;
+        }
+        else if (OperatingSystem.IsLinux())
+        {
+            string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string[] candidates =
+            {
+                Path.Combine(home, ".local", "share", "Steam"),
+                Path.Combine(home, ".steam", "steam")
+            };
+            return candidates.FirstOrDefault(Directory.Exists);
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string steamPath = Path.Combine(
+                home,
+                "Library",
+                "Application Support",
+                "Steam"
+            );
+            return Directory.Exists(steamPath) ? steamPath : null;
+        }
+        return null;
+    }
+
+    public static string? FindRimWorldGamePath(string? steamPath = null)
+    {
+        if (string.IsNullOrEmpty(steamPath)) steamPath = FindSteamInstallPath();
+        if (string.IsNullOrEmpty(steamPath)) return null;
+            //    Path.Combine(
+            //    Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+            //    "Steam"
+            //);
 
         string libraryFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
         if (!File.Exists(libraryFile)) return null;
@@ -73,12 +109,10 @@ public static class FileHelper
         return Path.Combine(path, "Data");
     }
 
-    public static string[] FindRimWorldWorkshopModsPaths()
+    public static string[] FindRimWorldWorkshopModsPaths(string? steamPath = null)
     {
-        string steamPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-            "Steam"
-        );
+        if (string.IsNullOrEmpty(steamPath)) steamPath = FindSteamInstallPath();
+        if (string.IsNullOrEmpty(steamPath)) return null;
 
         string libraryFile = Path.Combine(steamPath, "steamapps", "libraryfolders.vdf");
         if (!File.Exists(libraryFile)) return Array.Empty<string>();

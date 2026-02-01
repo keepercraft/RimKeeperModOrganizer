@@ -8,9 +8,23 @@ namespace RimKeeperModOrganizerTests;
 internal class FileHelperTest
 {
     [Test]
+    public void FindSteamInstallPath()
+    {
+        string? path = FileHelper.FindSteamInstallPath();
+        Assert.IsTrue(!string.IsNullOrEmpty(path));
+    }
+
+    [Test]
     public void FindRimWorldPath()
     {
         string? path = FileHelper.FindRimWorldGamePath();
+        Assert.IsTrue(!string.IsNullOrEmpty(path));
+    }
+
+    [Test]
+    public void FindRimWorldConfigPath()
+    {
+        string? path = FileHelper.FindRimWorldConfigPath();
         Assert.IsTrue(!string.IsNullOrEmpty(path));
     }
 

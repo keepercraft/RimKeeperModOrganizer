@@ -24,7 +24,10 @@
                         <TextBox Text="{Binding Data.PathModData, Mode=TwoWay}" />
                     </GroupBox>
 
-
+                    <GroupBox Header="PathDirSteam">
+                        <TextBox Text="{Binding Data.PathDirSteam, Mode=TwoWay}" />
+                    </GroupBox>
+                    
                     <GroupBox Header="PathDirGame">
                         <TextBox Text="{Binding Data.PathDirGame, Mode=TwoWay}" />
                     </GroupBox>
