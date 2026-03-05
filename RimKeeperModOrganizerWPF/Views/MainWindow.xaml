@@ -80,6 +80,7 @@
             </DataGrid.ContextMenu>
             <fdg:FilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding Data.Color}"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Selected}" Value="True">
                             <Setter Property="Background" Value="LightGreen"/>

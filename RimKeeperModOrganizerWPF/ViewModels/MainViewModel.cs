@@ -153,7 +153,8 @@ public class MainViewModel : PropertyModel
     public CustomCommand ChangeColorCommand => new CustomCommand(p =>
     {
         if (SelectedMod == null) return;
-        new ChangeColorWindow(SelectedMod).ShowDialog();
+       // new ChangeColorWindow(SelectedMod, ModColors).ShowDialog();
+        new ChangeColorWindow(this).ShowDialog();
     });
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
     public CustomCommand LoadConfigCommand => new CustomCommand(p => 
