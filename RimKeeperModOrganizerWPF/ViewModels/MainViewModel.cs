@@ -244,12 +244,8 @@ public class MainViewModel : PropertyModel
             { 
                 var data = _modsServices.LoadRimPyColors(dialog.FileName);
                 foreach(var item in ModsConfigCollection.Union(ModsCollection))
-                {
                     if(item.Path != null && item.Data !=null && data.ContainsKey(item.Path))
-                    {
                         item.Data.Color = data[item.Path];
-                    }
-                }
             }
         }
         catch (Exception ex) { }

@@ -16,22 +16,40 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0" Grid.Column="0"
-                ItemsSource="{Binding ModColors}" 
-                SelectionChanged="ListBox_SelectionChanged">
+
+        <DockPanel x:Name="BtnList" Grid.Row="0" Grid.Column="0">
+            <Button Content="Update"
+                Width="80"
+                Margin="0,0,0,0"
+                IsDefault="True"
+                Click="List_Update_Click"/>
+            <Button Content="X"
+                Width="20"
+                Margin="0,0,0,0"
+                IsDefault="True"
+                Click="List_Delete_Click"/>
+        </DockPanel>
+
+        <ListBox Grid.Row="1" Grid.Column="0"
+            x:Name="ListGroupColors"
+            ItemsSource="{Binding ModColors}" 
+            SelectionChanged="ListBox_SelectionChanged">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Background" Value="{Binding}"/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <cp:StandardColorPicker Grid.Row="0" Grid.Column="1"
+
+        <cp:StandardColorPicker Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                 ShowAlpha="False" 
                 x:Name="StandardColorPicker" />
-        <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
+        
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="0,10,0,0">

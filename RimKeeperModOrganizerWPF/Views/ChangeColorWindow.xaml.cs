@@ -11,10 +11,13 @@ public partial class ChangeColorWindow : Window
         InitializeComponent();
         DataContext = model;
         Title = model.SelectedMod?.About?.Name ?? "NO MOD";
-        SetStringColor(ModColor);
+        SetStringColor(ModColorActualSelected);
+        BtnList.IsEnabled = !string.IsNullOrEmpty(ModColorListSelected);
     }
 
-    private string? ModColor
+    public string? ModColorListSelected { get; set; } = null;
+
+    public string? ModColorActualSelected
     {
         get => (DataContext as MainViewModel)?.SelectedMod?.Data?.Color;
         set
@@ -42,18 +45,20 @@ public partial class ChangeColorWindow : Window
     {
         if (e.AddedItems.Count == 0) return;
         SetStringColor(e.AddedItems[0]);
+        if (e.AddedItems[0] is string c) ModColorListSelected = c;
+        BtnList.IsEnabled = !string.IsNullOrEmpty(ModColorListSelected);
     }
 
     private void Ok_Click(object sender, RoutedEventArgs e)
     {
-        ModColor = StandardColorPicker.SelectedColor.ToString();
+        ModColorActualSelected = StandardColorPicker.SelectedColor.ToString();
         DialogResult = true;
         Close();
     }
 
     private void Clear_Click(object sender, RoutedEventArgs e)
     {
-        ModColor = null;
+        ModColorActualSelected = null;
         DialogResult = false;
         Close();
     }
@@ -61,5 +66,43 @@ public partial class ChangeColorWindow : Window
     {
         DialogResult = false;
         Close();
+    }
+
+    private void List_Update_Click(object sender, RoutedEventArgs e)
+    {
+        var colorOld = ModColorListSelected;
+        var colorNew = StandardColorPicker.SelectedColor.ToString();
+        if (DataContext is MainViewModel vm && vm!= null && !string.IsNullOrEmpty(colorOld))
+        {
+            int index = vm.ModColors.IndexOf(colorOld);
+            if (index >= 0)
+            {
+                vm.ModColors[index] = colorNew;
+                ModColorListSelected = colorNew;
+            }
+            foreach (var item in vm.ModsConfigCollection.Union(vm.ModsCollection).Where(w => w.Data != null && w.Data?.Color == colorOld))
+            {
+                item.Data.Color = colorNew;
+            }
+        }
+    }
+
+    private void List_Delete_Click(object sender, RoutedEventArgs e)
+    {
+        var colorOld = ModColorListSelected;
+        if (DataContext is MainViewModel vm && vm != null && !string.IsNullOrEmpty(colorOld))
+        {         
+            int index = vm.ModColors.IndexOf(colorOld);
+            if (index >= 0)
+            {
+                vm.ModColors.RemoveAt(index);
+                ModColorListSelected = null;
+                BtnList.IsEnabled = false;
+            }
+            foreach (var item in vm.ModsConfigCollection.Union(vm.ModsCollection).Where(w => w.Data != null && w.Data?.Color == colorOld))
+            {
+                item.Data.Color = null;
+            }
+        }
     }
 }
