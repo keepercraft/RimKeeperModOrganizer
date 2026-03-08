@@ -13,42 +13,101 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Margin="5" BorderBrush="Gray" BorderThickness="2">
-            <ScrollViewer>
-                <StackPanel Margin="5" VerticalAlignment="Top">
+        <TabControl Grid.Row="0">
+            <TabItem Header="Paths">
+                <Border Margin="5" BorderBrush="Gray" BorderThickness="2">
+                    <ScrollViewer>
+                        <StackPanel Margin="5" VerticalAlignment="Top">
 
-                    <GroupBox Header="PathSettings">
-                        <TextBox Text="{Binding Data.PathSettings, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
+                            <GroupBox Header="PathSettings">
+                                <TextBox Text="{Binding Data.PathSettings, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
-                    <GroupBox Header="PathModData">
-                        <TextBox Text="{Binding Data.PathModData, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
+                            <GroupBox Header="PathModData">
+                                <TextBox Text="{Binding Data.PathModData, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
-                    <GroupBox Header="PathDirSteam">
-                        <TextBox Text="{Binding Data.PathDirSteam, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
-                    
-                    <GroupBox Header="PathDirGame">
-                        <TextBox Text="{Binding Data.PathDirGame, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
+                            <GroupBox Header="PathDirSteam">
+                                <TextBox Text="{Binding Data.PathDirSteam, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
-                    <GroupBox Header="PathDirGameConfig">
-                        <TextBox Text="{Binding Data.PathDirGameConfig, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
+                            <GroupBox Header="PathDirGame">
+                                <TextBox Text="{Binding Data.PathDirGame, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
-                    <GroupBox Header="PathDirModsSteam">
-                        <TextBox Text="{Binding Data.PathDirModsSteam, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
+                            <GroupBox Header="PathDirGameConfig">
+                                <TextBox Text="{Binding Data.PathDirGameConfig, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
-                    <GroupBox Header="PathDirModsLocal">
-                        <TextBox Text="{Binding Data.PathDirModsLocal, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
-                    </GroupBox>
+                            <GroupBox Header="PathDirModsSteam">
+                                <TextBox Text="{Binding Data.PathDirModsSteam, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
-                </StackPanel>
-            </ScrollViewer>
-        </Border>
+                            <GroupBox Header="PathDirModsLocal">
+                                <TextBox Text="{Binding Data.PathDirModsLocal, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
+                            </GroupBox>
 
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </TabItem>
+            <TabItem Header="Columns">
+                <Border Margin="5" BorderBrush="Gray" BorderThickness="2">
+                    <ScrollViewer>
+                        <StackPanel Margin="5" VerticalAlignment="Top">
+                            <GroupBox Header="Nazwa">
+                                <DockPanel>
+                                    <Label Content="Visable:" />
+                                    <CheckBox IsChecked="{Binding Data.ModColumnData[label].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <Label Content="Width:" />
+                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[label].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox Header="Grupa">
+                                <DockPanel>
+                                    <Label Content="Visable:" />
+                                    <CheckBox IsChecked="{Binding Data.ModColumnData[group].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <Label Content="Width:" />
+                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[group].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox Header="Autor">
+                                <DockPanel>
+                                    <Label Content="Visable:" />
+                                    <CheckBox IsChecked="{Binding Data.ModColumnData[author].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <Label Content="Width:" />
+                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[author].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox Header="PackageId">
+                                <DockPanel>
+                                    <Label Content="Visable:" />
+                                    <CheckBox IsChecked="{Binding Data.ModColumnData[packageId].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <Label Content="Width:" />
+                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[packageId].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox Header="Varsion">
+                                <DockPanel>
+                                    <Label Content="Visable:" />
+                                    <CheckBox IsChecked="{Binding Data.ModColumnData[versions].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <Label Content="Width:" />
+                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[versions].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox Header="Typ">
+                                <DockPanel>
+                                    <Label Content="Visable:" />
+                                    <CheckBox IsChecked="{Binding Data.ModColumnData[type].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <Label Content="Width:" />
+                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[type].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                </DockPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </TabItem>
+        </TabControl>
         <DockPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Button Width="100" Margin="5" Command="{Binding SaveCommand}">Ok</Button>
             <Button Width="100" Margin="5" Command="{Binding CancelCommand}">Cancel</Button>

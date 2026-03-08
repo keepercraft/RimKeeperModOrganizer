@@ -22,6 +22,7 @@ public class SettingsViewModel : PropertyModel
         {
             _settingsService.ApplyChanges(Data);
             _settingsService.Save();
+
         }
         RequestClose?.Invoke(save);
     }

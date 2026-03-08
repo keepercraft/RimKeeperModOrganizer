@@ -6,12 +6,15 @@
         xmlns:local="clr-namespace:RimKeeperModOrganizerWPF"
         xmlns:vc="clr-namespace:RimKeeperModOrganizerWPF.Views.ValueConverter"
         xmlns:ex="clr-namespace:RimKeeperModOrganizerWPF.Views.Extensions"
-        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"      
         mc:Ignorable="d"
         xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" xmlns:sdl="http://schemas.sdl.com/xaml"
         Title="RimKeeper - ModOrganizer" Height="450" Width="800">
     <Window.Resources>
         <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
+        <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
+        <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolVis"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -54,27 +57,63 @@
                   IsEnabled="{Binding IsUIListEnabled}"          
                   ItemsSource="{Binding ModsCollection}"
                   SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
+                            
+                  MouseDoubleClick="ModsGrid_MouseDoubleClick"      
+                            
                   dd:DragDrop.IsDragSource="True"
                   dd:DragDrop.IsDropTarget="True"
                   SelectionMode="Extended"
                   AutoGenerateColumns="False"
-                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible" 
                   ScrollViewer.VerticalScrollBarVisibility="Visible"          
                   EnableRowVirtualization="True"
                   EnableColumnVirtualization="True"
                   VirtualizingPanel.IsVirtualizing="True"
                   VirtualizingPanel.VirtualizationMode="Recycling">
             <fdg:FilterDataGrid.Columns>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}" IsReadOnly="True"/>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Grupa" Binding="{Binding Data.Group, Mode=OneWay}" Width="*" IsReadOnly="False"/>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Nazwa" Binding="{Binding Label}" Width="*" IsReadOnly="True"/>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Autor" Binding="{Binding About.Author}"  IsReadOnly="True" Width="200"/>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="PackageId" Binding="{Binding About.PackageId}" IsReadOnly="True" Width="150"/>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" Header="Varsion" Binding="{Binding Versions}" IsReadOnly="True" Width="150"/>
+                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="False"
+                    Binding="{Binding Local, Mode=OneWay, Converter={StaticResource BoolToSLRConverter}}" 
+                    Header="S"                  
+                    Width="{Binding Data.ModColumnData[type].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data.ModColumnData[type].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
+                />
+                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="False"
+                    Binding="{Binding Data.Group, Mode=OneWay}" 
+                    Header="Grupa"
+                    Width="{Binding Data.ModColumnData[group].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data.ModColumnData[group].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
+                />
+                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"               
+                    Binding="{Binding Label}" 
+                    Header="Nazwa"    
+                    Width="{Binding Data.ModColumnData[label].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data.ModColumnData[label].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"
+                />
+                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"
+                    Binding="{Binding About.Author}"
+                    Header="Autor"
+                    Width="{Binding Data.ModColumnData[author].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data.ModColumnData[author].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
+                />
+                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"
+                    Binding="{Binding About.PackageId}"
+                    Header="PackageId"
+                    Width="{Binding Data.ModColumnData[packageId].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data.ModColumnData[packageId].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
+                />
+                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"
+                    Binding="{Binding Versions}"
+                    Header="Varsion"
+                    Width="{Binding Data.ModColumnData[versions].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data.ModColumnData[versions].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
+                />
                 <!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>-->
             </fdg:FilterDataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
@@ -105,7 +144,7 @@
         <DataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
                 IsEnabled="{Binding IsUIListEnabled}"
                 ItemsSource="{Binding ModsConfigCollection}"
-                SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
+                SelectedItem="{Binding SelectedMod, Mode=TwoWay}"                             
                 dd:DragDrop.IsDragSource="True"
                 dd:DragDrop.IsDropTarget="True"
                 SelectionMode="Extended"
@@ -119,11 +158,15 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="N" Binding="{Binding Position}"/>
                 <DataGridTextColumn Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" 
+                                    Width="*"/>
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                    <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
@@ -178,7 +221,6 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
-
 
         <ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
             <StackPanel>

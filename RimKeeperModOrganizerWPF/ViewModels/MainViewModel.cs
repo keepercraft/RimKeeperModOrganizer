@@ -1,6 +1,8 @@
 ﻿using KeeperBaseLib.Model;
 using KeeperBaseWPFLib.MVVM;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
+using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
 using RimKeeperModOrganizerWPF.Extensions;
@@ -9,10 +11,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows.Media;
-using RimKeeperModOrganizerLib.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
-using System.Windows.Data;
 
 namespace RimKeeperModOrganizerWPF.ViewModels;
 
@@ -22,7 +20,21 @@ public class MainViewModel : PropertyModel
     public ObservableCollection<string> ModColors { get; set; } = new();
     public ObservableCollection<ModModel> ModsConfigCollection { get; } = new();
     public ObservableCollection<ModModel> ModsCollection { get; } = new();
-    
+
+    //public ObservableCollection<ColumnSettings> ModsCollectionColumnsData { get; } = new();
+    public Dictionary<string, ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
+
+    private double _columnWidth = 100;
+    public double ColumnWidth
+    {
+        get => _columnWidth;
+        set
+        {
+            _columnWidth = value;
+            OnPropertyChanged();
+        }
+    }
+
     private ModModel? _selectedMod;
     public ModModel? SelectedMod
     {
@@ -37,12 +49,21 @@ public class MainViewModel : PropertyModel
         }
     }
 
-    private readonly ModsServices _modsServices; 
-    public MainViewModel(ModsServices modsServices)
+    private readonly ModsServices _modsServices;
+    private readonly SettingsService _settingsService;
+    public MainViewModel(ModsServices modsServices, SettingsService SettingsService)
     {
         _modsServices = modsServices;
+        _settingsService = SettingsService;
         ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
         //LoadModsFromLocalAsync();
+
+        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "local", Visible=true});
+        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "label", Visible=true });
+        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name = "versions", Visible = false });
+        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name = "data.group", Visible = true });
+        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "about.author", Visible=false});
+        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "about.packageId", Visible=false});
 
         //ModsConfigCollection = new CollectionViewSource { Source = AllMods }.View;
         //ModsConfigCollection.Filter = m => ((ModModel)m).Position >= 0;
@@ -140,6 +161,11 @@ public class MainViewModel : PropertyModel
         }
     }
 
+    public CustomCommand OpenSteamLinkCommand => new CustomCommand(p =>
+    {
+        if (p is string txt) 
+            OpenLinkCommand.Execute($"steam://openurl/{txt}");
+    });
     public CustomCommand OpenLinkCommand => new CustomCommand(p =>
     {
         if(p is string txt)
@@ -149,11 +175,23 @@ public class MainViewModel : PropertyModel
                 UseShellExecute = true
             });
     });
-    public CustomCommand OptionsCommand => new CustomCommand(p => App.Services.GetRequiredService<SettingsWindow>().ShowDialog());
+    public CustomCommand OptionsCommand => new CustomCommand(p =>
+    {
+        App.Services.GetRequiredService<SettingsWindow>().ShowDialog();
+        RaisePropertyChanged(nameof(ModColumnData));
+    });
     public CustomCommand ChangeColorCommand => new CustomCommand(p =>
     {
         if (SelectedMod == null) return;
-       // new ChangeColorWindow(SelectedMod, ModColors).ShowDialog();
+
+        ModColors.Clear();
+        foreach (var item in ModsConfigCollection.Union(ModsCollection)
+            .Where(x => x.Data != null).Where(x => x.Data.NotNull)
+            .Select(s => s.Data.Color).Where(w => !string.IsNullOrEmpty(w)).Distinct())
+        {
+            ModColors.Add(item);
+        }
+        // new ChangeColorWindow(SelectedMod, ModColors).ShowDialog();
         new ChangeColorWindow(this).ShowDialog();
     });
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
@@ -185,7 +223,6 @@ public class MainViewModel : PropertyModel
             LoadingUI = true;
             _modsServices.SaveConfig(ModsConfigCollection);
             _modsServices.SaveLocalData(ModsConfigCollection.Union(ModsCollection));
-
         }
         catch (Exception ex) { }
         finally { LoadingUI = false; }
