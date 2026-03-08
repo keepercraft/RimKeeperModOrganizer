@@ -2,6 +2,7 @@
 using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace RimKeeperModOrganizerLib.Services;
 
@@ -100,5 +101,47 @@ public class ModsServices
             modsData.ModDataList.Add(item.Data);
         }
         XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
+    }
+
+    public Dictionary<string, string> LoadRimPyColors(string configPath)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        if (!File.Exists(configPath))
+            return result;
+
+        bool inColors = false;
+
+        foreach (var rawLine in File.ReadLines(configPath))
+        {
+            var line = rawLine.Trim();
+
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            if (line.StartsWith(";") || line.StartsWith("#"))
+                continue;
+
+            if (line.StartsWith("["))
+            {
+                inColors = line.Equals("[Colors]", StringComparison.OrdinalIgnoreCase);
+                continue;
+            }
+
+            if (!inColors)
+                continue;
+
+            int eq = line.IndexOf('=');
+            if (eq <= 0)
+                continue;
+
+            var key = line.Substring(0, eq).Trim();
+            var value = line.Substring(eq + 1).Trim();
+
+            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                result[key] = value;
+        }
+
+        return result;
     }
 }

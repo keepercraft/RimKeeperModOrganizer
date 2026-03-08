@@ -227,4 +227,33 @@ public class MainViewModel : PropertyModel
         catch (Exception ex) { }
         finally { LoadingUI = false; }
     });
+
+    public CustomCommand RimpyColorLoadCommand => new CustomCommand(p =>
+    {
+        try
+        {
+            LoadingUI = true;
+            var dialog = new OpenFileDialog
+            {
+                Title = "Open file",
+                Filter = "ini |*.ini",
+                DefaultExt = ".ini",
+                FileName = "config.ini"
+            };
+            if (dialog.ShowDialog() ?? false)
+            { 
+                var data = _modsServices.LoadRimPyColors(dialog.FileName);
+                foreach(var item in ModsConfigCollection.Union(ModsCollection))
+                {
+                    if(item.Path != null && item.Data !=null && data.ContainsKey(item.Path))
+                    {
+                        item.Data.Color = data[item.Path];
+                    }
+                }
+            }
+        }
+        catch (Exception ex) { }
+        finally { LoadingUI = false; }
+    });
+
 }
