@@ -197,24 +197,36 @@ public class MainViewModel : PropertyModel
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
     public CustomCommand LoadConfigCommand => new CustomCommand(p => 
     {
-        var dialog = new OpenFileDialog
+        try
         {
-            Title = "Wybierz plik",
-            Filter = "XML (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*",
-            Multiselect = false
-        };
-        if (dialog.ShowDialog()??false) LoadMods(dialog.FileName);
+            LoadingUI = true;
+            var dialog = new OpenFileDialog
+            {
+                Title = "Wybierz plik",
+                Filter = "XML (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*",
+                Multiselect = false
+            };
+            if (dialog.ShowDialog() ?? false) LoadMods(dialog.FileName);
+        }
+        catch (Exception ex) { }
+        finally { LoadingUI = false; }
     });
     public CustomCommand SaveConfigCommand => new CustomCommand(p => 
     {
-        var dialog = new SaveFileDialog
+        try
         {
-            Title = "Zapisz plik",
-            Filter = "XML (*.xml)|*.xml",
-            DefaultExt = ".xml",
-            FileName = "ModsConfig.xml"
-        };
-        if (dialog.ShowDialog()??false) _modsServices.SaveConfig(ModsConfigCollection, dialog.FileName);
+            LoadingUI = true;
+            var dialog = new SaveFileDialog
+            {
+                Title = "Zapisz plik",
+                Filter = "XML (*.xml)|*.xml",
+                DefaultExt = ".xml",
+                FileName = "ModsConfig.xml"
+            };
+            if (dialog.ShowDialog() ?? false) _modsServices.SaveConfig(ModsConfigCollection, dialog.FileName);
+        }
+        catch (Exception ex) { }
+        finally { LoadingUI = false; }
     });
     public CustomCommand SaveCommand => new CustomCommand(p => 
     {
@@ -252,4 +264,21 @@ public class MainViewModel : PropertyModel
         finally { LoadingUI = false; }
     });
 
+    public CustomCommand ModsToCSVCommand => new CustomCommand(p =>
+    {
+        try
+        {
+            LoadingUI = true;
+            var dialog = new SaveFileDialog
+            {
+                Title = "Zapisz plik",
+                Filter = "CSV (*.csv)|*.csv",
+                DefaultExt = ".xml",
+                FileName = "Mods.csv"
+            };
+            if (dialog.ShowDialog() ?? false) _modsServices.ExportCSVMods(ModsConfigCollection.Union(ModsCollection), dialog.FileName);
+        }
+        catch (Exception ex) { }
+        finally { LoadingUI = false; }
+    });
 }

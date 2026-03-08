@@ -144,4 +144,24 @@ public class ModsServices
 
         return result;
     }
+
+    public void ExportCSVMods(IEnumerable<ModModel> modlist, string path)
+    {
+        //var modconfig = _settingsService.Settings.ModColumnData.Where(w => w.Value.Visible).ToList();
+        CSVHelper.Export(modlist, path, c =>
+        {
+           // c.Add(("*", m => m.Local));
+            c.Add(("PackageId", m => m.About?.PackageId));
+            c.Add(("SteamId", m => m.About?.SteamId));
+            c.Add(("Name", m => m.Label));
+            c.Add(("Path", m => m.Path));
+            c.Add(("Autors", m => m.About?.Author));
+            c.Add(("Versions", m => m.Versions));
+            c.Add(("Color", m => m.Data?.Color));
+            c.Add(("Groups", m => m.Data?.Group));
+            //c.Add(("LoadAfter", m => m.About?.LoadAfter));
+            //c.Add(("LoadBefore", m => m.About?.LoadBefore));
+            //c.Add(("SupportedVersions", m => m.About?.SupportedVersions));
+        });
+    }
 }
