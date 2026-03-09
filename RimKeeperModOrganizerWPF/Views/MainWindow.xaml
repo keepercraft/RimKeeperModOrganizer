@@ -8,7 +8,8 @@
         xmlns:ex="clr-namespace:RimKeeperModOrganizerWPF.Views.Extensions"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"      
         mc:Ignorable="d"
-        xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" xmlns:sdl="http://schemas.sdl.com/xaml"
+        xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" 
+        xmlns:sdl="http://schemas.sdl.com/xaml"
         Title="RimKeeper - ModOrganizer" Height="450" Width="800">
     <Window.Resources>
         <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
@@ -59,7 +60,7 @@
                   IsEnabled="{Binding IsUIListEnabled}"          
                   ItemsSource="{Binding ModsCollection}"
                   SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
-                            
+                           
                   MouseDoubleClick="ModsGrid_MouseDoubleClick"      
                             
                   dd:DragDrop.IsDragSource="True"
@@ -117,6 +118,7 @@
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <fdg:FilterDataGrid.RowStyle>
@@ -160,8 +162,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="N" Binding="{Binding Position}"/>
                 <DataGridTextColumn Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" 
-                                    Width="*"/>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
@@ -170,6 +171,7 @@
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.CellStyle>

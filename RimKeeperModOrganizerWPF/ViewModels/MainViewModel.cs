@@ -20,20 +20,7 @@ public class MainViewModel : PropertyModel
     public ObservableCollection<string> ModColors { get; set; } = new();
     public ObservableCollection<ModModel> ModsConfigCollection { get; } = new();
     public ObservableCollection<ModModel> ModsCollection { get; } = new();
-
-    //public ObservableCollection<ColumnSettings> ModsCollectionColumnsData { get; } = new();
     public Dictionary<string, ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
-
-    private double _columnWidth = 100;
-    public double ColumnWidth
-    {
-        get => _columnWidth;
-        set
-        {
-            _columnWidth = value;
-            OnPropertyChanged();
-        }
-    }
 
     private ModModel? _selectedMod;
     public ModModel? SelectedMod
@@ -49,6 +36,12 @@ public class MainViewModel : PropertyModel
         }
     }
 
+    public bool LoadingUI = false;
+    public bool IsUIListEnabled => !LoadingUI;
+    public bool IsModsConfigAlert => ModsConfigCollection.Where(x => x.Alert != null).Any(x => x.Alert.Any());
+    public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
+    public string GetModConfigStaticLable => string.Format("Mods ({0}/{1})", ModsConfigCollection.Count, ModsCollection.Count);
+
     private readonly ModsServices _modsServices;
     private readonly SettingsService _settingsService;
     public MainViewModel(ModsServices modsServices, SettingsService SettingsService)
@@ -56,23 +49,7 @@ public class MainViewModel : PropertyModel
         _modsServices = modsServices;
         _settingsService = SettingsService;
         ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
-        //LoadModsFromLocalAsync();
-
-        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "local", Visible=true});
-        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "label", Visible=true });
-        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name = "versions", Visible = false });
-        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name = "data.group", Visible = true });
-        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "about.author", Visible=false});
-        //ModsCollectionColumnsData.Add(new ColumnSettings() { Name= "about.packageId", Visible=false});
-
-        //ModsConfigCollection = new CollectionViewSource { Source = AllMods }.View;
-        //ModsConfigCollection.Filter = m => ((ModModel)m).Position >= 0;
-        //ModsCollection = new CollectionViewSource { Source = AllMods }.View;
-        //ModsCollection.Filter = m => ((ModModel)m).Position < 0;
     }
-   // public ObservableCollection<ModModel> AllMods { get; } = new();
-   // public ICollectionView ModsConfigCollection { get; }
-   // public ICollectionView ModsCollection { get; }
 
     public void LoadMods(string? path = null)
     {
@@ -129,12 +106,6 @@ public class MainViewModel : PropertyModel
                 ModColors.Add(item);
     }
 
-    public bool LoadingUI = false;
-    public bool IsUIListEnabled => !LoadingUI;
-    public bool IsModsConfigAlert => ModsConfigCollection.Where(x => x.Alert != null).Any(x => x.Alert.Any());
-    public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
-    public string GetModConfigStaticLable => string.Format("Mods ({0}/{1})", ModsConfigCollection.Count, ModsCollection.Count);
-
     private void ModsConfigCollection_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (sender is ObservableCollection<ModModel> collection && collection == ModsConfigCollection)
@@ -161,6 +132,7 @@ public class MainViewModel : PropertyModel
         }
     }
 
+    #region CustomCommand
     public CustomCommand OpenSteamLinkCommand => new CustomCommand(p =>
     {
         if (p is string txt) 
@@ -281,4 +253,16 @@ public class MainViewModel : PropertyModel
         catch (Exception ex) { }
         finally { LoadingUI = false; }
     });
+
+    public CustomCommand ModDetailCommand => new CustomCommand(p =>
+    {
+        try
+        {
+            LoadingUI = true;
+            new ModDetailWindow(this).ShowDialog();
+        }
+        catch (Exception ex) { }
+        finally { LoadingUI = false; }
+    });
+    #endregion CustomCommand
 }

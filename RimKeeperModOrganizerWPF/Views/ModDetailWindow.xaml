@@ -1,0 +1,100 @@
+﻿<Window x:Class="RimKeeperModOrganizerWPF.Views.ModDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RimKeeperModOrganizerWPF.Views"
+        xmlns:sdl="http://schemas.sdl.com/xaml"
+        mc:Ignorable="d"
+        Title="ModDetailWindow" Height="450" Width="800">
+    <Grid>
+        <ScrollViewer Margin="10" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Image Source="{Binding SelectedMod.ThumbnailPath}" 
+       Stretch="UniformToFill"
+       Margin="0,0,0,10"/>
+
+                <sdl:MultiSelectComboBox 
+                    x:Name="MyMultiSelect"
+                    ItemsSource="{Binding ModGroups}"
+                    SelectedItems="{Binding SelectedMod.Data.Groups}"
+                    KeyDown="MultiSelect_KeyDown"
+                    IsEditable="True"
+                    EnableFiltering="True"
+                    SelectionMode="Multiple"
+                    Width="300">
+                </sdl:MultiSelectComboBox>
+
+                <TextBlock>
+        <Hyperlink
+            ToolTip="{Binding SelectedMod.SteamLink}"
+            CommandParameter="{Binding SelectedMod.SteamLink}"
+            Command="{Binding OpenLinkCommand}">
+            Steamlink
+        </Hyperlink>
+        <Hyperlink
+            ToolTip="{Binding SelectedMod.Path}"
+            CommandParameter="{Binding SelectedMod.Path}"
+            Command="{Binding OpenLinkCommand}">
+            Localdir
+        </Hyperlink>
+                </TextBlock>
+
+                <TextBlock Text="Szczegóły mod'a" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <TextBlock Text="Nazwa:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedMod.About.Name}" Margin="0,0,0,10"/>
+                <TextBlock Text="Autor:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedMod.About.Author}" Margin="0,0,0,10"/>
+                <TextBlock Text="PackageId:" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedMod.About.PackageId}" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Obsługiwane wersje:" FontWeight="Bold"/>
+                <TextBlock>
+        <ItemsControl ItemsSource="{Binding SelectedMod.About.SupportedVersions}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </TextBlock>
+
+                <TextBlock Text="Ładować po:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., StringFormat=• {0}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Ładować przed:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., StringFormat=• {0}}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Niezgodne z:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., StringFormat=• {0}}" Foreground="Red"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Opis:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <TextBlock Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
