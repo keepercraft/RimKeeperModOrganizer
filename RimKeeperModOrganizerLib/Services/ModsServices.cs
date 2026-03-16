@@ -1,17 +1,10 @@
-﻿using RimKeeperModOrganizerLib.Extensions;
-using RimKeeperModOrganizerLib.Helpers;
+﻿using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
-using System.Collections.ObjectModel;
-using System.Text.Json;
-
+using FileHelper = RimKeeperModOrganizerLib.Helpers.FileHelper;
 namespace RimKeeperModOrganizerLib.Services;
 
 public class ModsServices
 {
- //   public ObservableCollection<ModModel> ModsList { get; } = new();
- //   public ObservableCollection<string> ModGroups { get; } = new();
- //   public ObservableCollection<string> ModColors { get; } = new();
-
     private readonly SettingsService _settingsService;
     public ModsServices(SettingsService SettingsService)
     {
@@ -20,52 +13,84 @@ public class ModsServices
 
     public Action<bool> LoadModsActive { get; set; }
     private bool LoadModsFromLocalRunning = false;
-    //public Task LoadModsFromLocalAsync(string? path = null) => Task.Run(LoadMods);
-    public IEnumerable<ModModel> LoadMods(string? path = null)
+
+    public IEnumerable<ModModel> LoadMods(string? path = null) //.old
     {
         if (LoadModsFromLocalRunning) yield break;
         LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
 
-       // List<ModModel> modsToYield = new();
-       // try
-      // {
-            string? aboutPath = path ?? FileHelper.GetModsConfig(_settingsService.Settings.PathDirGameConfig);
-            if (aboutPath == null) yield break;
+        ModsConfigModel? modsConfig = LoadModsConfig(path);
+        if (modsConfig == null) yield break;
 
-            ModsConfigModel? modsConfig = XMLHelper.LoadModsConfig(aboutPath);
-            if (modsConfig == null) yield break;
+        LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
 
-            //LocalDataListModel modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-            LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData + ".json") ?? new LocalDataListModel();
-
-        // ModsList.Clear();
         foreach (ModModel mod in FindRimWorldAllMods())
+        {
+            mod.Position = modsConfig?.Position(mod.About?.PackageId) ?? -1;
+            mod.TrySet(modsData);
+            if (mod.Position >= 0) mod.Selected = true;
+            //  ModsList.Add(mod);
+            yield return mod;
+        }
+        LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
+        GC.Collect();
+    }
+    public IEnumerable<ModModel> LoadMods2(string? path = null)
+    {
+        if (LoadModsFromLocalRunning) yield break;
+        LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
+
+        List<ModModel> modList = FindRimWorldAllMods().ToList();
+
+        ModsConfigModel? modsConfig = LoadModsConfig(path);
+        if (modsConfig != null)
+        {
+            foreach (var item in modsConfig.ActiveMods)
             {
-                mod.Position = modsConfig?.Position(mod.About?.PackageId) ?? -1;
-                mod.TrySet(modsData);
-                if (mod.Position >= 0) mod.Selected = true;
-              //  ModsList.Add(mod);
-                yield return mod;
+                var modListItem = modList.FirstOrDefault(x => x?.About?.PackageId == item);
+                if (modListItem == null)
+                {
+                    modListItem = new ModModel() { About = new AboutModel() { PackageId = item } };
+                    modList.Add(modListItem);
+                }
+                modListItem.Position = modsConfig?.Position(item) ?? -1;
+                if (modListItem.Position >= 0) modListItem.Selected = true;
             }
-           //ModsList.SortCollectionByConfig(modsConfig);
-           // ModListValidation(ModsList);
-           /*
-            foreach (var item in modsData.ModDataList.SelectMany(s => s.Groups).Where(w => !string.IsNullOrEmpty(w)).Distinct())
-                if (!ModGroups.Contains(item))
-                    ModGroups.Add(item);
-            foreach (var item in modsData.ModDataList.Select(s => s.Color).Where(w => !string.IsNullOrEmpty(w)).Distinct())
-                if (!ModColors.Contains(item))
-                    ModColors.Add(item);
-           */
-       // }
-       // catch (Exception ex)
-       // {
-       // }
-       // finally
-       // {
-            LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
-            GC.Collect();
-       // }
+        }
+
+        LocalDataListModel? modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData);
+        if (modsData != null)
+        {
+            foreach (var item in modsData.ModDataList)
+            {
+                var modListItem = modList.FirstOrDefault(x => x?.About?.PackageId == item.PackageId);
+                if (modListItem == null)
+                {
+                    modListItem = new ModModel() { About = new AboutModel() { PackageId = item.PackageId } };
+                    modList.Add(modListItem);
+                }
+                modListItem.Data = item;
+            }
+        }
+
+        foreach (ModModel item in modList)
+        {
+            if(item.Data == null) item.Data = new ModDataModel() { PackageId = item.About.PackageId };
+            if (String.IsNullOrEmpty(item.Path))
+            {
+                item.Alert.Add("Missing:" + item.Label);
+            }
+            yield return item;
+        }
+
+        LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
+        GC.Collect();
+    }
+    public ModsConfigModel? LoadModsConfig(string? path = null)
+    {
+        string? aboutPath = path ?? FileHelper.GetModsConfig(_settingsService.Settings.PathDirGameConfig);
+        if (String.IsNullOrEmpty(aboutPath)) return null;
+        return XMLHelper.LoadModsConfig(aboutPath);
     }
     public IEnumerable<ModModel> FindRimWorldAllMods()
     {
@@ -99,12 +124,12 @@ public class ModsServices
         // LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
         //  modsData.ModDataList.Clear();
         LocalDataListModel modsData = new LocalDataListModel();
-        foreach (var item in modlist.Where(x => x.Data != null).Where(x => x.Data.NotNull))
+        foreach (var item in modlist.Where(x => x.Data != null).Where(x => x.Data.IsNotNull()))
         {
             modsData.ModDataList.Add(item.Data);
         }     
         //XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
-        JsonHelper.SerializeModel(modsData, _settingsService.Settings.PathModData+".json");
+        JsonHelper.SerializeModel(modsData, _settingsService.Settings.PathModData);
     }
 
     public Dictionary<string, string> LoadRimPyColors(string configPath)
@@ -154,7 +179,6 @@ public class ModsServices
         //var modconfig = _settingsService.Settings.ModColumnData.Where(w => w.Value.Visible).ToList();
         CSVHelper.Export(modlist, path, c =>
         {
-           // c.Add(("*", m => m.Local));
             c.Add(("PackageId", m => m.About?.PackageId));
             c.Add(("SteamId", m => m.About?.SteamId));
             c.Add(("Name", m => m.Label));
@@ -162,10 +186,9 @@ public class ModsServices
             c.Add(("Autors", m => m.About?.Author));
             c.Add(("Versions", m => m.Versions));
             c.Add(("Color", m => m.Data?.Color));
+            c.Add(("Color", m => m.Data?.Comment));
             c.Add(("Groups", m => m.Data?.Group));
-            //c.Add(("LoadAfter", m => m.About?.LoadAfter));
-            //c.Add(("LoadBefore", m => m.About?.LoadBefore));
-            //c.Add(("SupportedVersions", m => m.About?.SupportedVersions));
+            c.Add(("Groups", m => m.Data?.PackageGroup));
         });
     }
 }

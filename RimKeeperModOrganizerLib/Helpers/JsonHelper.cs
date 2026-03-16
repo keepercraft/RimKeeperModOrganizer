@@ -34,6 +34,16 @@ public static class JsonHelper
         return default;
     }
 
+    public static async IAsyncEnumerable<T> DeserializeModelsAsync<T>(string path)
+    {
+        if (!File.Exists(path)) yield break;
+        using FileStream fs = File.OpenRead(path);
+        await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable<T>(fs, Options))
+        {
+            if (item != null) yield return item;
+        }
+    }
+
     public static void DeserializeModel<T>(this T model, string path) where T : class, System.ComponentModel.INotifyPropertyChanged
     {
         //JsonSerializer.Populate(reader, model);

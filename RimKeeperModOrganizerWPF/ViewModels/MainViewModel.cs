@@ -1,4 +1,5 @@
-﻿using KeeperBaseLib.Model;
+﻿using KeeperBaseLib.Helper;
+using KeeperBaseLib.Model;
 using KeeperBaseWPFLib.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
@@ -38,7 +39,8 @@ public class MainViewModel : PropertyModel
 
     public bool LoadingUI = false;
     public bool IsUIListEnabled => !LoadingUI;
-    public bool IsModsConfigAlert => ModsConfigCollection.Where(x => x.Alert != null).Any(x => x.Alert.Any());
+    public bool IsModsConfigAlert => ModsConfigCollection.Union(ModsCollection).Where(x => x.Alert != null).Any(x => x.Alert.Any());
+    public List<string> ListModsConfigAlert => ModsConfigCollection.Union(ModsCollection).Where(x => x.Alert != null).SelectMany(x => x.Alert).ToList();
     public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
     public string GetModConfigStaticLable => string.Format("Mods ({0}/{1})", ModsConfigCollection.Count, ModsCollection.Count);
 
@@ -63,10 +65,11 @@ public class MainViewModel : PropertyModel
                 ModsConfigCollection.Clear();
                 ModsCollection.Clear();
                 ModsConfigCollection.CollectionChanged -= ModsConfigCollection_CollectionChanged;
+                RaisePropertyChanged(nameof(ListModsConfigAlert));
                 RaisePropertyChanged(nameof(GetModConfigStaticColor));
                 RaisePropertyChanged(nameof(GetModConfigStaticLable));
             });
-            foreach (var item in _modsServices.LoadMods(path))
+            foreach (var item in _modsServices.LoadMods2(path))
             {
                 if (item != null)
                     App.Current.Dispatcher.Invoke(() =>
@@ -75,6 +78,7 @@ public class MainViewModel : PropertyModel
                         if (item.Selected)
                         {
                             ModsConfigCollection.Add(item);
+                            RaisePropertyChanged(nameof(ListModsConfigAlert));
                             RaisePropertyChanged(nameof(GetModConfigStaticColor));
                             RaisePropertyChanged(nameof(GetModConfigStaticLable));
                         }
@@ -90,6 +94,7 @@ public class MainViewModel : PropertyModel
                 ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
                 LoadingUI = false;
                 RaisePropertyChanged(nameof(IsUIListEnabled));
+                RaisePropertyChanged(nameof(ListModsConfigAlert));
                 RaisePropertyChanged(nameof(GetModConfigStaticColor));
                 RaisePropertyChanged(nameof(GetModConfigStaticLable));
             });
@@ -123,9 +128,10 @@ public class MainViewModel : PropertyModel
             for (int i = 0; i < collection.Count; i++)
             {
                 collection[i].Position = i;
-                collection[i].OnPropertyChanged(nameof(ModModel.Position));
+                collection[i].RaisePropertyChanged(nameof(ModModel.Position));
             }
             ModsConfigCollection.ModListValidation();
+            RaisePropertyChanged(nameof(ListModsConfigAlert));
             RaisePropertyChanged(nameof(GetModConfigStaticColor));
             RaisePropertyChanged(nameof(GetModConfigStaticLable));
             //ModListValidation();
@@ -158,7 +164,7 @@ public class MainViewModel : PropertyModel
 
         ModColors.Clear();
         foreach (var item in ModsConfigCollection.Union(ModsCollection)
-            .Where(x => x.Data != null).Where(x => x.Data.NotNull)
+            .Where(x => x.Data != null).Where(x => x.Data.IsNotNull())
             .Select(s => s.Data.Color).Where(w => !string.IsNullOrEmpty(w)).Distinct())
         {
             ModColors.Add(item);

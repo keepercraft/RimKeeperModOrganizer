@@ -27,6 +27,12 @@ public static class ListExtension
         foreach (var mod in modlist)
         {
             mod.Alert.Clear();
+
+            if (String.IsNullOrEmpty(mod.Path))
+            {
+                mod.Alert.Add("Missing:" + mod.Label);
+            }
+
             if (string.IsNullOrEmpty(mod.About?.PackageId)) continue;
 
             if (mod.About?.ModDependencies is { } mod_deps)
@@ -69,7 +75,7 @@ public static class ListExtension
                     }
                 }
 
-            mod.OnPropertyChanged(nameof(ModModel.HasAlert));
+            mod.RaisePropertyChanged(nameof(ModModel.HasAlert));
             index++;
         }
     }

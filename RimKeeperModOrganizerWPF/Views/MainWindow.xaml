@@ -53,7 +53,15 @@
             <Button Content="ChangeColor" Command="{Binding ChangeColorCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <Button Content="[RimpyLoad]" Command="{Binding RimpyColorLoadCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <Button Content="[CSV]" Command="{Binding ModsToCSVCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <TextBlock Text="{Binding GetModConfigStaticLable}" Padding="5" Background="{Binding GetModConfigStaticColor}" />
+            <TextBlock Text="{Binding GetModConfigStaticLable}" Padding="5" Background="{Binding GetModConfigStaticColor}" >
+                <TextBlock.ToolTip>
+                    <ToolTip>
+                        <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding ListModsConfigAlert}"/>
+                        </ScrollViewer>
+                    </ToolTip>
+                </TextBlock.ToolTip>
+            </TextBlock>
         </ToolBar>
 
         <fdg:FilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
@@ -124,7 +132,31 @@
             <fdg:FilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="{Binding Data.Color}"/>
+                    <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
+                    <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
+                    <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <Border Padding="5" Background="White" BorderBrush="DarkRed" BorderThickness="1" CornerRadius="4">
+                                <StackPanel>
+                                    <ItemsControl ItemsSource="{Binding Alert}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Setter.Value>
+                    </Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasAlert}" Value="False">
+                            <Setter Property="ToolTip" Value="{x:Null}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding HasAlert}" Value="True">
+                            <Setter Property="Background" Value="LightCoral"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding Selected}" Value="True">
                             <Setter Property="Background" Value="LightGreen"/>
                         </DataTrigger>

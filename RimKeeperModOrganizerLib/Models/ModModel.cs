@@ -1,9 +1,8 @@
-﻿using RimKeeperModOrganizerLib.Helpers;
-using System.ComponentModel;
-
+﻿using KeeperBaseLib.Model;
+using RimKeeperModOrganizerLib.Helpers;
 namespace RimKeeperModOrganizerLib.Models;
 
-public class ModModel : INotifyPropertyChanged
+public class ModModel : PropertyModel
 {
     public string Label => About?.Name ?? About?.PackageId ?? "??";
 
@@ -24,8 +23,11 @@ public class ModModel : INotifyPropertyChanged
         ? string.Join(",", About.SupportedVersions.OrderBy(v => v))
         : "";
 
-    public string SteamLink => string.Format(@"https://steamcommunity.com/sharedfiles/filedetails/?id={0}", About?.SteamId);
+    public string? SteamLink => String.IsNullOrEmpty(About?.SteamId) ? null : string.Format(@"https://steamcommunity.com/sharedfiles/filedetails/?id={0}", About?.SteamId);
 
+    public ModModel() 
+    {
+    }
     public ModModel(string path, bool local = false)
     {
         Path = path;
@@ -47,7 +49,9 @@ public class ModModel : INotifyPropertyChanged
         }
         Data = new ModDataModel() { PackageId = About.PackageId };
     }
+}
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    public void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+public static class ModModelExtension
+{
+
 }
