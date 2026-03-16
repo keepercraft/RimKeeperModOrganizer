@@ -35,10 +35,11 @@ public class ModsServices
             ModsConfigModel? modsConfig = XMLHelper.LoadModsConfig(aboutPath);
             if (modsConfig == null) yield break;
 
-            LocalDataListModel modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+            //LocalDataListModel modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+            LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData + ".json") ?? new LocalDataListModel();
 
-           // ModsList.Clear();
-            foreach (ModModel mod in FindRimWorldAllMods())
+        // ModsList.Clear();
+        foreach (ModModel mod in FindRimWorldAllMods())
             {
                 mod.Position = modsConfig?.Position(mod.About?.PackageId) ?? -1;
                 mod.TrySet(modsData);
@@ -94,13 +95,16 @@ public class ModsServices
     }
     public void SaveLocalData(IEnumerable<ModModel> modlist)
     {
-        LocalDataListModel? modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-        modsData.ModDataList.Clear();
+        //LocalDataListModel? modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+        // LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+        //  modsData.ModDataList.Clear();
+        LocalDataListModel modsData = new LocalDataListModel();
         foreach (var item in modlist.Where(x => x.Data != null).Where(x => x.Data.NotNull))
         {
             modsData.ModDataList.Add(item.Data);
-        }
-        XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
+        }     
+        //XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
+        JsonHelper.SerializeModel(modsData, _settingsService.Settings.PathModData+".json");
     }
 
     public Dictionary<string, string> LoadRimPyColors(string configPath)

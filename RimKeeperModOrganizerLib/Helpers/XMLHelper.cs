@@ -1,4 +1,5 @@
-﻿using RimKeeperModOrganizerLib.Models;
+﻿using KeeperBaseLib.Helper;
+using RimKeeperModOrganizerLib.Models;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -130,9 +131,10 @@ public static class XMLHelper
         if (!File.Exists(filePath)) return null;
         try
         {
+            var model = new LocalDataListModel();
             var doc = XDocument.Load(filePath);
             var root = doc.Root;
-            var modList = doc.Root?
+            doc.Root?
                 .Elements("Mod")
                 .Select(x =>
                 {
@@ -142,15 +144,15 @@ public static class XMLHelper
                         Color = (string?)x.Element("Color"),
                         //Group = (string?)x.Element("Group"),
                     };
-                    foreach ( var s in x.Elements("Groups"))
+                    foreach (var s in x.Elements("Groups"))
                     {
                         m.Groups.Add(s.Value);
                     }
                     return m;
                 })
-                .ToList() ?? new List<ModDataModel>();
-
-            return new LocalDataListModel { ModDataList = modList };
+                .Each(x => model.ModDataList.Add(x));
+                //.ToList() ?? new List<ModDataModel>();
+            return model;// new LocalDataListModel { ModDataList = modList };
         }
         catch (Exception ex)
         {

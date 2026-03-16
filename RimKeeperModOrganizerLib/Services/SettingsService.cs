@@ -1,5 +1,4 @@
-﻿using KeeperBaseLib.Helper.Reflection;
-using RimKeeperModOrganizerLib.Helpers;
+﻿using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using System.Collections;
 using System.Reflection;
@@ -20,8 +19,9 @@ public class SettingsService
         try
         {
             if (!File.Exists(PathSettings)) return;
-            string json = File.ReadAllText(PathSettings);
-            var doc = JsonDocument.Parse(json);
+            //string json = File.ReadAllText(PathSettings);
+            using FileStream fs = File.OpenRead(PathSettings);
+            var doc = JsonDocument.Parse(fs);
             foreach (var item in DataSettings)
             {
                 if (doc.RootElement.TryGetProperty(item.Key, out var uiNode))
@@ -37,15 +37,7 @@ public class SettingsService
         }
         catch { }
     }
-    public void Save()
-    {
-        try
-        {
-            string json = JsonSerializer.Serialize(DataSettings, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(PathSettings, json);
-        }
-        catch { }
-    }
+    public void Save() => JsonHelper.SerializeModel(DataSettings, PathSettings);
     public void StartLoad()
     {
         bool fexist = File.Exists(PathSettings);

@@ -205,8 +205,11 @@ public class MainViewModel : PropertyModel
         try
         {
             LoadingUI = true;
-            _modsServices.SaveConfig(ModsConfigCollection);
-            _modsServices.SaveLocalData(ModsConfigCollection.Union(ModsCollection));
+            if (ModsConfigCollection.Union(ModsCollection).Any())
+            {
+                _modsServices.SaveConfig(ModsConfigCollection);
+                _modsServices.SaveLocalData(ModsConfigCollection.Union(ModsCollection));
+            }
         }
         catch (Exception ex) { }
         finally { LoadingUI = false; }
