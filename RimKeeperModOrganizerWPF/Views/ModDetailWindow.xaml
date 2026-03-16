@@ -16,7 +16,7 @@
         <Menu Grid.Row="0">
             <MenuItem Header="Open in Steam"
               ToolTip="{Binding SelectedMod.SteamLink}"
-              Command="{Binding OpenLinkCommand}"
+              Command="{Binding OpenSteamLinkCommand}"
               CommandParameter="{Binding SelectedMod.SteamLink}" />
             <MenuItem Header="Open in Explorer"
               ToolTip="{Binding SelectedMod.Path}"
@@ -38,7 +38,7 @@
                     <sdl:MultiSelectComboBox 
                         x:Name="MyMultiSelect"
                         ItemsSource="{Binding ModGroups}"
-                        SelectedItems="{Binding SelectedMod.Data.Groups}"
+                        SelectedItems="{Binding SelectedMod.Data.Groups, Mode=TwoWay}"
                         KeyDown="MultiSelect_KeyDown"
                         IsEditable="True"
                         EnableFiltering="True"
@@ -47,7 +47,7 @@
                 </DockPanel>
                 <DockPanel >
                     <TextBlock Margin="3" Width="80" Text="Comment:" FontWeight="Bold" TextAlignment="Right"/>
-                    <TextBox  Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}" 
+                    <TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}" 
                          TextWrapping="Wrap" 
                          AcceptsReturn="True"
                          HorizontalAlignment="Stretch"
@@ -59,23 +59,27 @@
 
 
                 <DockPanel >
-                    <TextBlock Margin="3" Width="150" Text="Name:" FontWeight="Bold" TextAlignment="Right"/>
-                    <TextBlock Margin="3" Text="{Binding SelectedMod.About.Name}"/>
+                    <TextBlock Padding="3" Width="150" Text="Name:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBox Padding="3" IsReadOnly="True" Text="{Binding SelectedMod.About.Name,Mode=OneWay}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="Author:" FontWeight="Bold" TextAlignment="Right"/>
-                    <TextBlock Margin="3" Text="{Binding SelectedMod.About.Author}"/>
+                    <TextBlock Padding="3" Width="150" Text="Author:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBox Padding="3" IsReadOnly="True" Text="{Binding SelectedMod.About.Author,Mode=OneWay}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="Package ID:" FontWeight="Bold" TextAlignment="Right"/>
-                    <TextBlock Margin="3" Text="{Binding SelectedMod.About.PackageId}"/>
+                    <TextBlock Padding="3" Width="150" Text="Package ID:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBox Padding="3" IsReadOnly="True" Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="Steam Published ID:" FontWeight="Bold" TextAlignment="Right"/>
-                    <TextBlock Margin="3" Text="{Binding SelectedMod.About.SteamId}"/>
+                    <TextBlock Padding="3" Width="150" Text="Steam Published ID:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBox Padding="3" IsReadOnly="True" Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="SupportedVersions:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Padding="3" Width="150" Text="SupportedVersions:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBox Padding="3" IsReadOnly="True" Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+                </DockPanel>
+                <!--<DockPanel>
+                    <TextBlock Padding="3" Width="150" Text="SupportedVersions:" FontWeight="Bold" TextAlignment="Right"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.SupportedVersions}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -84,56 +88,56 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3" Text="{Binding}"/>
+                                <TextBox Padding="3" IsReadOnly="True" Text="{Binding Mode=OneWay}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </DockPanel>
+                </DockPanel>-->
 
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="ModDependencies:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Padding="3" Width="150" Text="ModDependencies:" FontWeight="Bold" TextAlignment="Right"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3" Text="{Binding DisplayName, StringFormat=• {0}}"/>
+                                <TextBox Padding="3" IsReadOnly="True" Text="{Binding DisplayName, StringFormat=• {0}}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="LoadAfter:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Padding="3" Width="150" Text="LoadAfter:" FontWeight="Bold" TextAlignment="Right"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3" Text="{Binding ., StringFormat=• {0}}"/>
+                                <TextBox Padding="3" IsReadOnly="True" Text="{Binding ., StringFormat=• {0}}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="LoadBefore:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Padding="3" Width="150" Text="LoadBefore:" FontWeight="Bold" TextAlignment="Right"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3" Text="{Binding ., StringFormat=• {0}}"/>
+                                <TextBox Padding="3" IsReadOnly="True" Text="{Binding ., StringFormat=• {0}}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="IncompatibleWith:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Padding="3" Width="150" Text="IncompatibleWith:" FontWeight="Bold" TextAlignment="Right"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3" Text="{Binding ., StringFormat=• {0}}"/>
+                                <TextBox Padding="3" IsReadOnly="True" Text="{Binding ., StringFormat=• {0}}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </DockPanel>
 
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="Description:" FontWeight="Bold" TextAlignment="Right"/>
-                    <TextBlock Margin="3" Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap"/>
+                    <TextBlock Padding="3" Width="150" Text="Description:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBox Padding="3" IsReadOnly="True" Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap"/>
                 </DockPanel>
 
             </StackPanel>
