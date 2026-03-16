@@ -81,4 +81,12 @@ public static class ModDataModelExtension
             && !model.PackageGroups.Any() 
             && string.IsNullOrEmpty(model.Comment)
         );
+
+    public static void Clear(this ModDataModel model)
+    {
+        model.Color = null;
+        model.Comment = null;
+        model.Groups.Clear();
+        model.PackageGroups.Clear();
+    }
 }

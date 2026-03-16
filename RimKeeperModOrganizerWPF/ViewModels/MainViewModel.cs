@@ -1,5 +1,4 @@
-﻿using KeeperBaseLib.Helper;
-using KeeperBaseLib.Model;
+﻿using KeeperBaseLib.Model;
 using KeeperBaseWPFLib.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
@@ -12,7 +11,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Windows.Media;
-
 namespace RimKeeperModOrganizerWPF.ViewModels;
 
 public class MainViewModel : PropertyModel
@@ -37,13 +35,6 @@ public class MainViewModel : PropertyModel
         }
     }
 
-    public bool LoadingUI = false;
-    public bool IsUIListEnabled => !LoadingUI;
-    public bool IsModsConfigAlert => ModsConfigCollection.Union(ModsCollection).Where(x => x.Alert != null).Any(x => x.Alert.Any());
-    public List<string> ListModsConfigAlert => ModsConfigCollection.Union(ModsCollection).Where(x => x.Alert != null).SelectMany(x => x.Alert).ToList();
-    public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
-    public string GetModConfigStaticLable => string.Format("Mods ({0}/{1})", ModsConfigCollection.Count, ModsCollection.Count);
-
     private readonly ModsServices _modsServices;
     private readonly SettingsService _settingsService;
     public MainViewModel(ModsServices modsServices, SettingsService SettingsService)
@@ -52,6 +43,47 @@ public class MainViewModel : PropertyModel
         _settingsService = SettingsService;
         ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
     }
+
+    #region UI Locker 
+    private bool _loadingUI = false;
+    public bool LoadingUI
+    {
+        get => _loadingUI;
+        set
+        {
+            if (_loadingUI != value)
+            {
+                _loadingUI = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsUIListEnabled));
+            }
+        }
+    }
+    public bool IsUIListEnabled => !LoadingUI;
+    public void UILock(Action action)
+    {
+        try
+        {
+            LoadingUI = true;
+            action();
+        }
+        catch { }
+        finally { LoadingUI = false; }
+    }
+    #endregion
+
+    #region Alert Section
+    public bool IsModsConfigAlert => ModsConfigCollection.Union(ModsCollection).Where(x => x.Alert != null).Any(x => x.Alert.Any());
+    public List<string> ListModsConfigAlert => ModsConfigCollection.Union(ModsCollection).Where(x => x.Alert != null).SelectMany(x => x.Alert).ToList();
+    public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
+    public string GetModConfigStaticLable => string.Format("Mods ({0}/{1})", ModsConfigCollection.Count, ModsCollection.Count);
+    public void AlertPropertyChanged()
+    {
+        RaisePropertyChanged(nameof(ListModsConfigAlert));
+        RaisePropertyChanged(nameof(GetModConfigStaticColor));
+        RaisePropertyChanged(nameof(GetModConfigStaticLable));
+    }
+    #endregion
 
     public void LoadMods(string? path = null)
     {
@@ -65,9 +97,7 @@ public class MainViewModel : PropertyModel
                 ModsConfigCollection.Clear();
                 ModsCollection.Clear();
                 ModsConfigCollection.CollectionChanged -= ModsConfigCollection_CollectionChanged;
-                RaisePropertyChanged(nameof(ListModsConfigAlert));
-                RaisePropertyChanged(nameof(GetModConfigStaticColor));
-                RaisePropertyChanged(nameof(GetModConfigStaticLable));
+                AlertPropertyChanged();
             });
             foreach (var item in _modsServices.LoadMods2(path))
             {
@@ -78,9 +108,7 @@ public class MainViewModel : PropertyModel
                         if (item.Selected)
                         {
                             ModsConfigCollection.Add(item);
-                            RaisePropertyChanged(nameof(ListModsConfigAlert));
-                            RaisePropertyChanged(nameof(GetModConfigStaticColor));
-                            RaisePropertyChanged(nameof(GetModConfigStaticLable));
+                            AlertPropertyChanged();
                         }
                         else
                             ModsCollection.Add(item);
@@ -94,9 +122,7 @@ public class MainViewModel : PropertyModel
                 ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
                 LoadingUI = false;
                 RaisePropertyChanged(nameof(IsUIListEnabled));
-                RaisePropertyChanged(nameof(ListModsConfigAlert));
-                RaisePropertyChanged(nameof(GetModConfigStaticColor));
-                RaisePropertyChanged(nameof(GetModConfigStaticLable));
+                AlertPropertyChanged();
             });
         });
     }
@@ -131,9 +157,7 @@ public class MainViewModel : PropertyModel
                 collection[i].RaisePropertyChanged(nameof(ModModel.Position));
             }
             ModsConfigCollection.ModListValidation();
-            RaisePropertyChanged(nameof(ListModsConfigAlert));
-            RaisePropertyChanged(nameof(GetModConfigStaticColor));
-            RaisePropertyChanged(nameof(GetModConfigStaticLable));
+            AlertPropertyChanged();
             //ModListValidation();
         }
     }
@@ -153,15 +177,15 @@ public class MainViewModel : PropertyModel
                 UseShellExecute = true
             });
     });
-    public CustomCommand OptionsCommand => new CustomCommand(p =>
+    public CustomCommand OptionsCommand => new CustomCommand(p => UILock(() =>
     {
         App.Services.GetRequiredService<SettingsWindow>().ShowDialog();
         RaisePropertyChanged(nameof(ModColumnData));
-    });
-    public CustomCommand ChangeColorCommand => new CustomCommand(p =>
+    }));
+    public CustomCommand ChangeColorCommand => new CustomCommand(p => UILock(() =>
     {
+        if (p != null && p is ModModel model) SelectedMod = model;
         if (SelectedMod == null) return;
-
         ModColors.Clear();
         foreach (var item in ModsConfigCollection.Union(ModsCollection)
             .Where(x => x.Data != null).Where(x => x.Data.IsNotNull())
@@ -169,109 +193,81 @@ public class MainViewModel : PropertyModel
         {
             ModColors.Add(item);
         }
-        // new ChangeColorWindow(SelectedMod, ModColors).ShowDialog();
         new ChangeColorWindow(this).ShowDialog();
-    });
+    }));
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
-    public CustomCommand LoadConfigCommand => new CustomCommand(p => 
+    public CustomCommand LoadConfigCommand => new CustomCommand(p => UILock(() =>
     {
-        try
+        var dialog = new OpenFileDialog
         {
-            LoadingUI = true;
-            var dialog = new OpenFileDialog
-            {
-                Title = "Wybierz plik",
-                Filter = "XML (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*",
-                Multiselect = false
-            };
-            if (dialog.ShowDialog() ?? false) LoadMods(dialog.FileName);
+            Title = "Wybierz plik",
+            Filter = "XML (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*",
+            Multiselect = false
+        };
+        if (dialog.ShowDialog() ?? false) LoadMods(dialog.FileName);
+    }));
+    public CustomCommand SaveConfigCommand => new CustomCommand(p => UILock(() =>
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Zapisz plik",
+            Filter = "XML (*.xml)|*.xml",
+            DefaultExt = ".xml",
+            FileName = "ModsConfig.xml"
+        };
+        if (dialog.ShowDialog() ?? false) _modsServices.SaveConfig(ModsConfigCollection, dialog.FileName);
+    }));
+    public CustomCommand SaveCommand => new CustomCommand(p => UILock(() =>
+    {
+        if (ModsConfigCollection.Union(ModsCollection).Any())
+        {
+            _modsServices.SaveConfig(ModsConfigCollection);
+            _modsServices.SaveLocalData(ModsConfigCollection.Union(ModsCollection));
         }
-        catch (Exception ex) { }
-        finally { LoadingUI = false; }
-    });
-    public CustomCommand SaveConfigCommand => new CustomCommand(p => 
+    }));
+
+    public CustomCommand RimpyColorLoadCommand => new CustomCommand(p => UILock(() =>
     {
-        try
+        var dialog = new OpenFileDialog
         {
-            LoadingUI = true;
-            var dialog = new SaveFileDialog
-            {
-                Title = "Zapisz plik",
-                Filter = "XML (*.xml)|*.xml",
-                DefaultExt = ".xml",
-                FileName = "ModsConfig.xml"
-            };
-            if (dialog.ShowDialog() ?? false) _modsServices.SaveConfig(ModsConfigCollection, dialog.FileName);
+            Title = "Open file",
+            Filter = "ini |*.ini",
+            DefaultExt = ".ini",
+            FileName = "config.ini"
+        };
+        if (dialog.ShowDialog() ?? false)
+        { 
+            var data = _modsServices.LoadRimPyColors(dialog.FileName);
+            foreach(var item in ModsConfigCollection.Union(ModsCollection))
+                if(item.Path != null && item.Data !=null && data.ContainsKey(item.Path))
+                    item.Data.Color = data[item.Path];
         }
-        catch (Exception ex) { }
-        finally { LoadingUI = false; }
-    });
-    public CustomCommand SaveCommand => new CustomCommand(p => 
+    }));
+    public CustomCommand ModsToCSVCommand => new CustomCommand(p => UILock(() =>
     {
-        try
+        var dialog = new SaveFileDialog
         {
-            LoadingUI = true;
-            if (ModsConfigCollection.Union(ModsCollection).Any())
+            Title = "Zapisz plik",
+            Filter = "CSV (*.csv)|*.csv",
+            DefaultExt = ".xml",
+            FileName = "Mods.csv"
+        };
+        if (dialog.ShowDialog() ?? false) _modsServices.ExportCSVMods(ModsConfigCollection.Union(ModsCollection), dialog.FileName);
+    }));
+
+    public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() => new ModDetailWindow(this).ShowDialog()));
+    public CustomCommand ModDataRemoveCommand => new CustomCommand(p => UILock(() =>
+    {
+        if (p is ModModel model)
+        {
+            model.Data?.Clear();
+            if (String.IsNullOrEmpty(model.Path))
             {
-                _modsServices.SaveConfig(ModsConfigCollection);
-                _modsServices.SaveLocalData(ModsConfigCollection.Union(ModsCollection));
+                ModsCollection.Remove(model);
+                ModsConfigCollection.Remove(model);
             }
+            AlertPropertyChanged();
         }
-        catch (Exception ex) { }
-        finally { LoadingUI = false; }
-    });
-
-    public CustomCommand RimpyColorLoadCommand => new CustomCommand(p =>
-    {
-        try
-        {
-            LoadingUI = true;
-            var dialog = new OpenFileDialog
-            {
-                Title = "Open file",
-                Filter = "ini |*.ini",
-                DefaultExt = ".ini",
-                FileName = "config.ini"
-            };
-            if (dialog.ShowDialog() ?? false)
-            { 
-                var data = _modsServices.LoadRimPyColors(dialog.FileName);
-                foreach(var item in ModsConfigCollection.Union(ModsCollection))
-                    if(item.Path != null && item.Data !=null && data.ContainsKey(item.Path))
-                        item.Data.Color = data[item.Path];
-            }
-        }
-        catch (Exception ex) { }
-        finally { LoadingUI = false; }
-    });
-
-    public CustomCommand ModsToCSVCommand => new CustomCommand(p =>
-    {
-        try
-        {
-            LoadingUI = true;
-            var dialog = new SaveFileDialog
-            {
-                Title = "Zapisz plik",
-                Filter = "CSV (*.csv)|*.csv",
-                DefaultExt = ".xml",
-                FileName = "Mods.csv"
-            };
-            if (dialog.ShowDialog() ?? false) _modsServices.ExportCSVMods(ModsConfigCollection.Union(ModsCollection), dialog.FileName);
-        }
-        catch (Exception ex) { }
-        finally { LoadingUI = false; }
-    });
-
-    public CustomCommand ModDetailCommand => new CustomCommand(p =>
-    {
-        try
-        {
-            LoadingUI = true;
-            new ModDetailWindow(this).ShowDialog();
-        }
-        catch (Exception ex) { }
-        finally { LoadingUI = false; }
-    });
+    }));
     #endregion CustomCommand
 }

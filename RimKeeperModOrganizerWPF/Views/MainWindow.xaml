@@ -126,6 +126,7 @@
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
@@ -203,6 +204,7 @@
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                    <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
