@@ -3,6 +3,7 @@ using KeeperBaseWPFLib.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using RimKeeperModOrganizerLib.Extensions;
+using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
 using RimKeeperModOrganizerWPF.Extensions;
@@ -268,6 +269,34 @@ public class MainViewModel : PropertyModel
             }
             AlertPropertyChanged();
         }
+    }));
+
+    public CustomCommand TestCommand => new CustomCommand(p => UILock(async () =>
+    {
+        var t = ModsConfigCollection.Union(ModsCollection)
+            .Select(s => s.About?.SteamId)
+            .Where(w => !string.IsNullOrEmpty(w))
+            .Take(5)
+            .ToList();
+
+       //SteamHelper.GetModDetails(t[0]);
+        //SteamHelper.GetWorkshopSearchAsync();
+        // string? steamid = SteamHelper.GetSteamId(_settingsService.Settings.PathDirSteam);
+        //await SteamHelper.GetSubscribedFilesAsync(steamid);
+        /*
+                var data = await SteamHelper.GetWorkshopItemsAsync(t);
+                var data_f = data.Response.PublishedFileDetails.Select(s => new 
+                { 
+                    s.Id,
+                    s.Updated,
+                    s.Created,
+                    s.TimeUpdatedUnix,
+                    s.TimeCreatedUnix,
+                    s.Views,
+                    s.Favorited,
+                    s.Subscriptions,
+                }).ToList();
+        */
     }));
     #endregion CustomCommand
 }

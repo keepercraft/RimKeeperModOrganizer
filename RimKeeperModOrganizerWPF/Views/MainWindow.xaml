@@ -53,6 +53,7 @@
             <Button Content="ChangeColor" Command="{Binding ChangeColorCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <Button Content="[RimpyLoad]" Command="{Binding RimpyColorLoadCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <Button Content="[CSV]" Command="{Binding ModsToCSVCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
+            <Button Content="[TEST]" Command="{Binding TestCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <TextBlock Text="{Binding GetModConfigStaticLable}" Padding="5" Background="{Binding GetModConfigStaticColor}" >
                 <TextBlock.ToolTip>
                     <ToolTip>

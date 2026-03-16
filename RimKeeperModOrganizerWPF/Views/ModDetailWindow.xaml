@@ -67,11 +67,11 @@
                     <TextBlock Margin="3" Text="{Binding SelectedMod.About.Author}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="PackageId:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Margin="3" Width="150" Text="Package ID:" FontWeight="Bold" TextAlignment="Right"/>
                     <TextBlock Margin="3" Text="{Binding SelectedMod.About.PackageId}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Margin="3" Width="150" Text="SteamId:" FontWeight="Bold" TextAlignment="Right"/>
+                    <TextBlock Margin="3" Width="150" Text="Steam Published ID:" FontWeight="Bold" TextAlignment="Right"/>
                     <TextBlock Margin="3" Text="{Binding SelectedMod.About.SteamId}"/>
                 </DockPanel>
                 <DockPanel>
