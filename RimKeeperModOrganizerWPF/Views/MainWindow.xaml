@@ -10,7 +10,12 @@
         mc:Ignorable="d"
         xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" 
         xmlns:sdl="http://schemas.sdl.com/xaml"
-        Title="RimKeeper - ModOrganizer" Height="450" Width="800">
+        Title="RimKeeper - ModOrganizer" 
+        Height="{Binding MainWidowSettings.Height, Mode=TwoWay}" 
+        Width="{Binding MainWidowSettings.Width, Mode=TwoWay}"
+        Left="{Binding MainWidowSettings.Left, Mode=TwoWay}"
+        Top="{Binding MainWidowSettings.Top, Mode=TwoWay}"
+        >
     <Window.Resources>
         <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
         <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />

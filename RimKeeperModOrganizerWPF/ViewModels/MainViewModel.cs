@@ -21,6 +21,7 @@ public class MainViewModel : PropertyModel
     public ObservableCollection<ModModel> ModsConfigCollection { get; } = new();
     public ObservableCollection<ModModel> ModsCollection { get; } = new();
     public Dictionary<string, ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
+    public WidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
 
     private ModModel? _selectedMod;
     public ModModel? SelectedMod

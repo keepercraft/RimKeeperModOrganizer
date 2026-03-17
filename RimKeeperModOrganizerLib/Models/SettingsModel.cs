@@ -12,6 +12,8 @@ public class SettingsModel : PropertyModel
     public string PathDirModsLocal { get; set; } = "";  
     public string GameVersion { get; set; } = "";
 
+    public WidowSettings MainWidow { get; set; } = new();
+
     public Dictionary<string, ColumnSettings> ModColumnData { get; set; } = new Dictionary<string, ColumnSettings>()
     {
         { "type", new ColumnSettings("S")  },
@@ -31,4 +33,12 @@ public class ColumnSettings : PropertyModel
     public bool Visible { get; set; } = true;             // true = Visible, false = Collapsed
     public double Width { get; set; } = 100;
     public int DisplayIndex { get; set; } = 0;
+}
+
+public class WidowSettings : PropertyModel
+{
+    public double Width { get; set; } = 500;
+    public double Height { get; set; } = 500;
+    public double Left { get; set; } = 0;
+    public double Top { get; set; } = 0;
 }
