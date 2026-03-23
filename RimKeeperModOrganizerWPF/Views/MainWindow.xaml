@@ -18,17 +18,42 @@
         Top="{Binding MainWidowSettings.Top, Mode=TwoWay}"
         >
     <Window.Resources>
-        <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
-        <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
-        <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
-        <BooleanToVisibilityConverter x:Key="BoolVis"/>
-        <DataTemplate x:Key="MultiDragAdorner">
-            <Border Background="White" BorderBrush="Gray" BorderThickness="1">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Label}"/>
-                </StackPanel>
-            </Border>
-        </DataTemplate>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/DataGridStyles.xaml"/>
+                <ResourceDictionary Source="/Themes/MultiDragStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
+            <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
+            <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
+            <BooleanToVisibilityConverter x:Key="BoolVis"/>
+
+            <ContextMenu x:Key="DataGridContextMenu" 
+                 DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                <MenuItem Header="Open folder" 
+                  Command="{Binding OpenLinkCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                <MenuItem Header="Open browser" 
+                  Command="{Binding OpenLinkCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                <MenuItem Header="Open Steam" 
+                  Command="{Binding OpenSteamLinkCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                <Separator />
+                <MenuItem Header="Change Color" 
+                  Command="{Binding ChangeColorCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                <MenuItem Header="Remove Data" 
+                  Command="{Binding ModDataRemoveCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                <MenuItem Header="Details" 
+                  Command="{Binding ModDetailCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+            </ContextMenu>
+
+        </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -79,6 +104,8 @@
         </ToolBar>
 
         <kdg:AdvancedFilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
+                CellStyle="{StaticResource DataGridSelectionCellStyle}"      
+                ContextMenu="{StaticResource DataGridContextMenu}"                   
                 IsEnabled="{Binding IsUIListEnabled}"          
                 ItemsSource="{Binding ModsCollection}"
                 SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -86,7 +113,7 @@
                 dd:DragDrop.IsDropTarget="True"     
                 dd:DragDrop.DropHandler="{Binding}"      
                 dd:DragDrop.UseDefaultDragAdorner="True"     
-                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragAdorner}"    
+                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragStyle}"    
                 dd:DragDrop.DragMouseAnchorPoint="0, 0" 
                 dd:DragDrop.DragAdornerTranslation="15, 15" 
                 SelectionMode="Extended"
@@ -139,7 +166,7 @@
                 />
                 <!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>-->
             </kdg:AdvancedFilterDataGrid.Columns>
-            <DataGrid.ContextMenu>
+            <!--<kdg:AdvancedFilterDataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -148,7 +175,7 @@
                     <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
-            </DataGrid.ContextMenu>
+            </kdg:AdvancedFilterDataGrid.ContextMenu>-->
             <kdg:AdvancedFilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="{Binding Data.Color}"/>
@@ -183,34 +210,11 @@
                     </Style.Triggers>
                 </Style>
             </kdg:AdvancedFilterDataGrid.RowStyle>
-            <kdg:AdvancedFilterDataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="BorderBrush" Value="Transparent"/>
-                    <Style.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True" />
-                                <Condition Property="Selector.IsSelectionActive" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="#FF3399FF"/>
-                            <Setter Property="Foreground" Value="Black"/>
-                        </MultiTrigger>
-
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True" />
-                                <Condition Property="Selector.IsSelectionActive" Value="False" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"/>
-                        </MultiTrigger>
-                    </Style.Triggers>
-                </Style>
-            </kdg:AdvancedFilterDataGrid.CellStyle>
         </kdg:AdvancedFilterDataGrid>
 
         <kdg:AdvancedFilterDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
+                CellStyle="{StaticResource DataGridSelectionCellStyle}"   
+                ContextMenu="{StaticResource DataGridContextMenu}"                                   
                 IsEnabled="{Binding IsUIListEnabled}"
                 ItemsSource="{Binding ModsConfigCollection}"
                 SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                             
@@ -218,7 +222,7 @@
                 dd:DragDrop.IsDropTarget="True"     
                 dd:DragDrop.DropHandler="{Binding}"      
                 dd:DragDrop.UseDefaultDragAdorner="True"     
-                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragAdorner}"    
+                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragStyle}"    
                 dd:DragDrop.DragMouseAnchorPoint="0, 0" 
                 dd:DragDrop.DragAdornerTranslation="15, 15" 
                 IsReadOnly="True"                    
@@ -240,7 +244,7 @@
                 <kdg:FilterableTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
             </kdg:AdvancedFilterDataGrid.Columns>
-            <kdg:AdvancedFilterDataGrid.ContextMenu>
+            <!--<kdg:AdvancedFilterDataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -249,32 +253,7 @@
                     <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
-            </kdg:AdvancedFilterDataGrid.ContextMenu>
-            <kdg:AdvancedFilterDataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="BorderBrush" Value="Transparent"/>
-                    <Style.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True" />
-                                <Condition Property="Selector.IsSelectionActive" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="#FF3399FF"/>
-                            <Setter Property="Foreground" Value="Black"/>
-                        </MultiTrigger>
-
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="True" />
-                                <Condition Property="Selector.IsSelectionActive" Value="False" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"/>
-                        </MultiTrigger>
-                    </Style.Triggers>
-                </Style>
-            </kdg:AdvancedFilterDataGrid.CellStyle>
+            </kdg:AdvancedFilterDataGrid.ContextMenu>-->
             <kdg:AdvancedFilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="{Binding Data.Color}"/>
