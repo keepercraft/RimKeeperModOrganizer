@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 namespace KeeperDataGrid.Models;
 
-public class ColumnConfig : PropertyModel
+public class ColumnConfig : KeeperPropertyModel
 {
     public string PropertyName { get; set; } = string.Empty;
 
@@ -74,12 +74,14 @@ public static class ColumnConfigExtension
 {
     public static void RebuildColumns(this AdvancedFilterDataGrid grid, IEnumerable<ColumnConfig>? configs = null)
     {
+        var columns = grid.Columns.Where(w => w is FilterableTextColumn).Cast<FilterableTextColumn>().ToList();
         var data_config = configs ?? grid.ColumnsConfig;
         if (data_config == null) return;
-        grid.Columns.Clear();
+        //grid.Columns.Clear();
         foreach (var config in data_config)
         {
-            grid.Columns.Add(config.MakeColumn());
+            var col = columns.FirstOrDefault(f => f.Key == config.PropertyName) ?? config.MakeColumn();
+            config.SetBinding(col);
         }
         grid.Columns.SyncColumnsDisplayIndex();
     }
@@ -87,7 +89,7 @@ public static class ColumnConfigExtension
     public static FilterableTextColumn MakeColumn(this ColumnConfig config, string? key = null, Style? style =  null)
     {
         var model = new FilterableTextColumn(key ?? config.PropertyName, style);
-        config.SetBinding(model);
+        //config.SetBinding(model);
         return model;
     }
 

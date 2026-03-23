@@ -21,6 +21,24 @@ public class FilterableTextColumn : DataGridTextColumn
 
     public string Key { get; set; } = string.Empty;
 
+    public Visibility ShowFilter
+    {
+        get => (Visibility)GetValue(ShowFilterProperty);
+        set => SetValue(ShowFilterProperty, value);
+    }
+    public static readonly DependencyProperty ShowFilterProperty =
+        DependencyProperty.Register(nameof(ShowFilter), typeof(Visibility), typeof(FilterableTextColumn),
+            new PropertyMetadata(Visibility.Visible));
+
+    public int? ColumnIndex
+    {
+        get => (int?)GetValue(ColumnIndexProperty);
+        set => SetValue(ColumnIndexProperty, value);
+    }
+    public static readonly DependencyProperty ColumnIndexProperty =
+        DependencyProperty.Register(nameof(ColumnIndex), typeof(int?), typeof(FilterableTextColumn),
+            new PropertyMetadata(null));
+
     public string FilterValue
     {
         get => (string)GetValue(FilterValueProperty);
@@ -43,22 +61,33 @@ public class FilterableTextColumn : DataGridTextColumn
         }
     }
 
-    public Visibility ShowFilter
-    {
-        get => (Visibility)GetValue(ShowFilterProperty);
-        set => SetValue(ShowFilterProperty, value);
-    }
-    public static readonly DependencyProperty ShowFilterProperty =
-        DependencyProperty.Register(nameof(ShowFilter), typeof(Visibility), typeof(FilterableTextColumn),
-            new PropertyMetadata(Visibility.Visible));
+    // Ukryty obiekt pomocniczy (tylko jeden na kolumnę!)
+    private readonly FrameworkElement _evaluator = new FrameworkElement();
+    private bool _isBindingInitialized = false;
 
-    public int? ColumnIndex
+    // Rejestrujemy właściwość, do której bindowanie będzie wrzucać wynik
+    private static readonly DependencyProperty ValueEvaluatorProperty =
+        DependencyProperty.Register("ValueEvaluator", typeof(object), typeof(FilterableTextColumn));
+
+    public object GetRowValue(object rowItem)
     {
-        get => (int?)GetValue(ColumnIndexProperty);
-        set => SetValue(ColumnIndexProperty, value);
+        // Inicjalizacja bindowania tylko przy pierwszym użyciu
+        if (!_isBindingInitialized)
+        {
+            if (Binding is Binding binding)
+            {
+                // Klonujemy bindowanie, ale NIE ustawiamy Source. 
+                // Będzie ono korzystać z DataContextu obiektu _evaluator.
+                BindingOperations.SetBinding(_evaluator, ValueEvaluatorProperty, binding);
+            }
+            _isBindingInitialized = true;
+        }
+
+        // KLUCZ DO WYDAJNOŚCI: Zmieniamy tylko kontekst danych
+        _evaluator.DataContext = rowItem;
+
+        // Pobieramy gotowy wynik (WPF już go przeliczył przy zmianie DataContextu)
+        return _evaluator.GetValue(ValueEvaluatorProperty);
     }
-    public static readonly DependencyProperty ColumnIndexProperty =
-        DependencyProperty.Register(nameof(ColumnIndex), typeof(int?), typeof(FilterableTextColumn),
-            new PropertyMetadata(null));
 }
 

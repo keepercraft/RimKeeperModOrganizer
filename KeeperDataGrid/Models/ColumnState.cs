@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 namespace KeeperDataGrid.Models;
 
-public class ColumnState : PropertyModel
+public class ColumnState : KeeperPropertyModel
 {
     public event Action? FilterChanged;
 

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 namespace KeeperDataGrid.Models;
 
-public class PropertyModel : INotifyPropertyChanged
+public class KeeperPropertyModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
     public virtual void RaisePropertyChanged() => GetType().GetProperties().All(c => { RaisePropertyChanged(c.Name); return true; });

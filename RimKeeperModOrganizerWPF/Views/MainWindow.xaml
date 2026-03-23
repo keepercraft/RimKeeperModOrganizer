@@ -25,6 +25,7 @@
                 <ResourceDictionary Source="/Themes/MultiDragStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <ex:CustomDragSource x:Key="CustomDragSource"/>
             <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
             <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
             <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
@@ -108,6 +109,7 @@
                 ContextMenu="{StaticResource DataGridContextMenu}"                   
                 IsEnabled="{Binding IsUIListEnabled}"          
                 ItemsSource="{Binding ModsCollection}"
+                ColumnsConfig="{Binding ModsCollectionColumns}"                           
                 SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 dd:DragDrop.IsDragSource="True"
                 dd:DragDrop.IsDropTarget="True"     
@@ -116,6 +118,8 @@
                 dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragStyle}"    
                 dd:DragDrop.DragMouseAnchorPoint="0, 0" 
                 dd:DragDrop.DragAdornerTranslation="15, 15" 
+                dd:DragDrop.DragHandler="{StaticResource CustomDragSource}"                    
+                IsReadOnly="True"
                 SelectionMode="Extended"
                 CanUserAddRows="False"   
                 CanUserSortColumns="True"
@@ -148,10 +152,16 @@
                 />
                 <kdg:FilterableTextColumn IsReadOnly="True"
                     Binding="{Binding About.Author}"
+                    Key="Author"                      
+                    Header="Autor_OLD"
+                />
+                <!--<kdg:FilterableTextColumn IsReadOnly="True"
+                    Binding="{Binding About.Author}"
+                    Key="Author"                      
                     Header="Autor"
                     Width="{Binding Data.ModColumnData[author].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[author].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
-                />
+                />-->
                 <kdg:FilterableTextColumn IsReadOnly="True"
                     Binding="{Binding About.PackageId}"
                     Header="PackageId"
@@ -216,7 +226,7 @@
                 CellStyle="{StaticResource DataGridSelectionCellStyle}"   
                 ContextMenu="{StaticResource DataGridContextMenu}"                                   
                 IsEnabled="{Binding IsUIListEnabled}"
-                ItemsSource="{Binding ModsConfigCollection}"
+                ItemsSource="{Binding ModsConfigCollection}"           
                 SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                             
                 dd:DragDrop.IsDragSource="True"
                 dd:DragDrop.IsDropTarget="True"     
@@ -239,9 +249,9 @@
                 ScrollViewer.VerticalScrollBarVisibility="Visible"   
             >
             <kdg:AdvancedFilterDataGrid.Columns>
-                <kdg:FilterableTextColumn Header="N" Binding="{Binding Position}"/>
-                <kdg:FilterableTextColumn Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
-                <kdg:FilterableTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
+                <!--<kdg:FilterableTextColumn ShowFilter="Collapsed" Width="30" Header="N" Binding="{Binding Position}"/>-->
+                <kdg:FilterableTextColumn ShowFilter="Collapsed" Width="20" Header="" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
+                <kdg:FilterableTextColumn Width="*"  Header="Nazwa" Binding="{Binding Label}" />
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
             </kdg:AdvancedFilterDataGrid.Columns>
             <!--<kdg:AdvancedFilterDataGrid.ContextMenu>

@@ -10,10 +10,10 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using PropertyModel = KeeperDataGrid.Models.PropertyModel;
+using KeeperPropertyModel = KeeperDataGrid.Models.KeeperPropertyModel;
 namespace KeeperDataGridExample.ViewModels;
 
-public class MainViewModel : PropertyModel, IDropTarget
+public class MainViewModel : KeeperPropertyModel, IDropTarget
 {
     public ObservableCollection<ColumnConfig> MyColumns { get; } = new();
 

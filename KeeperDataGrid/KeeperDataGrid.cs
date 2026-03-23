@@ -100,17 +100,14 @@ public class AdvancedFilterDataGrid : DataGrid
         if (newValue is ICollectionView newView) newView.CollectionChanged += View_CollectionChanged;
         //if (newValue is ICollectionView view2) SyncSortArrows(view2.SortDescriptions);
     }
+
     private bool FilterableTextColumnFilter(object obj)
     {
-        if (obj == null) return false;
-        if (base.Columns == null) return true;
+        if (obj == null || base.Columns == null) return true;
         foreach (var col in base.Columns.OfType<FilterableTextColumn>())
         {
             if (string.IsNullOrEmpty(col.FilterValue)) continue;
-            var propertyName = (col.Binding as Binding)?.Path.Path;
-            if (string.IsNullOrEmpty(propertyName)) continue;
-            var propInfo = obj.GetType().GetProperty(propertyName);
-            var value = propInfo?.GetValue(obj)?.ToString();
+            var value = col.GetRowValue(obj)?.ToString();
             if (value == null || !value.Contains(col.FilterValue, StringComparison.OrdinalIgnoreCase))
             {
                 return false;
