@@ -1,0 +1,101 @@
+﻿<Window x:Class="KeeperDataGridExample.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:KeeperDataGridExample.ViewModels"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"      
+        xmlns:kdg="clr-namespace:KeeperDataGrid;assembly=KeeperDataGrid" 
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="900">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <DataTemplate x:Key="MultiDragAdorner">
+            <Border Background="White" BorderBrush="Gray" BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Header="DataGrid">
+                <MenuItem Header="Refresh" Command="{Binding ViewRefreshCommand}"/>
+                <MenuItem Header="ClearSort" Command="{Binding ClearSortCommand}"/>
+                <MenuItem Header="MultiSelections" 
+                    Command="{Binding UpdateSelectionsCommand}"
+                    CommandParameter="{Binding SelectedItems, ElementName=KeeperdataGrid}"
+                />
+            </MenuItem>
+        </Menu>
+
+        <GridSplitter Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Background="Gray"/>
+
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" 
+                 Text="{Binding MutiSelectedItamText, Mode=OneWay}" />
+        <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" 
+                 Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <kdg:AdvancedFilterDataGrid Grid.Row="3" Grid.Column="0" x:Name="KeeperdataGrid"
+                ItemsSource="{Binding ViewItems}"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"                                  
+                ColumnsConfig="{Binding MyColumns}"
+                SelectionMode="Extended"
+                dd:DragDrop.IsDragSource="True"
+                dd:DragDrop.IsDropTarget="True"     
+                dd:DragDrop.DropHandler="{Binding}"      
+                dd:DragDrop.UseDefaultDragAdorner="True"     
+                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragAdorner}"    
+                dd:DragDrop.DragMouseAnchorPoint="0, 0" 
+                dd:DragDrop.DragAdornerTranslation="15, 15"                    
+                CanUserAddRows="False"   
+                CanUserSortColumns="True"
+                AutoGenerateColumns="False"
+                EnableRowVirtualization="True"
+                EnableColumnVirtualization="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+        >
+        </kdg:AdvancedFilterDataGrid>
+
+        <kdg:AdvancedFilterDataGrid Grid.Row="3" Grid.Column="2" x:Name="KeeperdataGrid_Positions"
+                ItemsSource="{Binding ViewPositionsItems}"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"                                  
+                SelectionMode="Extended"
+                dd:DragDrop.IsDragSource="True"
+                dd:DragDrop.IsDropTarget="True"  
+                dd:DragDrop.DropHandler="{Binding}"   
+                dd:DragDrop.UseDefaultDragAdorner="True"     
+                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragAdorner}"    
+                dd:DragDrop.DragMouseAnchorPoint="0, 0" 
+                dd:DragDrop.DragAdornerTranslation="15, 15"                  
+                CanUserAddRows="False"                      
+                CanUserSortColumns="False"          
+                AutoGenerateColumns="False"
+                EnableRowVirtualization="True"
+                EnableColumnVirtualization="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+        >
+            <kdg:AdvancedFilterDataGrid.Columns>
+                <kdg:FilterableTextColumn Header="N" Binding="{Binding Position}" Width="30" ShowFilter="Hidden"/>
+                <kdg:FilterableTextColumn Header="Nazwa" Binding="{Binding Name}" Width="*" />
+            </kdg:AdvancedFilterDataGrid.Columns>
+        </kdg:AdvancedFilterDataGrid>
+    </Grid>
+</Window>

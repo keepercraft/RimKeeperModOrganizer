@@ -1,0 +1,42 @@
+﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+namespace KeeperDataGrid;
+
+public class FilterableTextColumn : DataGridTextColumn
+{
+    public string Key { get; set; } = string.Empty;
+
+    public string FilterValue
+    {
+        get => (string)GetValue(FilterValueProperty);
+        set => SetValue(FilterValueProperty, value);
+    }
+    public static readonly DependencyProperty FilterValueProperty =
+        DependencyProperty.Register(nameof(FilterValue), typeof(string), typeof(FilterableTextColumn),
+            new PropertyMetadata(null, OnFilterChanged));
+
+    private static void OnFilterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is FilterableTextColumn column)
+        {
+            var dataGrid = column.DataGridOwner;
+            if (dataGrid != null && dataGrid.ItemsSource != null)
+            {
+                ICollectionView view = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource);
+                view?.Refresh();
+            }
+        }
+    }
+
+    public Visibility ShowFilter
+    {
+        get => (Visibility)GetValue(ShowFilterProperty);
+        set => SetValue(ShowFilterProperty, value);
+    }
+    public static readonly DependencyProperty ShowFilterProperty =
+        DependencyProperty.Register(nameof(ShowFilter), typeof(Visibility), typeof(FilterableTextColumn),
+            new PropertyMetadata(Visibility.Visible));
+}
+

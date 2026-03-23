@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimKeeperModOrganizerWPF", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeeperBaseLib", "..\..\Keeper\KeeperBaseLib\KeeperBaseLib\KeeperBaseLib.csproj", "{98754AD1-DBAE-A3CB-4D94-DEE5AF257EFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeeperDataGrid", "KeeperDataGrid\KeeperDataGrid.csproj", "{026358B7-86B9-45E4-9E38-5A886A8991C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeeperDataGridExample", "KeeperDataGridExample\KeeperDataGridExample.csproj", "{AF823EBB-6110-4106-B109-A4C2BD434634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,22 @@ Global
 		{98754AD1-DBAE-A3CB-4D94-DEE5AF257EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98754AD1-DBAE-A3CB-4D94-DEE5AF257EFA}.Release|x64.ActiveCfg = Release|Any CPU
 		{98754AD1-DBAE-A3CB-4D94-DEE5AF257EFA}.Release|x64.Build.0 = Release|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Debug|x64.Build.0 = Debug|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Release|x64.ActiveCfg = Release|Any CPU
+		{026358B7-86B9-45E4-9E38-5A886A8991C3}.Release|x64.Build.0 = Release|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Debug|x64.Build.0 = Debug|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Release|x64.ActiveCfg = Release|Any CPU
+		{AF823EBB-6110-4106-B109-A4C2BD434634}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

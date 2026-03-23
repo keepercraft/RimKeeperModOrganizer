@@ -1,5 +1,4 @@
 ﻿using KeeperBaseLib.Model;
-using KeeperBaseWPFLib.MVVM;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using RimKeeperModOrganizerLib.Extensions;
@@ -8,6 +7,7 @@ using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
 using RimKeeperModOrganizerWPF.Extensions;
 using RimKeeperModOrganizerWPF.Views;
+using RimKeeperModOrganizerWPF.Views.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -32,7 +32,7 @@ public class MainViewModel : PropertyModel
             if (_selectedMod != value)
             {
                 _selectedMod = value;
-                RaisePropertyChanged(nameof(SelectedMod));
+                OnPropertyChanged();
             }
         }
     }

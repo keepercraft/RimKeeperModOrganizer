@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Keeper\KeeperBaseLib\KeeperBaseLib\KeeperBaseLib.csproj" />
+    <ProjectReference Include="..\KeeperDataGrid\KeeperDataGrid.csproj" />
     <ProjectReference Include="..\RimKeeperModOrganizerLib\RimKeeperModOrganizerLib.csproj" />
   </ItemGroup>
 

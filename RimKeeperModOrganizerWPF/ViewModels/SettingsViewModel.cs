@@ -1,7 +1,7 @@
 ﻿using KeeperBaseLib.Model;
-using KeeperBaseWPFLib.MVVM;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
+using RimKeeperModOrganizerWPF.Views.Extensions;
 namespace RimKeeperModOrganizerWPF.ViewModels;
 
 public class SettingsViewModel : PropertyModel
