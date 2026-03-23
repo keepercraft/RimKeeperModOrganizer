@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq.Expressions;
 namespace KeeperDataGrid.Extensions;
 
 public static class CollectionExtension
@@ -28,5 +29,12 @@ public static class CollectionExtension
             }
             return true;
         };
+    }
+
+    public static string GetPropertyName<T>(this Expression<Func<T, object>> expr)
+    {
+        if (expr.Body is MemberExpression m) return m.Member.Name;
+        if (expr.Body is UnaryExpression u && u.Operand is MemberExpression um) return um.Member.Name;
+        throw new ArgumentException("Invalid expression");
     }
 }

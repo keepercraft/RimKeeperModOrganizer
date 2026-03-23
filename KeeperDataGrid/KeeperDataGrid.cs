@@ -54,32 +54,40 @@ public class AdvancedFilterDataGrid : DataGrid
         }
         else
         {
-            var customColumn = new FilterableTextColumn
+            if (ColumnsConfig == null)
             {
-                Width = new DataGridLength(1, DataGridLengthUnitType.Star),
-                Key = e.PropertyName,
-                Header = e.PropertyName, // Przepisujemy nazwę właściwości jako nagłówek
-                Binding = new Binding(e.PropertyName) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged },
-                HeaderStyle = this.ColumnHeaderStyle
-            };
-            e.Column = customColumn;
-
-            if (ColumnsConfig != null)
-            {
-                var config = ColumnsConfig.FirstOrDefault(c => c.PropertyName == e.PropertyName);
-                if (config == null)
-                {
-                    config = new ColumnConfig
-                    {
-                        PropertyName = e.PropertyName,
-                        Header = e.Column.Header.ToString(),
-                        Width = e.Column.Width,
-                    };
-                    ColumnsConfig.Add(config);
-                }
-                config.SetBinding(e.Column);
+                var customColumn = new FilterableTextColumn(e.PropertyName, this.ColumnHeaderStyle);
+                e.Column = customColumn;
             }
+            /*
+ {
+
+     var config = ColumnsConfig.FirstOrDefault(c => c.PropertyName == e.PropertyName);
+     if (config == null)
+     {
+         config = new ColumnConfig
+         {
+             PropertyName = e.PropertyName,
+             Header = e.Column.Header.ToString(),
+             Width = e.Column.Width,
+         };
+        // ColumnsConfig.Add(config);
+     }
+    // config.SetBinding(e.Column);
+
         }
+            else
+            {
+
+            }
+                 */
+        }
+    }
+
+    protected override void OnColumnReordered(DataGridColumnEventArgs e)
+    {
+        base.OnColumnReordered(e);
+        Columns.SyncColumnsIndex();
     }
 
     protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
@@ -144,21 +152,10 @@ public class AdvancedFilterDataGrid : DataGrid
     protected override void OnPreviewMouseRightButtonUp(MouseButtonEventArgs e)
     {
         base.OnPreviewMouseRightButtonUp(e);
-        if (IsInTextBox(e.OriginalSource as DependencyObject)) return;
-        var dep = e.OriginalSource as DependencyObject;
-        while (dep != null && dep is not DataGridColumnHeader) dep = VisualTreeHelper.GetParent(dep);
-        if (dep is DataGridColumnHeader header)
-            if (this.ItemsSource is ICollectionView view)
-                view.SortDescriptions.Clear();
-    }
-    private bool IsInTextBox(DependencyObject? obj)
-    {
-        while (obj != null)
-        {
-            if (obj is TextBox) return true;
-            obj = VisualTreeHelper.GetParent(obj);
-        }
-        return false;
+        if (e.OriginalSource is DependencyObject dep && !dep.IsIn<TextBox>())
+            if(dep.FindParent<DataGridColumnHeader>()!= null)
+                if (this.ItemsSource is ICollectionView view)
+                    view.SortDescriptions.Clear();
     }
 
     #region ColumnsConfig
@@ -172,27 +169,21 @@ public class AdvancedFilterDataGrid : DataGrid
                 typeof(ObservableCollection<ColumnConfig>),
                 typeof(AdvancedFilterDataGrid),
                 new PropertyMetadata(null, OnColumnsConfigChanged));
-
     private static void OnColumnsConfigChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var grid = d as AdvancedFilterDataGrid;
-        if (grid == null || e.NewValue == null) return;
-        var configList = e.NewValue as ObservableCollection<ColumnConfig>;
-        if (configList == null) return;
-
-        grid.Columns.Clear();
-        foreach (var config in configList)
+        if (d is AdvancedFilterDataGrid grid)
         {
-            var customColumn = new FilterableTextColumn
-            {
-                Key = config.PropertyName,
-                Width = config.Width,
-                Header = config.Header,
-                Binding = new Binding(config.PropertyName) { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged },
-            };
-            grid.Columns.Add(customColumn);
-            config.SetBinding(customColumn);
+            if (e.OldValue is INotifyCollectionChanged oldCollection) oldCollection.CollectionChanged -= grid.OnColumnsCollectionChanged;
+            if (e.NewValue is INotifyCollectionChanged newCollection) newCollection.CollectionChanged += grid.OnColumnsCollectionChanged;          
+            //if (e.NewValue == null) return;
+            //var configList = e.NewValue as ObservableCollection<ColumnConfig>;
+            //if (configList == null) return;
+            grid.RebuildColumns();
         }
+    }
+    private void OnColumnsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.RebuildColumns();
     }
     #endregion
 

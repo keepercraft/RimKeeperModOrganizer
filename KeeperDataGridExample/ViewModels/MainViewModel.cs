@@ -24,11 +24,10 @@ public class MainViewModel : PropertyModel, IDropTarget
         ViewPositionsItems = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ViewPositionsItems.CombineFilters(RightViewFilter);
         //ViewPositionsItems.SortDescriptions.Add(new SortDescription(nameof(TableModel.Position), ListSortDirection.Ascending));
-
-        MyColumns.Add(new ColumnConfig() { PropertyName = "Position", Header = "P", Width = new DataGridLength(30), IsVisible=true, ShowFilter=false });
-        MyColumns.Add(new ColumnConfig() { PropertyName="Name", Header = "Nazwa", Width = new DataGridLength(150), IsVisible=true });
-        MyColumns.Add(new ColumnConfig() { PropertyName= "Age", Header = "Wiek", Width = new DataGridLength(100), IsVisible=true });
-        MyColumns.Add(new ColumnConfig() { PropertyName= "Country", Header = "Kraj", Width = new DataGridLength(1, DataGridLengthUnitType.Star), IsVisible = true });
+        MyColumns.Add(new ColumnConfig() { PropertyName = nameof(TableModel.Position), Header = "P", Width = new DataGridLength(30), IsVisible=true, ShowFilter=false, ColumnIndex=1 });
+        MyColumns.Add(new ColumnConfig() { PropertyName = nameof(TableModel.Name), Header = "Nazwa", Width = new DataGridLength(150), IsVisible=true });
+        MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Age), Header = "Wiek", Width = new DataGridLength(100), IsVisible=true });
+        MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Country), Header = "Kraj", Width = new DataGridLength(1, DataGridLengthUnitType.Star), IsVisible = true });
 
         Task.Run(() =>
         {
