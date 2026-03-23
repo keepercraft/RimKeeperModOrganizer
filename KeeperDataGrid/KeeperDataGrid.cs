@@ -119,7 +119,7 @@ public class AdvancedFilterDataGrid : DataGrid
         return true;
     }
 
-    private void View_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void View_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.Action == NotifyCollectionChangedAction.Reset)
         {

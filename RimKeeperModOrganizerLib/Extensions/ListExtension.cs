@@ -21,7 +21,7 @@ public static class ListExtension
         }
     }
 
-    public static void ModListValidation(this IList<ModModel> modlist)
+    public static void ModListValidation(this IEnumerable<ModModel> modlist)
     {
         int index = 0;
         foreach (var mod in modlist)

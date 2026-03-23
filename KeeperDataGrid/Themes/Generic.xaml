@@ -25,6 +25,7 @@
                                             UpdateSourceTrigger=PropertyChanged}"
                                          Text="{Binding Column.FilterValue, 
                                             RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, 
+                                            Delay=500,
                                             UpdateSourceTrigger=PropertyChanged}"
                                          Height="22" 
                                          Margin="0,2,0,2"

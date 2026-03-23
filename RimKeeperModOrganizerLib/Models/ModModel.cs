@@ -13,7 +13,7 @@ public class ModModel : PropertyModel
 
     public string? ThumbnailPath { get; set; }
 
-    public int Position { get; set; }
+    public int? Position { get; set; }
     public bool Selected { get; set; }
 
     public List<string> Alert { get; } = new List<string>();

@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using KeeperDataGrid.Models;
+using RimKeeperModOrganizerLib.Models;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace RimKeeperModOrganizerWPF.Extensions;
 
@@ -28,5 +31,28 @@ public static class ObservableCollectionExtensions
             if (oldIndex != i)
                 collection.Move(oldIndex, i);
         }
+    }
+
+    public static void InsertInOrder<T, TKey>(this IList<T> collection, T newItem, Func<T, TKey?> keySelector) where TKey : struct, IComparable
+    {
+        int indexToInsert = collection.Count;
+        TKey? newKey = keySelector(newItem);
+
+        // Jeśli nowy element ma pozycję null, ląduje na końcu (domyślny indexToInsert)
+        if (newKey.HasValue)
+        {
+            indexToInsert = collection.Count; // Reset na wypadek, gdyby wszystkie obecne miały wartości
+
+            for (int i = 0; i < collection.Count; i++)
+            {
+                TKey? currentKey = keySelector(collection[i]);
+                if (!currentKey.HasValue || currentKey.Value.CompareTo(newKey.Value) > 0)
+                {
+                    indexToInsert = i;
+                    break;
+                }
+            }
+        }
+        collection.Insert(indexToInsert, newItem);
     }
 }

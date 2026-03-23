@@ -29,6 +29,9 @@ public class MainViewModel : PropertyModel, IDropTarget
         MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Age), Header = "Wiek", Width = new DataGridLength(100), IsVisible=true });
         MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Country), Header = "Kraj", Width = new DataGridLength(1, DataGridLengthUnitType.Star), IsVisible = true });
 
+
+
+
         Task.Run(() =>
         {
             int i = 0;

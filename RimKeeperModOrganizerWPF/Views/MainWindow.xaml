@@ -9,6 +9,7 @@
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"      
         mc:Ignorable="d"
         xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" 
+        xmlns:kdg="clr-namespace:KeeperDataGrid;assembly=KeeperDataGrid" 
         xmlns:sdl="http://schemas.sdl.com/xaml"
         Title="RimKeeper - ModOrganizer" 
         Height="{Binding MainWidowSettings.Height, Mode=TwoWay}" 
@@ -21,6 +22,13 @@
         <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
         <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
         <BooleanToVisibilityConverter x:Key="BoolVis"/>
+        <DataTemplate x:Key="MultiDragAdorner">
+            <Border Background="White" BorderBrush="Gray" BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Label}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -70,62 +78,67 @@
             </TextBlock>
         </ToolBar>
 
-        <fdg:FilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
-                  IsEnabled="{Binding IsUIListEnabled}"          
-                  ItemsSource="{Binding ModsCollection}"
-                  SelectedItem="{Binding SelectedMod, Mode=TwoWay}"
-                           
-                  MouseDoubleClick="ModsGrid_MouseDoubleClick"      
-                            
-                  dd:DragDrop.IsDragSource="True"
-                  dd:DragDrop.IsDropTarget="True"
-                  SelectionMode="Extended"
-                  AutoGenerateColumns="False"
-                  ScrollViewer.HorizontalScrollBarVisibility="Visible" 
-                  ScrollViewer.VerticalScrollBarVisibility="Visible"          
-                  EnableRowVirtualization="True"
-                  EnableColumnVirtualization="True"
-                  VirtualizingPanel.IsVirtualizing="True"
-                  VirtualizingPanel.VirtualizationMode="Recycling">
-            <fdg:FilterDataGrid.Columns>
-                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="False"
+        <kdg:AdvancedFilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
+                IsEnabled="{Binding IsUIListEnabled}"          
+                ItemsSource="{Binding ModsCollection}"
+                SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                dd:DragDrop.IsDragSource="True"
+                dd:DragDrop.IsDropTarget="True"     
+                dd:DragDrop.DropHandler="{Binding}"      
+                dd:DragDrop.UseDefaultDragAdorner="True"     
+                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragAdorner}"    
+                dd:DragDrop.DragMouseAnchorPoint="0, 0" 
+                dd:DragDrop.DragAdornerTranslation="15, 15" 
+                SelectionMode="Extended"
+                CanUserAddRows="False"   
+                CanUserSortColumns="True"
+                AutoGenerateColumns="False"
+                EnableRowVirtualization="True"
+                EnableColumnVirtualization="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+                ScrollViewer.HorizontalScrollBarVisibility="Visible" 
+                ScrollViewer.VerticalScrollBarVisibility="Visible"                       
+            >
+            <kdg:AdvancedFilterDataGrid.Columns>
+                <kdg:FilterableTextColumn IsReadOnly="False"
                     Binding="{Binding Local, Mode=OneWay, Converter={StaticResource BoolToSLRConverter}}" 
                     Header="S"                  
                     Width="{Binding Data.ModColumnData[type].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[type].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
                 />
-                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="False"
+                <kdg:FilterableTextColumn IsReadOnly="False"
                     Binding="{Binding Data.Group, Mode=OneWay}" 
                     Header="Grupa"
                     Width="{Binding Data.ModColumnData[group].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[group].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
                 />
-                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"               
+                <kdg:FilterableTextColumn IsReadOnly="True"               
                     Binding="{Binding Label}" 
                     Header="Nazwa"    
                     Width="{Binding Data.ModColumnData[label].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[label].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"
                 />
-                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"
+                <kdg:FilterableTextColumn IsReadOnly="True"
                     Binding="{Binding About.Author}"
                     Header="Autor"
                     Width="{Binding Data.ModColumnData[author].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[author].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
                 />
-                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"
+                <kdg:FilterableTextColumn IsReadOnly="True"
                     Binding="{Binding About.PackageId}"
                     Header="PackageId"
                     Width="{Binding Data.ModColumnData[packageId].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[packageId].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
                 />
-                <fdg:DataGridTextColumn IsColumnFiltered="True" IsReadOnly="True"
+                <kdg:FilterableTextColumn IsReadOnly="True"
                     Binding="{Binding Versions}"
                     Header="Varsion"
                     Width="{Binding Data.ModColumnData[versions].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[versions].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
                 />
                 <!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>-->
-            </fdg:FilterDataGrid.Columns>
+            </kdg:AdvancedFilterDataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -136,7 +149,7 @@
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
-            <fdg:FilterDataGrid.RowStyle>
+            <kdg:AdvancedFilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="{Binding Data.Color}"/>
                     <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
@@ -169,42 +182,65 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </fdg:FilterDataGrid.RowStyle>
-            <fdg:FilterDataGrid.CellStyle>
+            </kdg:AdvancedFilterDataGrid.RowStyle>
+            <kdg:AdvancedFilterDataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
                     <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="Selector.IsSelectionActive" Value="True" />
+                            </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="#FF3399FF"/>
                             <Setter Property="Foreground" Value="Black"/>
-                        </Trigger>
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="Selector.IsSelectionActive" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"/>
+                        </MultiTrigger>
                     </Style.Triggers>
                 </Style>
-            </fdg:FilterDataGrid.CellStyle>
-        </fdg:FilterDataGrid>
+            </kdg:AdvancedFilterDataGrid.CellStyle>
+        </kdg:AdvancedFilterDataGrid>
 
-        <DataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
+        <kdg:AdvancedFilterDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
                 IsEnabled="{Binding IsUIListEnabled}"
                 ItemsSource="{Binding ModsConfigCollection}"
-                SelectedItem="{Binding SelectedMod, Mode=TwoWay}"                             
+                SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                             
                 dd:DragDrop.IsDragSource="True"
-                dd:DragDrop.IsDropTarget="True"
+                dd:DragDrop.IsDropTarget="True"     
+                dd:DragDrop.DropHandler="{Binding}"      
+                dd:DragDrop.UseDefaultDragAdorner="True"     
+                dd:DragDrop.DragAdornerTemplate="{StaticResource MultiDragAdorner}"    
+                dd:DragDrop.DragMouseAnchorPoint="0, 0" 
+                dd:DragDrop.DragAdornerTranslation="15, 15" 
+                IsReadOnly="True"                    
                 SelectionMode="Extended"
+                CanUserAddRows="False"   
+                CanUserReorderColumns="False"                    
                 CanUserSortColumns="False"
                 AutoGenerateColumns="False"
                 EnableRowVirtualization="True"
                 EnableColumnVirtualization="True"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.VirtualizationMode="Recycling"
-                IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="N" Binding="{Binding Position}"/>
-                <DataGridTextColumn Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
+                ScrollViewer.HorizontalScrollBarVisibility="Visible" 
+                ScrollViewer.VerticalScrollBarVisibility="Visible"   
+            >
+            <kdg:AdvancedFilterDataGrid.Columns>
+                <kdg:FilterableTextColumn Header="N" Binding="{Binding Position}"/>
+                <kdg:FilterableTextColumn Header="S" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
+                <kdg:FilterableTextColumn Header="Nazwa" Binding="{Binding Label}" Width="*"/>
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
-            </DataGrid.Columns>
-            <DataGrid.ContextMenu>
+            </kdg:AdvancedFilterDataGrid.Columns>
+            <kdg:AdvancedFilterDataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -213,20 +249,33 @@
                     <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
-            </DataGrid.ContextMenu>
-            <DataGrid.CellStyle>
+            </kdg:AdvancedFilterDataGrid.ContextMenu>
+            <kdg:AdvancedFilterDataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="Background" Value="Transparent"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
                     <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="Selector.IsSelectionActive" Value="True" />
+                            </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="#FF3399FF"/>
                             <Setter Property="Foreground" Value="Black"/>
-                        </Trigger>
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="Selector.IsSelectionActive" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"/>
+                        </MultiTrigger>
                     </Style.Triggers>
                 </Style>
-            </DataGrid.CellStyle>
-            <DataGrid.RowStyle>
+            </kdg:AdvancedFilterDataGrid.CellStyle>
+            <kdg:AdvancedFilterDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="Background" Value="{Binding Data.Color}"/>
                     <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
@@ -263,8 +312,8 @@
 
                     </Style.Triggers>
                 </Style>
-            </DataGrid.RowStyle>
-        </DataGrid>
+            </kdg:AdvancedFilterDataGrid.RowStyle>
+        </kdg:AdvancedFilterDataGrid>
 
         <ScrollViewer Grid.Column="0" Grid.Row="1" Margin="10" VerticalScrollBarVisibility="Auto">
             <StackPanel>

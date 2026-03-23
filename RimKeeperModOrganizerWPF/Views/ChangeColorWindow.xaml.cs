@@ -80,7 +80,7 @@ public partial class ChangeColorWindow : Window
                 vm.ModColors[index] = colorNew;
                 ModColorListSelected = colorNew;
             }
-            foreach (var item in vm.ModsConfigCollection.Union(vm.ModsCollection).Where(w => w.Data != null && w.Data?.Color == colorOld))
+            foreach (var item in vm.Items.Where(w => w.Data != null && w.Data?.Color == colorOld))
             {
                 item.Data.Color = colorNew;
             }
@@ -99,7 +99,7 @@ public partial class ChangeColorWindow : Window
                 ModColorListSelected = null;
                 BtnList.IsEnabled = false;
             }
-            foreach (var item in vm.ModsConfigCollection.Union(vm.ModsCollection).Where(w => w.Data != null && w.Data?.Color == colorOld))
+            foreach (var item in vm.Items.Where(w => w.Data != null && w.Data?.Color == colorOld))
             {
                 item.Data.Color = null;
             }

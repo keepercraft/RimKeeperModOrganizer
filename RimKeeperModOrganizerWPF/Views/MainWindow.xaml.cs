@@ -101,12 +101,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ModsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-        ModsGrid.SavePreset();
-        var a = GetGlobalFilterList(ModsGrid);
-    }
-
     public static List<FilterCommon>? GetGlobalFilterList(object instance)
     {
         if (instance == null) return null;
