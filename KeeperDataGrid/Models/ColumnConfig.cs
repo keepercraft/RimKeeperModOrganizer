@@ -4,7 +4,6 @@ namespace KeeperDataGrid.Models;
 
 public class ColumnConfig : PropertyModel
 {
-
     public string PropertyName { get; set; } = string.Empty;
     public string? Header { get; set; }
     
@@ -34,6 +33,13 @@ public class ColumnConfig : PropertyModel
     {
         get => _showFilter;
         set { _showFilter = value; OnPropertyChanged(); }
+    }
+
+    private int? _columnIndex;
+    public int? ColumnIndex
+    {
+        get => _columnIndex;
+        set { _columnIndex = value; OnPropertyChanged(); }
     }
 }
 

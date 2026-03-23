@@ -88,12 +88,9 @@ public class AdvancedFilterDataGrid : DataGrid
         var view = CollectionViewSource.GetDefaultView(newValue);
         view.CombineFilters(FilterableTextColumnFilter);
 
-        if (oldValue is ICollectionView oldView)
-            oldView.CollectionChanged -= View_CollectionChanged;
-        if (newValue is ICollectionView newView)
-            newView.CollectionChanged += View_CollectionChanged;
-        //if (newValue is ICollectionView view2)
-            //SyncSortArrows(view2.SortDescriptions);
+        if (oldValue is ICollectionView oldView) oldView.CollectionChanged -= View_CollectionChanged;
+        if (newValue is ICollectionView newView) newView.CollectionChanged += View_CollectionChanged;
+        //if (newValue is ICollectionView view2) SyncSortArrows(view2.SortDescriptions);
     }
     private bool FilterableTextColumnFilter(object obj)
     {
@@ -126,15 +123,11 @@ public class AdvancedFilterDataGrid : DataGrid
     }
     private void SyncSortArrows(SortDescriptionCollection sortDescriptions)
     {
-        // Czyścimy wszystkie strzałki (UI)
         foreach (var col in this.Columns)
         {
             col.SortDirection = null;
         }
-
         if (sortDescriptions == null || sortDescriptions.Count == 0) return;
-
-        // Ustawiamy strzałki na podstawie opisów
         foreach (SortDescription sd in sortDescriptions)
         {
             var column = this.Columns.FirstOrDefault(c =>
@@ -146,6 +139,26 @@ public class AdvancedFilterDataGrid : DataGrid
                 column.SortDirection = sd.Direction;
             }
         }
+    }
+
+    protected override void OnPreviewMouseRightButtonUp(MouseButtonEventArgs e)
+    {
+        base.OnPreviewMouseRightButtonUp(e);
+        if (IsInTextBox(e.OriginalSource as DependencyObject)) return;
+        var dep = e.OriginalSource as DependencyObject;
+        while (dep != null && dep is not DataGridColumnHeader) dep = VisualTreeHelper.GetParent(dep);
+        if (dep is DataGridColumnHeader header)
+            if (this.ItemsSource is ICollectionView view)
+                view.SortDescriptions.Clear();
+    }
+    private bool IsInTextBox(DependencyObject? obj)
+    {
+        while (obj != null)
+        {
+            if (obj is TextBox) return true;
+            obj = VisualTreeHelper.GetParent(obj);
+        }
+        return false;
     }
 
     #region ColumnsConfig
@@ -183,24 +196,4 @@ public class AdvancedFilterDataGrid : DataGrid
     }
     #endregion
 
-
-    protected override void OnPreviewMouseRightButtonUp(MouseButtonEventArgs e)
-    {
-        base.OnPreviewMouseRightButtonUp(e);
-        if (IsInTextBox(e.OriginalSource as DependencyObject)) return;
-        var dep = e.OriginalSource as DependencyObject;
-        while (dep != null && dep is not DataGridColumnHeader) dep = VisualTreeHelper.GetParent(dep);
-        if (dep is DataGridColumnHeader header)
-            if (this.ItemsSource is ICollectionView view)
-                view.SortDescriptions.Clear();
-    }
-    private bool IsInTextBox(DependencyObject? obj)
-    {
-        while (obj != null)
-        {
-            if (obj is TextBox) return true;
-            obj = VisualTreeHelper.GetParent(obj);
-        }
-        return false;
-    }
 }
