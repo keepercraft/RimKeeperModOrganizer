@@ -73,7 +73,7 @@
         >
         </kdg:AdvancedFilterDataGrid>
 
-        <kdg:AdvancedFilterDataGrid Grid.Row="3" Grid.Column="2" x:Name="KeeperdataGrid_Positions"
+        <!--<kdg:AdvancedFilterDataGrid Grid.Row="3" Grid.Column="2" x:Name="KeeperdataGrid_Positions"
                 ItemsSource="{Binding ViewPositionsItems}"
                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"                                  
                 SelectionMode="Extended"
@@ -97,6 +97,6 @@
                 <kdg:FilterableTextColumn Header="N" Binding="{Binding Position}" Width="30" ShowFilter="Hidden"/>
                 <kdg:FilterableTextColumn Header="Nazwa" Binding="{Binding Name}" Width="*" />
             </kdg:AdvancedFilterDataGrid.Columns>
-        </kdg:AdvancedFilterDataGrid>
+        </kdg:AdvancedFilterDataGrid>-->
     </Grid>
 </Window>

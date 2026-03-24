@@ -8,7 +8,6 @@
         xmlns:ex="clr-namespace:RimKeeperModOrganizerWPF.Views.Extensions"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"      
         mc:Ignorable="d"
-        xmlns:fdg="clr-namespace:FilterDataGrid;assembly=FilterDataGrid" 
         xmlns:kdg="clr-namespace:KeeperDataGrid;assembly=KeeperDataGrid" 
         xmlns:sdl="http://schemas.sdl.com/xaml"
         Title="RimKeeper - ModOrganizer" 
@@ -132,50 +131,84 @@
                 ScrollViewer.VerticalScrollBarVisibility="Visible"                       
             >
             <kdg:AdvancedFilterDataGrid.Columns>
-                <kdg:FilterableTextColumn IsReadOnly="False"
+                <kdg:FilterableTextColumn
                     Binding="{Binding Local, Mode=OneWay, Converter={StaticResource BoolToSLRConverter}}" 
-                    Header="S"                  
+                    Key="type"
+                    Header=""  
+                    Width="20"
+                />
+                <kdg:FilterableTextColumn              
+                    Binding="{Binding Label}" 
+                    Key="label"
+                    Header="Label"    
+                    Width="*"
+                />
+                <kdg:FilterableTextColumn
+                    Binding="{Binding About.Author}"
+                    Key="author"                      
+                    Header="Author"
+                />
+                <kdg:FilterableTextColumn
+                    Binding="{Binding Data.Group, Mode=OneWay}" 
+                    Key="group"                      
+                    Header="Group"                  
+                />
+                <kdg:FilterableTextColumn
+                    Binding="{Binding About.PackageId}" 
+                    Key="packageid"                      
+                    Header="PackageId"                  
+                />
+                <kdg:FilterableTextColumn
+                    Binding="{Binding Versions}" 
+                    Key="versions"                      
+                    Header="Versions"                  
+                />
+            </kdg:AdvancedFilterDataGrid.Columns>
+            <!--<kdg:AdvancedFilterDataGrid.Columns>
+                <kdg:FilterableTextColumn
+                    Binding="{Binding Local, Mode=OneWay, Converter={StaticResource BoolToSLRConverter}}" 
+                    Header=""                  
                     Width="{Binding Data.ModColumnData[type].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[type].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
                 />
-                <kdg:FilterableTextColumn IsReadOnly="False"
+                <kdg:FilterableTextColumn
                     Binding="{Binding Data.Group, Mode=OneWay}" 
                     Header="Grupa"
                     Width="{Binding Data.ModColumnData[group].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[group].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
                 />
-                <kdg:FilterableTextColumn IsReadOnly="True"               
+                <kdg:FilterableTextColumn              
                     Binding="{Binding Label}" 
                     Header="Nazwa"    
                     Width="{Binding Data.ModColumnData[label].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[label].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"
                 />
-                <kdg:FilterableTextColumn IsReadOnly="True"
+                <kdg:FilterableTextColumn
                     Binding="{Binding About.Author}"
                     Key="Author"                      
                     Header="Autor_OLD"
                 />
-                <!--<kdg:FilterableTextColumn IsReadOnly="True"
+                --><!--<kdg:FilterableTextColumn IsReadOnly="True"
                     Binding="{Binding About.Author}"
                     Key="Author"                      
                     Header="Autor"
                     Width="{Binding Data.ModColumnData[author].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[author].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
-                />-->
-                <kdg:FilterableTextColumn IsReadOnly="True"
+                />--><!--
+                <kdg:FilterableTextColumn 
                     Binding="{Binding About.PackageId}"
                     Header="PackageId"
                     Width="{Binding Data.ModColumnData[packageId].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[packageId].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
                 />
-                <kdg:FilterableTextColumn IsReadOnly="True"
+                <kdg:FilterableTextColumn 
                     Binding="{Binding Versions}"
                     Header="Varsion"
                     Width="{Binding Data.ModColumnData[versions].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding Data.ModColumnData[versions].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
                 />
-                <!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>-->
-            </kdg:AdvancedFilterDataGrid.Columns>
+                --><!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>--><!--
+            </kdg:AdvancedFilterDataGrid.Columns>-->
             <!--<kdg:AdvancedFilterDataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                     <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />

@@ -58,49 +58,49 @@
                             <GroupBox Header="Nazwa">
                                 <DockPanel>
                                     <Label Content="Visable:" />
-                                    <CheckBox IsChecked="{Binding Data.ModColumnData[label].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <CheckBox IsChecked="{Binding ModColumnData[label].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
                                     <Label Content="Width:" />
-                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[label].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBox Width="100" Text="{Binding ModColumnData[label].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
                                 </DockPanel>
                             </GroupBox>
                             <GroupBox Header="Grupa">
                                 <DockPanel>
                                     <Label Content="Visable:" />
-                                    <CheckBox IsChecked="{Binding Data.ModColumnData[group].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <CheckBox IsChecked="{Binding ModColumnData[group].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
                                     <Label Content="Width:" />
-                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[group].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBox Width="100" Text="{Binding ModColumnData[group].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
                                 </DockPanel>
                             </GroupBox>
                             <GroupBox Header="Autor">
                                 <DockPanel>
                                     <Label Content="Visable:" />
-                                    <CheckBox IsChecked="{Binding Data.ModColumnData[author].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <CheckBox IsChecked="{Binding ModColumnData[author].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
                                     <Label Content="Width:" />
-                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[author].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBox Width="100" Text="{Binding ModColumnData[author].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
                                 </DockPanel>
                             </GroupBox>
                             <GroupBox Header="PackageId">
                                 <DockPanel>
                                     <Label Content="Visable:" />
-                                    <CheckBox IsChecked="{Binding Data.ModColumnData[packageId].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <CheckBox IsChecked="{Binding ModColumnData[packageid].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
                                     <Label Content="Width:" />
-                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[packageId].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBox Width="100" Text="{Binding ModColumnData[packageid].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
                                 </DockPanel>
                             </GroupBox>
                             <GroupBox Header="Varsion">
                                 <DockPanel>
                                     <Label Content="Visable:" />
-                                    <CheckBox IsChecked="{Binding Data.ModColumnData[versions].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <CheckBox IsChecked="{Binding ModColumnData[versions].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
                                     <Label Content="Width:" />
-                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[versions].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBox Width="100" Text="{Binding ModColumnData[versions].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
                                 </DockPanel>
                             </GroupBox>
                             <GroupBox Header="Typ">
                                 <DockPanel>
                                     <Label Content="Visable:" />
-                                    <CheckBox IsChecked="{Binding Data.ModColumnData[type].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
+                                    <CheckBox IsChecked="{Binding ModColumnData[type].Visible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  />
                                     <Label Content="Width:" />
-                                    <TextBox Width="100" Text="{Binding Data.ModColumnData[type].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
+                                    <TextBox Width="100" Text="{Binding ModColumnData[type].Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" HorizontalAlignment="Left" />
                                 </DockPanel>
                             </GroupBox>
                         </StackPanel>

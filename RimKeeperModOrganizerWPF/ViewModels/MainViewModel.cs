@@ -40,7 +40,7 @@ public class MainViewModel : PropertyModel, IDropTarget
         }
     }
 
-    public Dictionary<string, ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
+    public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public WidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
 
     private readonly ModsServices _modsServices;
@@ -50,8 +50,7 @@ public class MainViewModel : PropertyModel, IDropTarget
         _modsServices = modsServices;
         _settingsService = SettingsService;
 
-        ModsCollectionColumns.Add(new ColumnConfig() { PropertyName = nameof(ModModel.About.Author), Header = "Autor_NEW", Width = new DataGridLength(300), IsVisible = true, ShowFilter = true, ColumnIndex = 1 });
-
+        ModColumnData.BindToSettings(ModsCollectionColumns);
         ModsCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsCollection.CombineFilters(LeftViewFilter);
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
@@ -300,6 +299,8 @@ public class MainViewModel : PropertyModel, IDropTarget
 
     public CustomCommand TestCommand => new CustomCommand(p => UILock(async () =>
     {
+        var test_list = ModsCollectionColumns;
+
         var t = Items
             .Select(s => s.About?.SteamId)
             .Where(w => !string.IsNullOrEmpty(w))

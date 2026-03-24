@@ -16,8 +16,14 @@ public class ColumnConfig : KeeperPropertyModel
         set { _header = value; OnPropertyChanged(); }
     }
 
-    private DataGridLength _width = new DataGridLength(1, DataGridLengthUnitType.Star);
-    public DataGridLength Width
+    //private DataGridLength _width = new DataGridLength(1, DataGridLengthUnitType.Star);
+    //public DataGridLength Width
+    //{
+    //    get => _width;
+    //    set { _width = value; OnPropertyChanged(); }
+    //}
+    private string? _width;
+    public string? Width
     {
         get => _width;
         set { _width = value; OnPropertyChanged(); }
@@ -50,24 +56,6 @@ public class ColumnConfig : KeeperPropertyModel
         get => _columnIndex;
         set { _columnIndex = value; OnPropertyChanged(); }
     }
-
-    public static ColumnConfig Create<T>(
-        Expression<Func<T, object?>> expr,
-        string? header = null,
-        DataGridLength? width = null,
-        int? columnIndex = null,
-        bool isVisible = true)
-    {
-        string key = expr.GetPropertyName();
-        return new ColumnConfig
-        {
-            PropertyName = key,
-            Header = header??key,
-            Width = width??new DataGridLength(1, DataGridLengthUnitType.Star),
-            ColumnIndex = columnIndex,
-            IsVisible = isVisible
-        };
-    }
 }
 
 public static class ColumnConfigExtension
@@ -78,11 +66,24 @@ public static class ColumnConfigExtension
         var data_config = configs ?? grid.ColumnsConfig;
         if (data_config == null) return;
         //grid.Columns.Clear();
-        foreach (var config in data_config)
+        foreach (var config in data_config) //ADD-EDIT
         {
-            var col = columns.FirstOrDefault(f => f.Key == config.PropertyName) ?? config.MakeColumn();
+            var col = columns.FirstOrDefault(f => f.Key == config.PropertyName);
+            if (col == null)
+            {
+                col = config.MakeColumn();
+                grid.Columns.Add(col);
+            }
             config.SetBinding(col);
         }
+        //if(!grid.AutoGenerateColumns)
+        //    foreach (var col in columns) //REMOVE
+        //    {
+        //        if(!data_config.Any(f => f.PropertyName == col.Key))
+        //        {
+        //            grid.Columns.Remove(col);
+        //        }
+        //    }
         grid.Columns.SyncColumnsDisplayIndex();
     }
 
@@ -102,18 +103,40 @@ public static class ColumnConfigExtension
         };
         BindingOperations.SetBinding(column, DataGridColumn.HeaderProperty, headerBinding);
 
+        //Binding widthBinding = new Binding(nameof(ColumnConfig.Width))
+        //{
+        //    Source = config,
+        //    Mode = BindingMode.TwoWay,
+        //    //Converter = new DataGridLengthToStringConverter(),
+        //    //UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+        //    //FallbackValue = new DataGridLength(1, DataGridLengthUnitType.Star),
+        //    //TargetNullValue = new DataGridLength(1, DataGridLengthUnitType.Star),
+        //};
+        //BindingOperations.SetBinding(column, DataGridColumn.WidthProperty, widthBinding);
+        //Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+        //{
+        //    Binding widthBinding = new Binding(nameof(ColumnConfig.Width))
+        //    {
+        //        Source = config,
+        //        Mode = BindingMode.TwoWay,
+        //        Converter = new DataGridLengthToStringConverter(),
+        //        // Ważne: usuń UpdateSourceTrigger.PropertyChanged, jeśli nadal mrozi UI
+        //        // Domyślny trigger dla Width jest bezpieczniejszy
+        //    };
+        //    BindingOperations.SetBinding(column, DataGridColumn.WidthProperty, widthBinding);
+        //}), DispatcherPriority.Loaded);
         Binding widthBinding = new Binding(nameof(ColumnConfig.Width))
         {
             Source = config,
             Mode = BindingMode.TwoWay,
         };
-        BindingOperations.SetBinding(column, DataGridColumn.WidthProperty, widthBinding);
+        BindingOperations.SetBinding(column, FilterableTextColumn.WidthTextProperty, widthBinding);
 
         Binding visBinding = new Binding(nameof(ColumnConfig.IsVisible))
         {
             Source = config,
             Mode = BindingMode.TwoWay,
-            Converter = new BooleanToVisibilityConverter()
+            Converter = new BooleanToVisibilityConverter(),
         };
         BindingOperations.SetBinding(column, DataGridColumn.VisibilityProperty, visBinding);
 

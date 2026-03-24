@@ -14,25 +14,47 @@ public class SettingsModel : PropertyModel
 
     public WidowSettings MainWidow { get; set; } = new();
 
-    public Dictionary<string, ColumnSettings> ModColumnData { get; set; } = new Dictionary<string, ColumnSettings>()
+    public List<ColumnSettings> ModColumnData { get; set; } = new List<ColumnSettings>()
     {
-        { "type", new ColumnSettings("S")  },
-        { "group", new ColumnSettings("Grupa") },
-        { "label", new ColumnSettings("Nazwa")  },
-        { "author", new ColumnSettings("Autor") },
-        { "packageId", new ColumnSettings("PackageId") },
-        { "versions", new ColumnSettings("Varsion") }
+        { new ColumnSettings("","type")  },
+        { new ColumnSettings("Grupa","group") },
+        { new ColumnSettings("Nazwa","label")  },
+        { new ColumnSettings("Autor","author") },
+        { new ColumnSettings("Packageid","packageid") },
+        { new ColumnSettings("Varsion","versions") }
     };
 }
 
 public class ColumnSettings : PropertyModel
 {
-    public ColumnSettings(string name) => Name = name;
+    public ColumnSettings() { }
+    public ColumnSettings(string name, string key)
+    {
+        Name = name;
+        Key = key;
+    }
 
+    public string Key { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;       // unikalna nazwa kolumny
-    public bool Visible { get; set; } = true;             // true = Visible, false = Collapsed
-    public double Width { get; set; } = 100;
-    public int DisplayIndex { get; set; } = 0;
+         
+    private bool _visible = true; // true = Visible, false = Collapsed
+    public bool Visible
+    {
+        get => _visible;
+        set { _visible = value; OnPropertyChanged(); }
+    }
+    private string _width = "*";
+    public string Width
+    {
+        get => _width;
+        set { _width = value; OnPropertyChanged(); }
+    }
+    private int _displayIndex = 0; // true = Visible, false = Collapsed
+    public int DisplayIndex
+    {
+        get => _displayIndex;
+        set { _displayIndex = value; OnPropertyChanged(); }
+    }
 }
 
 public class WidowSettings : PropertyModel

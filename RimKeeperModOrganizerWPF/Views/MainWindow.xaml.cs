@@ -1,5 +1,4 @@
-﻿using FilterDataGrid;
-using RimKeeperModOrganizerWPF.ViewModels;
+﻿using RimKeeperModOrganizerWPF.ViewModels;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -101,10 +100,10 @@ public partial class MainWindow : Window
         }
     }
 
-    public static List<FilterCommon>? GetGlobalFilterList(object instance)
-    {
-        if (instance == null) return null;
-        var prop = instance.GetType().GetProperty("GlobalFilterList", BindingFlags.Instance | BindingFlags.NonPublic);
-        return prop?.GetValue(instance) as List<FilterCommon>;
-    }
+    //public static List<FilterCommon>? GetGlobalFilterList(object instance)
+    //{
+    //    if (instance == null) return null;
+    //    var prop = instance.GetType().GetProperty("GlobalFilterList", BindingFlags.Instance | BindingFlags.NonPublic);
+    //    return prop?.GetValue(instance) as List<FilterCommon>;
+    //}
 }

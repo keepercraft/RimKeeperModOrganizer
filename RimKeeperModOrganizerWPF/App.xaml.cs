@@ -27,6 +27,6 @@ public partial class App : Application
         mainWindow.Show();
         base.OnStartup(e);
 
-        Services.GetRequiredService<RimKeeperModOrganizerLib.Services.SettingsService>().StartLoad();
+        //Services.GetRequiredService<RimKeeperModOrganizerLib.Services.SettingsService>().StartLoad();
     }
 }

@@ -24,13 +24,10 @@ public class MainViewModel : KeeperPropertyModel, IDropTarget
         ViewPositionsItems = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ViewPositionsItems.CombineFilters(RightViewFilter);
         //ViewPositionsItems.SortDescriptions.Add(new SortDescription(nameof(TableModel.Position), ListSortDirection.Ascending));
-        MyColumns.Add(new ColumnConfig() { PropertyName = nameof(TableModel.Position), Header = "P", Width = new DataGridLength(30), IsVisible=true, ShowFilter=false, ColumnIndex=1 });
-        MyColumns.Add(new ColumnConfig() { PropertyName = nameof(TableModel.Name), Header = "Nazwa", Width = new DataGridLength(150), IsVisible=true });
-        MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Age), Header = "Wiek", Width = new DataGridLength(100), IsVisible=true });
-        MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Country), Header = "Kraj", Width = new DataGridLength(1, DataGridLengthUnitType.Star), IsVisible = true });
-
-
-
+      //  MyColumns.Add(new ColumnConfig() { PropertyName = nameof(TableModel.Position), Header = "P", Width = "20", IsVisible =true, ShowFilter=false, ColumnIndex=1 });
+     //   MyColumns.Add(new ColumnConfig() { PropertyName = nameof(TableModel.Name), Header = "Nazwa", Width="*", IsVisible=true, ColumnIndex =2 });
+        MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Age), Header = "Wiek", IsVisible=true });
+        //MyColumns.Add(new ColumnConfig() { PropertyName= nameof(TableModel.Country), Header = "Kraj",  IsVisible = true });
 
         Task.Run(() =>
         {

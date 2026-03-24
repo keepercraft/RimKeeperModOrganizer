@@ -7,6 +7,7 @@ namespace RimKeeperModOrganizerWPF.ViewModels;
 public class SettingsViewModel : PropertyModel
 {
     public SettingsModel Data {  get; set; } = new SettingsModel();
+    public Dictionary<string, ColumnSettings> ModColumnData => Data.ModColumnData.ToDictionary(x => x.Key, x => x);
     private readonly SettingsService _settingsService;
     public SettingsViewModel(SettingsService SettingsService)
     {
@@ -20,6 +21,7 @@ public class SettingsViewModel : PropertyModel
     {
         if (save)
         {
+            Data.RaisePropertyChanged();
             _settingsService.ApplyChanges(Data);
             _settingsService.Save();
 

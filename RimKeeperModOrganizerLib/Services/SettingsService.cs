@@ -19,24 +19,83 @@ public class SettingsService
         try
         {
             if (!File.Exists(PathSettings)) return;
-            //string json = File.ReadAllText(PathSettings);
-            using FileStream fs = File.OpenRead(PathSettings);
+            //JsonConvert.PopulateObject(File.ReadAllText(PathSettings), DataSettings);
+            //var json = File.ReadAllText(PathSettings);
+            //var jObject = JObject.Parse(json);
+            //var settingNode = jObject["SETTING"];
+            //JsonConvert.PopulateObject(settingNode.ToString(), Settings);
+
+            using var fs = File.OpenRead(Settings.PathSettings);
             var doc = JsonDocument.Parse(fs);
             foreach (var item in DataSettings)
             {
                 if (doc.RootElement.TryGetProperty(item.Key, out var uiNode))
                 {
+                    // Deserializuj JSON do tymczasowego obiektu tego samego typu
                     var temp = JsonSerializer.Deserialize(uiNode, item.Value.GetType());
-                    foreach (var prop in item.Value.GetType().GetProperties().Where(p => p.CanWrite))
-                    {                      
-                        var value = prop.GetValue(temp);
-                        prop.SetValue(DataSettings[item.Key], value);
+
+                    if (temp != null)
+                    {
+                        // Aktualizuj wszystkie właściwości istniejącej instancji
+                        MergeObjects(item.Value, temp);
                     }
                 }
             }
         }
-        catch { }
+        catch 
+        { 
+        }
     }
+
+    private void MergeObjects(object target, object source)
+    {
+        if (target == null || source == null) return;
+
+        var type = target.GetType();
+
+        foreach (var prop in type.GetProperties().Where(p => p.CanRead && p.CanWrite))
+        {
+            var sourceValue = prop.GetValue(source);
+            var targetValue = prop.GetValue(target);
+
+            if (sourceValue == null) continue;
+
+            var propType = prop.PropertyType;
+
+            // proste typy
+            if (propType.IsPrimitive || propType.IsEnum || propType == typeof(string) || propType == typeof(decimal))
+            {
+                prop.SetValue(target, sourceValue);
+            }
+            // listy → aktualizacja elementów
+            else if (typeof(System.Collections.IList).IsAssignableFrom(propType))
+            {
+                if (targetValue is System.Collections.IList targetList && sourceValue is System.Collections.IList sourceList)
+                {
+                    targetList.Clear();
+                    foreach (var element in sourceList)
+                        targetList.Add(element);
+                }
+                else
+                {
+                    prop.SetValue(target, sourceValue);
+                }
+            }
+            // nested obiekty
+            else
+            {
+                if (targetValue == null)
+                {
+                    prop.SetValue(target, sourceValue);
+                }
+                else
+                {
+                    MergeObjects(targetValue, sourceValue);
+                }
+            }
+        }
+    }
+
     public void Save() => JsonHelper.SerializeModel(DataSettings, PathSettings);
     public void StartLoad()
     {
