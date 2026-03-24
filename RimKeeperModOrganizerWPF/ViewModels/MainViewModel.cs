@@ -142,7 +142,7 @@ public class MainViewModel : PropertyModel, IDropTarget
             {
                 // Items.Where(w => w.Position != null).SortBy(s => s.Position, s => s.Position >= 0);
                 //SortAndAssignIndexes(ModsConfigCollection);
-                ModsConfigCollection.Cast<ModModel>().ModListValidation();
+                ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
                 LoadData(Items);
                 ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
                 RaisePropertyChanged(nameof(IsUIListEnabled));
@@ -384,7 +384,7 @@ public class MainViewModel : PropertyModel, IDropTarget
                 item.Alert.Clear();
 
             //Items.Cast<ModModel>().ModListValidation();
-        ModsConfigCollection.Cast<ModModel>().ModListValidation();
+        ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
         AlertPropertyChanged();
       //  ModsCollection.Refresh();
       //  ModsConfigCollection.Refresh();
