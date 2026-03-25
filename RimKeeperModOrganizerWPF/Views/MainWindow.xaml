@@ -59,14 +59,15 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding MainWidowSettings.DetailPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="{Binding MainWidowSettings.ConfigModPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <GridSplitter Grid.Column="1" Grid.Row="1"
@@ -75,7 +76,6 @@
                       VerticalAlignment="Stretch"
                       Background="Gray"
                       ShowsPreview="True"/>
-
         <GridSplitter Grid.Column="3" Grid.Row="1"
                       Width="5"
                       HorizontalAlignment="Stretch"
@@ -83,7 +83,41 @@
                       Background="Gray"
                       ShowsPreview="True"/>
 
-        <ToolBar Grid.Row="0" Grid.ColumnSpan="5">
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="5"></StatusBar>
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="4" IsEnabled="{Binding IsUIListEnabled}">
+            <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
+            <MenuItem Header="Mods Config">
+                <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
+                <Separator/>
+                <MenuItem Header="Import" Command="{Binding LoadConfigCommand}"/>
+                <MenuItem Header="Export" Command="{Binding SaveConfigCommand}"/>
+                <Separator/>
+                <MenuItem Header="Export all mods to CSV" Command="{Binding ModsToCSVCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Actions">
+                <MenuItem Header="Change Mod Color" Command="{Binding ChangeColorCommand}"/>
+                <MenuItem Header="Mod Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Rimpy Colors Load" Command="{Binding RimpyColorLoadCommand}"/>
+                <Separator/>
+                <MenuItem Header="Options" Command="{Binding OptionsCommand}"/>
+            </MenuItem>
+            <MenuItem Header="[Test]" Command="{Binding TestCommand}"/>
+        </Menu>
+        <Menu Grid.Row="0" Grid.Column="5">
+            <MenuItem Header="{Binding GetModConfigStaticLable}" Background="{Binding GetModConfigStaticColor}">
+                <MenuItem.ToolTip>
+                    <ToolTip>
+                        <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding ListModsConfigAlert}"/>
+                        </ScrollViewer>
+                    </ToolTip>
+                </MenuItem.ToolTip>
+            </MenuItem>
+        </Menu>
+        <!--<ToolBar Grid.Row="0" Grid.ColumnSpan="5">
             <Button Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <Button Content="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
             <Button Content="Import" Command="{Binding LoadConfigCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
@@ -102,7 +136,7 @@
                     </ToolTip>
                 </TextBlock.ToolTip>
             </TextBlock>
-        </ToolBar>
+        </ToolBar>-->
 
         <kdg:AdvancedFilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
                 CellStyle="{StaticResource DataGridSelectionCellStyle}"      
