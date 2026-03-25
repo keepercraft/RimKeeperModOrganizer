@@ -41,7 +41,7 @@ public class MainViewModel : PropertyModel, IDropTarget
     }
 
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
-    public WidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
+    public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
 
     private readonly ModsServices _modsServices;
     private readonly SettingsService _settingsService;

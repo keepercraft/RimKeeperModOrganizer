@@ -12,7 +12,7 @@ public class SettingsModel : PropertyModel
     public string PathDirModsLocal { get; set; } = "";  
     public string GameVersion { get; set; } = "";
 
-    public WidowSettings MainWidow { get; set; } = new();
+    public MainWidowSettings MainWidow { get; set; } = new();
 
     public List<ColumnSettings> ModColumnData { get; set; } = new List<ColumnSettings>()
     {
@@ -63,4 +63,10 @@ public class WidowSettings : PropertyModel
     public double Height { get; set; } = 500;
     public double Left { get; set; } = 0;
     public double Top { get; set; } = 0;
+}
+
+public class MainWidowSettings : WidowSettings
+{
+    public double DetailPanelWidth { get; set; } = 150;
+    public double ConfigModPanelWidth { get; set; } = 150;
 }

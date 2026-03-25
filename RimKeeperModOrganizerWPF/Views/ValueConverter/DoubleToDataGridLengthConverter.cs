@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 namespace RimKeeperModOrganizerWPF.Views.ValueConverter;
@@ -24,5 +25,24 @@ public class DoubleToDataGridLengthConverter : IValueConverter
             return 100;
         }
         return 100;
+    }
+}
+
+public class GridLengthConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is double d && !double.IsNaN(d) && !double.IsInfinity(d))
+            return new GridLength(d);
+
+        return new GridLength(1, GridUnitType.Star);
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is GridLength gl)
+            return gl.Value;
+
+        return 0d;
     }
 }

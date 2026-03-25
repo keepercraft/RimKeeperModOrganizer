@@ -28,6 +28,7 @@
             <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
             <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
             <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
+            <vc:GridLengthConverter x:Key="GridLengthConverter" />
             <BooleanToVisibilityConverter x:Key="BoolVis"/>
 
             <ContextMenu x:Key="DataGridContextMenu" 
@@ -57,11 +58,11 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="{Binding MainWidowSettings.DetailPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="{Binding MainWidowSettings.ConfigModPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
