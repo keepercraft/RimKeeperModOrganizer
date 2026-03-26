@@ -7,13 +7,19 @@ namespace RimKeeperModOrganizerLib.Services;
 
 public class SettingsService
 {
+    private readonly JsonAutoSaver _autoSaver;
     public string PathSettings { get; } = Path.Combine(AppContext.BaseDirectory, "AppSettings.json");
     public Dictionary<string,object> DataSettings { get; } = new() { {"SETTING", new SettingsModel()} };
     public SettingsModel Settings => (SettingsModel)DataSettings["SETTING"];
     public SettingsService()
     {
+        _autoSaver = new JsonAutoSaver(
+            () => DataSettings, 
+            js => File.WriteAllText(PathSettings, js), 
+            JsonHelper.Options);
         StartLoad();
     }
+
     public void Load()
     {
         try
@@ -41,6 +47,8 @@ public class SettingsService
                     }
                 }
             }
+            _autoSaver.Calculate();
+            //SubscribeRecursively(Settings);
         }
         catch 
         { 
@@ -102,6 +110,7 @@ public class SettingsService
         bool fexist = File.Exists(PathSettings);
         if (fexist) Load(); 
         if(!fexist || string.IsNullOrEmpty(Settings.PathDirGame)) AutoFind();
+        _autoSaver.Calculate();
         Save();
     }
     public void AutoFind()
