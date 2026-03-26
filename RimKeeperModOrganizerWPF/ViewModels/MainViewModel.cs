@@ -14,7 +14,6 @@ using RimKeeperModOrganizerWPF.Views.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -39,6 +38,7 @@ public class MainViewModel : PropertyModel, IDropTarget
             OnPropertyChanged();
         }
     }
+    public bool IsSelectedMod => SelectedMod != null;
 
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
@@ -190,20 +190,8 @@ public class MainViewModel : PropertyModel, IDropTarget
     }
 
     #region CustomCommand
-    public CustomCommand OpenSteamLinkCommand => new CustomCommand(p =>
-    {
-        if (p is string txt) 
-            OpenLinkCommand.Execute($"steam://openurl/{txt}");
-    });
-    public CustomCommand OpenLinkCommand => new CustomCommand(p =>
-    {
-        if(p is string txt)
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = txt,
-                UseShellExecute = true
-            });
-    });
+    public CustomCommand OpenSteamLinkCommand => new CustomCommand(FileHelper.OpenSteamLink);
+    public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
     public CustomCommand OptionsCommand => new CustomCommand(p => UILock(() =>
     {
         App.Services.GetRequiredService<SettingsWindow>().ShowDialog();

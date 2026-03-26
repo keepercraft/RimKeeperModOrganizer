@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using RimKeeperModOrganizerLib.Models;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
-
 namespace RimKeeperModOrganizerLib.Helpers;
 
 public static class FileHelper
@@ -211,5 +211,20 @@ public static class FileHelper
         string aboutFile = Path.Combine(path, "Version.txt");
         if (!File.Exists(aboutFile)) return null;
         return File.ReadLines(aboutFile).FirstOrDefault();
+    }
+
+    public static void OpenSteamLink(object? path)
+    {
+        if (path is string txt && !string.IsNullOrEmpty(txt))
+            OpenLink($"steam://openurl/{txt}");
+    }
+    public static void OpenLink(object? path)
+    {
+        if(path is string txt && !string.IsNullOrEmpty(txt))
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = txt,
+                UseShellExecute = true
+            });
     }
 }
