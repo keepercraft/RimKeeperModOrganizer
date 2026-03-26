@@ -25,6 +25,7 @@ public static class XMLHelper
 
             var meta = new AboutModel
             {
+                Url = root.Element("url")?.Value,
                 Name = root.Element("name")?.Value,
                 Author = root.Element("author")?.Value,
                 PackageId = root.Element("packageId")?.Value.ToLower(),
@@ -41,6 +42,7 @@ public static class XMLHelper
                 IncompatibleWith = root.Element("incompatibleWith")?
                                         .Elements("li")
                                         .Select(e => e.Value).ToList() ?? new List<string>(),
+
                 ModDependencies = root.Element("modDependencies")?
                                         .Elements("li")
                                         .Select(e => new ModDependency

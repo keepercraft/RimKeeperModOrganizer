@@ -12,6 +12,7 @@ public class AboutModel
     public List<string>? IncompatibleWith { get; set; }
     public List<ModDependency>? ModDependencies { get; set; }
     public string? Description { get; set; }
+    public string? Url { get; set; }
 }
 
 public class ModDependency
