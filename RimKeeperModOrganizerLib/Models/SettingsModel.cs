@@ -11,6 +11,8 @@ public class SettingsModel : PropertyModel
     public string PathDirModsSteam { get; set; } = "";
     public string PathDirModsLocal { get; set; } = "";  
     public string GameVersion { get; set; } = "";
+    public string PathModSettingsArchive { get; set; } = "";
+    public string PathRimpyManager { get; set; } = "";
 
     public MainWidowSettings MainWidow { get; set; } = new();
 

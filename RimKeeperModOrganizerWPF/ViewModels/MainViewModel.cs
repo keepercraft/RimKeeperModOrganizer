@@ -14,6 +14,7 @@ using RimKeeperModOrganizerWPF.Views.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -215,22 +216,33 @@ public class MainViewModel : PropertyModel, IDropTarget
     {
         var dialog = new OpenFileDialog
         {
-            Title = "Wybierz plik",
-            Filter = "XML (*.xml)|*.xml|Wszystkie pliki (*.*)|*.*",
+            InitialDirectory = _settingsService.Settings.PathModSettingsArchive,
+            Title = "Open file",
+            Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
+            DefaultExt = ".xml",
             Multiselect = false
         };
-        if (dialog.ShowDialog() ?? false) LoadMods(dialog.FileName);
+        if (dialog.ShowDialog() ?? false)
+        {
+            if (Path.GetDirectoryName(dialog.FileName) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
+            LoadMods(dialog.FileName);
+        }
     }));
     public CustomCommand SaveConfigCommand => new CustomCommand(p => UILock(() =>
     {
         var dialog = new SaveFileDialog
         {
-            Title = "Zapisz plik",
-            Filter = "XML (*.xml)|*.xml",
+            InitialDirectory = _settingsService.Settings.PathModSettingsArchive,
+            Title = "Save file",
+            Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
             DefaultExt = ".xml",
             FileName = "ModsConfig.xml"
         };
-        if (dialog.ShowDialog() ?? false) _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>(), dialog.FileName);
+        if (dialog.ShowDialog() ?? false)
+        {
+            if (Path.GetDirectoryName(dialog.FileName) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
+            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>(), dialog.FileName);
+        }
     }));
     public CustomCommand SaveCommand => new CustomCommand(p => UILock(() =>
     {
@@ -245,13 +257,15 @@ public class MainViewModel : PropertyModel, IDropTarget
     {
         var dialog = new OpenFileDialog
         {
+            InitialDirectory = _settingsService.Settings.PathRimpyManager,
             Title = "Open file",
             Filter = "ini |*.ini",
             DefaultExt = ".ini",
             FileName = "config.ini"
         };
         if (dialog.ShowDialog() ?? false)
-        { 
+        {
+            if (Path.GetDirectoryName(dialog.FileName) is string dir && dir != _settingsService.Settings.PathRimpyManager) _settingsService.Settings.PathRimpyManager = dir;
             var data = _modsServices.LoadRimPyColors(dialog.FileName);
             foreach(var item in Items)
                 if(item.Path != null && item.Data !=null && data.ContainsKey(item.Path))

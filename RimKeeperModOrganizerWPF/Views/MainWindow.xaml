@@ -88,7 +88,7 @@
         <Menu Grid.Row="0" Grid.ColumnSpan="4" IsEnabled="{Binding IsUIListEnabled}">
             <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
             <MenuItem Header="Mods Config">
-                <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="Save config" Command="{Binding SaveCommand}"/>
                 <Separator/>
                 <MenuItem Header="Import" Command="{Binding LoadConfigCommand}"/>
                 <MenuItem Header="Export" Command="{Binding SaveConfigCommand}"/>
@@ -119,6 +119,7 @@
                     </ToolTip>
                 </MenuItem.ToolTip>
             </MenuItem>
+            <MenuItem Header="[Save]" Command="{Binding SaveCommand}"/>
         </Menu>
         <!--<ToolBar Grid.Row="0" Grid.ColumnSpan="5">
             <Button Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
