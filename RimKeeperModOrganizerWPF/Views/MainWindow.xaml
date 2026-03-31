@@ -26,6 +26,7 @@
 
             <ex:CustomDragSource x:Key="CustomDragSource"/>
             <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
+           
             <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
             <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
             <vc:GridLengthConverter x:Key="GridLengthConverter" />
@@ -53,6 +54,39 @@
                   Command="{Binding ModDetailCommand}" 
                   CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
             </ContextMenu>
+
+            <Style TargetType="DataGridRow" x:Key="DataGridRowStyle">
+                <Setter Property="Background" Value="{Binding Data.Color,TargetNullValue=Transparent}"/>
+                <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
+                <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
+                <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
+                <Setter Property="ToolTip">
+                    <Setter.Value>
+                        <Border Padding="5" Background="White" BorderBrush="DarkRed" BorderThickness="1" CornerRadius="4">
+                            <StackPanel>
+                                <ItemsControl ItemsSource="{Binding Alert}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding HasAlert}" Value="False">
+                        <Setter Property="ToolTip" Value="{x:Null}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasAlert}" Value="True">
+                        <Setter Property="Background" Value="LightCoral"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Selected}" Value="True">
+                        <Setter Property="Background" Value="LightGreen"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
 
         </ResourceDictionary>
     </Window.Resources>
@@ -147,6 +181,7 @@
 
         <kdg:AdvancedFilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
                 CellStyle="{StaticResource DataGridSelectionCellStyle}"      
+                RowStyle="{StaticResource DataGridRowStyle}"      
                 ContextMenu="{StaticResource DataGridContextMenu}"                   
                 IsEnabled="{Binding IsUIListEnabled}"          
                 ItemsSource="{Binding ModsCollection}"
@@ -261,44 +296,11 @@
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </kdg:AdvancedFilterDataGrid.ContextMenu>-->
-            <kdg:AdvancedFilterDataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="{Binding Data.Color}"/>
-                    <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
-                    <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
-                    <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
-                    <Setter Property="ToolTip">
-                        <Setter.Value>
-                            <Border Padding="5" Background="White" BorderBrush="DarkRed" BorderThickness="1" CornerRadius="4">
-                                <StackPanel>
-                                    <ItemsControl ItemsSource="{Binding Alert}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasAlert}" Value="False">
-                            <Setter Property="ToolTip" Value="{x:Null}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding HasAlert}" Value="True">
-                            <Setter Property="Background" Value="LightCoral"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Selected}" Value="True">
-                            <Setter Property="Background" Value="LightGreen"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </kdg:AdvancedFilterDataGrid.RowStyle>
         </kdg:AdvancedFilterDataGrid>
 
         <kdg:AdvancedFilterDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
                 CellStyle="{StaticResource DataGridSelectionCellStyle}"   
+                RowStyle="{StaticResource DataGridRowStyle}"                        
                 ContextMenu="{StaticResource DataGridContextMenu}"                                   
                 IsEnabled="{Binding IsUIListEnabled}"
                 ItemsSource="{Binding ModsConfigCollection}"           
@@ -339,44 +341,6 @@
                     <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 </ContextMenu>
             </kdg:AdvancedFilterDataGrid.ContextMenu>-->
-            <kdg:AdvancedFilterDataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="{Binding Data.Color}"/>
-                    <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
-                    <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
-                    <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
-                    <Setter Property="ToolTip">
-                        <Setter.Value>
-                            <Border Padding="5" Background="White" BorderBrush="DarkRed" BorderThickness="1" CornerRadius="4">
-                                <StackPanel>
-                                    <ItemsControl ItemsSource="{Binding Alert}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </Border>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding HasAlert}" Value="False">
-                            <Setter Property="ToolTip" Value="{x:Null}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding HasAlert}" Value="True">
-                            <Setter Property="Background" Value="LightCoral"/>
-                        </DataTrigger>
-                        <!--<Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#FF3399FF"/>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="Orange"/>
-                        </Trigger>-->
-
-                    </Style.Triggers>
-                </Style>
-            </kdg:AdvancedFilterDataGrid.RowStyle>
         </kdg:AdvancedFilterDataGrid>
 
         <ScrollViewer Grid.Column="0" Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
@@ -390,8 +354,8 @@
                         <Setter Property="IsReadOnlyCaretVisible" Value="False"/>
                     </Style>
                 </StackPanel.Resources>
-                
-                <Image Source="{Binding SelectedMod.ThumbnailPath}" Stretch="Uniform" Margin="0,0,0,10" MaxHeight="300"/>
+
+                <Image Source="{Binding SelectedMod.ThumbnailPath,TargetNullValue={x:Null}, FallbackValue={x:Null}}" Stretch="Uniform" Margin="0,0,0,10" MaxHeight="300"/>
 
                 <TextBox Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18" Cursor="Hand">
                     <TextBox.InputBindings>
@@ -464,10 +428,15 @@
                 </TextBlock>-->
 
                 <TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}">
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding ., StringFormat=• {0}}"/>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -476,7 +445,12 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding ., StringFormat=• {0}}"/>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -485,7 +459,12 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding ., StringFormat=• {0}}"/>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -494,7 +473,12 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding ., StringFormat=• {0}}" Foreground="Red"/>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" Foreground="Red"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
