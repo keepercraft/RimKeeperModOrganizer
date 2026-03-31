@@ -56,8 +56,6 @@ public class MainViewModel : PropertyModel, IDropTarget
         ModsCollection.CombineFilters(LeftViewFilter);
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsConfigCollection.CombineFilters(RightViewFilter);
-        ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
-        //ModsConfigCollection.SortDescriptions.Add(new SortDescription(nameof(ModModel.Position), ListSortDirection.Ascending));
     }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;
@@ -104,94 +102,63 @@ public class MainViewModel : PropertyModel, IDropTarget
     }
     #endregion
 
-    public void LoadMods_test(string? path = null)
+    public void ModCollectionUpdate(Action action)
     {
         Task.Run(() =>
         {
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                Items.Clear();
-            });          
-            foreach (var item in _modsServices.LoadMods3_1(path))
-            {
-                if (item != null)
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        Items.Add(item);
-                    });
-            }
-        });
-    }
+            App.Current.Dispatcher.Invoke(() => LoadingUI = true);
 
-    public void LoadMods(string? path = null)
-    {
-        Task.Run(() =>
-        {
+            action();
+
             App.Current.Dispatcher.Invoke(() =>
             {
-                LoadingUI = true;
-                RaisePropertyChanged(nameof(IsUIListEnabled));
-                // ModsConfigCollection.Clear();
-                //ModsConfigCollection.Clear();
-                //ModsCollection.Clear();
-                Items.Clear();
-                //ModsConfigCollection.CollectionChanged -= ModsConfigCollection_CollectionChanged;
-                //AlertPropertyChanged();
+                ModsConfigCollection.Refresh();
+                ModsCollection.Refresh();
+                AlertPropertyChanged();
             });
-
-            var metaData = _modsServices.LoadModMetaData(path).ToList();
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    foreach (var item in metaData)
-                        Items.InsertInOrder(item, c => c.Position);
-                    AlertPropertyChanged();
-                });
-            foreach (var item in _modsServices.LoadModLazy())
-            {
-                App.Current.Dispatcher.Invoke(() =>
-                {
-                    _modsServices.ModModelSetLods(Items, item);
-                    AlertPropertyChanged();
-                });
-            }
-
-            //foreach (var item in _modsServices.LoadModMetaData(path))
-            //{
-            //    if (item != null)
-            //        App.Current.Dispatcher.Invoke(() =>
-            //        {
-            //            Items.InsertInOrder(item, c => c.Position);
-            //            // Items.Add(item);
-            //            //  AlertPropertyChanged();
-            //            //AllMods.Add(item);
-            //            /*
-            //            if (item.Selected)
-            //            {
-            //                ModsConfigCollection.Add(item);
-            //                AlertPropertyChanged();
-            //            }
-            //            else
-            //                ModsCollection.Add(item);
-            //            */
-            //        });
-            //}
-
-            Items.ModListDuplicateValidation();
             ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
-            
+            ModsCollection.Cast<ModModel>().ModListAlertClean();
+            Items.ModListDuplicateValidation();
             App.Current.Dispatcher.Invoke(() =>
             {
-                // Items.Where(w => w.Position != null).SortBy(s => s.Position, s => s.Position >= 0);
-                //SortAndAssignIndexes(ModsConfigCollection);
-                //ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
-                LoadData(Items);
-                RaisePropertyChanged(nameof(IsUIListEnabled));
                 AlertPropertyChanged();
                 LoadingUI = false;
             });
         });
     }
+    public void LoadMods(string? path = null) => ModCollectionUpdate(() =>
+    {
+        App.Current.Dispatcher.Invoke(() => Items.Clear());
 
+        var metaData = _modsServices.LoadModMetaData(path).ToList();
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            foreach (var item in metaData)
+                Items.InsertInOrder(item, c => c.Position);
+            AlertPropertyChanged();
+            LoadData(metaData);
+        });
+
+        foreach (var item in _modsServices.LoadModLazy())
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Items.AddOrUpdate(item);
+                AlertPropertyChanged();
+            });
+        }
+    });
+    public void LoadModsConfig(string? path = null) => ModCollectionUpdate(() =>
+    {
+        var metaData = _modsServices.LoadModsConfig(path);
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            Items.AddOrUpdate(metaData);
+           // foreach (var item in Items)
+           //     item.Position = metaData?.Position(item.About?.PackageId);
+        });
+    });
+    
     public void LoadData(IEnumerable<ModModel> modlist)
     {
         var data = modlist.Select(s => s.Data).Where(s => s != null);
@@ -201,32 +168,6 @@ public class MainViewModel : PropertyModel, IDropTarget
         foreach (var item in data.Select(s => s.Color).Where(w => !string.IsNullOrEmpty(w)).Distinct())
             if (!ModColors.Contains(item))
                 ModColors.Add(item);
-    }
-
-    private void ModsConfigCollection_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        return; //NEW
-        if (sender is ObservableCollection<ModModel> collection && collection == ModsConfigCollection)
-        {
-            if (e.NewItems?[0] is ModModel new_item_model)
-            {
-                new_item_model.Selected = true;
-                new_item_model.Position = e.NewStartingIndex;
-            }
-            if (e.OldItems?[0] is ModModel old_item_model)
-            {
-                old_item_model.Selected = false;
-                old_item_model.Position = -1;
-            }
-            for (int i = 0; i < collection.Count; i++)
-            {
-                collection[i].Position = i;
-                collection[i].RaisePropertyChanged(nameof(ModModel.Position));
-            }
-            Items.ModListValidation();
-            AlertPropertyChanged();
-            //ModListValidation();
-        }
     }
 
     #region CustomCommand
@@ -264,7 +205,10 @@ public class MainViewModel : PropertyModel, IDropTarget
         if (dialog.ShowDialog() ?? false)
         {
             if (Path.GetDirectoryName(dialog.FileName) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
-            LoadMods(dialog.FileName);
+            if(Items.Any())
+                LoadModsConfig(dialog.FileName);
+            else
+                LoadMods(dialog.FileName);
         }
     }));
     public CustomCommand SaveConfigCommand => new CustomCommand(p => UILock(() =>

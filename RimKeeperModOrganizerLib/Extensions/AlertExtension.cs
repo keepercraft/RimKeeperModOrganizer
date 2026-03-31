@@ -2,7 +2,7 @@
 using RimKeeperModOrganizerLib.Models;
 namespace RimKeeperModOrganizerLib.Extensions;
 
-public static class ModExtension
+public static class AlertExtension
 {
     public static void AlertUpdate(List<string> alerts, string alert, Func<bool> condition)
     {
@@ -12,6 +12,12 @@ public static class ModExtension
         else
             if (alerts.Contains(alert))
                 alerts.Remove(alert);
+    }
+
+    public static void ModListAlertClean(this IEnumerable<ModModel> modlist)
+    {
+        foreach (var mod in modlist)
+            mod.Alert.Clear();
     }
 
     public static void ModListDuplicateValidation(this IEnumerable<ModModel> modlist)

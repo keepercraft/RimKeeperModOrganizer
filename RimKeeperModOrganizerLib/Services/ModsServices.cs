@@ -1,4 +1,5 @@
-﻿using RimKeeperModOrganizerLib.Helpers;
+﻿using RimKeeperModOrganizerLib.Extensions;
+using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ public class ModsServices
 
     public Action<bool> LoadModsActive { get; set; }
     private bool LoadModsFromLocalRunning = false;
+
+    public string? LastConfigLoad { get; set; }
 
     public IEnumerable<ModModel> LoadMods(string? path = null) //.old
     {
@@ -265,25 +268,15 @@ public class ModsServices
         ModsConfigModel? modsConfig = LoadModsConfig(path);
         LocalDataListModel? modsData = LoadModData();
 
-        foreach (var mod in modsConfig.ActiveMods)
+        foreach (var packageId in modsConfig.ActiveMods)
         {
-            var newMod = new ModModel
-            {
-                About = new AboutModel { PackageId = mod },
-                Position = modsConfig.Position(mod),
-                Selected = true
-            };
-            newMod.Data = modsData?.ModDataList.FirstOrDefault(x => x.PackageId == mod);
+            var newMod = modsConfig.Make(packageId);
+            newMod.Data = modsData?.ModDataList.FirstOrDefault(x => x.PackageId == packageId);
             yield return newMod;
         }
         foreach (var item in modsData.ModDataList.Where(w => w.PackageId != null && !modsConfig.ActiveMods.Contains(w.PackageId)))
         {
-            var newMod = new ModModel
-            {
-                About = new AboutModel { PackageId = item.PackageId },
-                Data = item
-            };
-            yield return newMod;
+            yield return item.Make();
         }
         LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
     }
@@ -296,82 +289,13 @@ public class ModsServices
         }
     }
 
-    public void ModModelSetConfig(IList<ModModel> modlist, ModsConfigModel? modsConfig)
-    {
-        if (modsConfig?.ActiveMods == null) return;
-        foreach (var packageId in modsConfig.ActiveMods)
-        {
-            var existingMod = modlist.FirstOrDefault(x => x.About?.PackageId == packageId);
-            if (existingMod != null)
-            {
-                existingMod.Position = modsConfig.Position(packageId);
-                existingMod.Selected = true;
-            }
-            else
-            {
-                var newMod = new ModModel
-                {
-                    About = new AboutModel { PackageId = packageId },
-                    Position = modsConfig.Position(packageId),
-                    Selected = true
-                };
-
-                modlist.Add(newMod);
-            }
-        }
-    }
-
-    public void ModModelSetData(IList<ModModel> modlist, LocalDataListModel? modsData)
-    {
-        foreach (var item in modsData.ModDataList)
-        {
-            var existingMod = modlist.FirstOrDefault(x => x.About?.PackageId == item.PackageId);
-            if (existingMod != null)
-            {
-                existingMod.Data = item;
-            }
-            else
-            {
-                var newMod = new ModModel
-                {
-                    About = new AboutModel { PackageId = item.PackageId },
-                    Data = item
-                };
-                modlist.Add(newMod);
-            }
-        }
-    }
-
-    public void ModModelSetLods(IList<ModModel> modlist, IEnumerable<ModModel> modsData)
-    {
-        foreach (var item in modsData)
-        {
-            ModModelSetLods(modlist, item);
-        }
-    }
-    public void ModModelSetLods(IList<ModModel> modlist, ModModel item)
-    {
-        var existingMod = modlist.FirstOrDefault(x => x.About?.PackageId == item.About?.PackageId);
-        if (existingMod != null)
-        {
-            existingMod.About = item.About;
-            existingMod.Path = item.Path;
-            existingMod.ThumbnailPath = item.ThumbnailPath;
-            existingMod.Local = item.Local;
-        }
-        else
-        {
-            modlist.Add(item);
-        }       
-    }
-
     public LocalDataListModel? LoadModData(string? path = null)
     {
         return JsonHelper.DeserializeModel<LocalDataListModel>(path ?? _settingsService.Settings.PathModData);
     }
     public ModsConfigModel? LoadModsConfig(string? path = null)
     {
-        string? aboutPath = path ?? FileHelper.GetModsConfig(_settingsService.Settings.PathDirGameConfig);
+        string? aboutPath = LastConfigLoad = path ?? FileHelper.GetModsConfig(_settingsService.Settings.PathDirGameConfig);
         if (String.IsNullOrEmpty(aboutPath)) return null;
         return XMLHelper.LoadModsConfig(aboutPath);
     }

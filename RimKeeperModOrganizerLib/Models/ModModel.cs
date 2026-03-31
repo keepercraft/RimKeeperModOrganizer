@@ -50,8 +50,3 @@ public class ModModel : PropertyModel
         Data = new ModDataModel() { PackageId = About.PackageId };
     }
 }
-
-public static class ModModelExtension
-{
-
-}
