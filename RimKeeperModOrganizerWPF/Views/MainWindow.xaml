@@ -85,7 +85,7 @@
 
         <StatusBar Grid.Row="2" Grid.ColumnSpan="5"></StatusBar>
 
-        <Menu Grid.Row="0" Grid.ColumnSpan="4" IsEnabled="{Binding IsUIListEnabled}">
+        <Menu Grid.Row="0" Grid.ColumnSpan="5" IsEnabled="{Binding IsUIListEnabled}">
             <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
             <MenuItem Header="Mods Config">
                 <MenuItem Header="Save config" Command="{Binding SaveCommand}"/>
@@ -108,6 +108,8 @@
                 <MenuItem Header="Options" Command="{Binding OptionsCommand}"/>
             </MenuItem>
             <MenuItem Header="[Test]" Command="{Binding TestCommand}"/>
+        </Menu>
+        <Menu Grid.Row="0" Grid.Column="2" Background="Transparent" HorizontalAlignment="Right">
             <MenuItem Header="{Binding ModsCollection.Count, StringFormat='- {0}'}" HorizontalAlignment="Right" />
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5">

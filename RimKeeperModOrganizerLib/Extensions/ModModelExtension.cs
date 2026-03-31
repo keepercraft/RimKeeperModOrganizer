@@ -13,16 +13,9 @@ public static class ModModelExtension
         if (item == null) return;
         var existingMod = modlist.FirstOrDefault(x => x.About?.PackageId == item.About?.PackageId);
         if (existingMod != null)
-        {
-            existingMod.About = item.About;
-            existingMod.Path = item.Path;
-            existingMod.ThumbnailPath = item.ThumbnailPath;
-            existingMod.Local = item.Local;
-        }
+            existingMod.Update(item);
         else
-        {
             modlist.Add(item);
-        }
     }
 
     public static void AddOrUpdate(this IList<ModModel> modlist, LocalDataListModel? item)
@@ -40,7 +33,7 @@ public static class ModModelExtension
         if (item == null) return;
         var existingMod = modlist.FirstOrDefault(x => x.About?.PackageId == item.PackageId);
         if (existingMod != null)
-            existingMod.Data = item;
+            existingMod.Update(item);
         else
             modlist.Add(item.Make());
     }
@@ -50,7 +43,7 @@ public static class ModModelExtension
         if (modsConfig == null) return;
         if (modsConfig?.ActiveMods == null) return;
         foreach (var mod in modlist)
-            mod.Position = modsConfig.Position(mod.About?.PackageId);
+            mod.Update(modsConfig);
         foreach (var packageId in modsConfig.ActiveMods)
             if (!modlist.Any(x => x.About?.PackageId == packageId))
                 modlist.Add(modsConfig.Make(packageId));
@@ -66,4 +59,25 @@ public static class ModModelExtension
         About = new AboutModel { PackageId = packageId },
         Position = modsConfig.Position(packageId),
     };
+    public static ModModel Make(this string packageId) => new ModModel
+    {
+        About = new AboutModel { PackageId = packageId },
+    };
+    public static void Update(this ModModel data, ModModel item)
+    {
+        data.About = item.About;
+        data.Path = item.Path;
+        data.ThumbnailPath = item.ThumbnailPath;
+        data.Local = item.Local;
+    }
+    public static ModModel Update(this ModModel data, ModDataModel item)
+    {
+        data.Data = item;
+        return data;
+    }
+    public static ModModel Update(this ModModel data, ModsConfigModel modsConfig)
+    {
+        data.Position = modsConfig.Position(data.About?.PackageId);
+        return data;
+    }
 }

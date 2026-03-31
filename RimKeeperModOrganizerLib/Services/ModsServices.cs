@@ -19,246 +19,246 @@ public class ModsServices
 
     public string? LastConfigLoad { get; set; }
 
-    public IEnumerable<ModModel> LoadMods(string? path = null) //.old
-    {
-        if (LoadModsFromLocalRunning) yield break;
-        LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
-
-        ModsConfigModel? modsConfig = LoadModsConfig(path);
-        if (modsConfig == null) yield break;
-
-        LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-
-        foreach (ModModel mod in FindRimWorldAllMods())
-        {
-            mod.Position = modsConfig?.Position(mod.About?.PackageId) ?? -1;
-            mod.TrySet(modsData);
-            if (mod.Position >= 0) mod.Selected = true;
-            //  ModsList.Add(mod);
-            yield return mod;
-        }
-        LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
-        GC.Collect();
-    }
-    public IEnumerable<ModModel> LoadMods2(string? path = null)
-    {
-        if (LoadModsFromLocalRunning) yield break;
-        LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
-
-        List<ModModel> modList = FindRimWorldAllMods().ToList();
-
-        ModsConfigModel? modsConfig = LoadModsConfig(path);
-        if (modsConfig != null)
-        {
-            foreach (var item in modsConfig.ActiveMods)
-            {
-                var modListItem = modList.FirstOrDefault(x => x?.About?.PackageId == item);
-                if (modListItem == null)
-                {
-                    modListItem = new ModModel() { About = new AboutModel() { PackageId = item } };
-                    modList.Add(modListItem);
-                }
-                modListItem.Position = modsConfig?.Position(item) ?? -1;
-                if (modListItem.Position >= 0) modListItem.Selected = true;
-            }
-        }
-
-        LocalDataListModel? modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData);
-        if (modsData != null)
-        {
-            foreach (var item in modsData.ModDataList)
-            {
-                var modListItem = modList.FirstOrDefault(x => x?.About?.PackageId == item.PackageId);
-                if (modListItem == null)
-                {
-                    modListItem = new ModModel() { About = new AboutModel() { PackageId = item.PackageId } };
-                    modList.Add(modListItem);
-                }
-                modListItem.Data = item;
-            }
-        }
-
-        foreach (ModModel item in modList)
-        {
-            if(item.Data == null) item.Data = new ModDataModel() { PackageId = item.About.PackageId };
-            if (String.IsNullOrEmpty(item.Path))
-            {
-                item.Alert.Add("Missing:" + item.Label);
-            }
-            yield return item;
-        }
-
-        LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
-        GC.Collect();
-    }
-
-    //public void LoadMods3(IList<ModModel> modCollecions, string? path = null)
-    //public IEnumerable<ModModel> LoadMods3(string? path = null)
+    //public IEnumerable<ModModel> LoadMods(string? path = null) //.old
     //{
     //    if (LoadModsFromLocalRunning) yield break;
     //    LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
 
     //    ModsConfigModel? modsConfig = LoadModsConfig(path);
-    //    LocalDataListModel? modsData = LoadModData();
+    //    if (modsConfig == null) yield break;
 
-    //    IList<ModModel> modlist = new List<ModModel>();
-    //    ModModelSetConfig(modlist, modsConfig);
-    //    ModModelSetData(modlist, modsData);
-    //    ModModelSetLods(modlist, FindRimWorldAllMods());
-    //    foreach (var item in modlist)
+    //    LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+
+    //    foreach (ModModel mod in FindRimWorldAllMods())
     //    {
-    //        Thread.Sleep(1);
+    //        mod.Position = modsConfig?.Position(mod.About?.PackageId) ?? -1;
+    //        mod.TrySet(modsData);
+    //        if (mod.Position >= 0) mod.Selected = true;
+    //        //  ModsList.Add(mod);
+    //        yield return mod;
+    //    }
+    //    LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
+    //    GC.Collect();
+    //}
+    //public IEnumerable<ModModel> LoadMods2(string? path = null)
+    //{
+    //    if (LoadModsFromLocalRunning) yield break;
+    //    LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
+
+    //    List<ModModel> modList = FindRimWorldAllMods().ToList();
+
+    //    ModsConfigModel? modsConfig = LoadModsConfig(path);
+    //    if (modsConfig != null)
+    //    {
+    //        foreach (var item in modsConfig.ActiveMods)
+    //        {
+    //            var modListItem = modList.FirstOrDefault(x => x?.About?.PackageId == item);
+    //            if (modListItem == null)
+    //            {
+    //                modListItem = new ModModel() { About = new AboutModel() { PackageId = item } };
+    //                modList.Add(modListItem);
+    //            }
+    //            modListItem.Position = modsConfig?.Position(item) ?? -1;
+    //            if (modListItem.Position >= 0) modListItem.Selected = true;
+    //        }
+    //    }
+
+    //    LocalDataListModel? modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData);
+    //    if (modsData != null)
+    //    {
+    //        foreach (var item in modsData.ModDataList)
+    //        {
+    //            var modListItem = modList.FirstOrDefault(x => x?.About?.PackageId == item.PackageId);
+    //            if (modListItem == null)
+    //            {
+    //                modListItem = new ModModel() { About = new AboutModel() { PackageId = item.PackageId } };
+    //                modList.Add(modListItem);
+    //            }
+    //            modListItem.Data = item;
+    //        }
+    //    }
+
+    //    foreach (ModModel item in modList)
+    //    {
+    //        if(item.Data == null) item.Data = new ModDataModel() { PackageId = item.About.PackageId };
+    //        if (String.IsNullOrEmpty(item.Path))
+    //        {
+    //            item.Alert.Add("Missing:" + item.Label);
+    //        }
     //        yield return item;
     //    }
 
     //    LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
     //    GC.Collect();
-    //    yield break;
     //}
-    public IEnumerable<ModModel> LoadMods3_1(string? path = null)
-    {
-        if (LoadModsFromLocalRunning) yield break;
-        LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
 
-        // 1. Pobierz dane konfiguracyjne (surowe dane)
-        var modsConfig = LoadModsConfig(path);
-        var modsData = LoadModData();
-        var allFiles = FindRimWorldAllMods(); // To powinno być IEnumerable
+    ////public void LoadMods3(IList<ModModel> modCollecions, string? path = null)
+    ////public IEnumerable<ModModel> LoadMods3(string? path = null)
+    ////{
+    ////    if (LoadModsFromLocalRunning) yield break;
+    ////    LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
 
-        // Słownik do szybkiego łączenia danych po PackageId
-        var dictionary = new Dictionary<string, ModModel>();
+    ////    ModsConfigModel? modsConfig = LoadModsConfig(path);
+    ////    LocalDataListModel? modsData = LoadModData();
 
-        // Funkcja pomocnicza do pobierania lub tworzenia modelu w słowniku
-        ModModel GetOrAdd(string id)
-        {
-            if (!dictionary.TryGetValue(id, out var m))
-            {
-                m = new ModModel { About = new AboutModel { PackageId = id } };
-                dictionary[id] = m;
-            }
-            return m;
-        }
+    ////    IList<ModModel> modlist = new List<ModModel>();
+    ////    ModModelSetConfig(modlist, modsConfig);
+    ////    ModModelSetData(modlist, modsData);
+    ////    ModModelSetLods(modlist, FindRimWorldAllMods());
+    ////    foreach (var item in modlist)
+    ////    {
+    ////        Thread.Sleep(1);
+    ////        yield return item;
+    ////    }
 
-        // 2. Wypełnij słownik danymi z różnych źródeł
-        if (modsConfig?.ActiveMods != null)
-        {
-            foreach (var id in modsConfig.ActiveMods)
-            {
-                var m = GetOrAdd(id);
-                m.Position = modsConfig.Position(id);
-                m.Selected = true;
-            }
-        }
+    ////    LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
+    ////    GC.Collect();
+    ////    yield break;
+    ////}
+    //public IEnumerable<ModModel> LoadMods3_1(string? path = null)
+    //{
+    //    if (LoadModsFromLocalRunning) yield break;
+    //    LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
 
-        if (modsData?.ModDataList != null)
-        {
-            foreach (var data in modsData.ModDataList)
-            {
-                var m = GetOrAdd(data.PackageId);
-                m.Data = data;
-            }
-        }
+    //    // 1. Pobierz dane konfiguracyjne (surowe dane)
+    //    var modsConfig = LoadModsConfig(path);
+    //    var modsData = LoadModData();
+    //    var allFiles = FindRimWorldAllMods(); // To powinno być IEnumerable
 
-        // 3. Łączymy z plikami i od razu "wypychamy" do VM
-        foreach (var fileMod in allFiles)
-        {
-            var id = fileMod.About?.PackageId;
-            if (id == null) continue;
+    //    // Słownik do szybkiego łączenia danych po PackageId
+    //    var dictionary = new Dictionary<string, ModModel>();
 
-            var existing = GetOrAdd(id);
-            // Aktualizujemy dane z plików
-            existing.About = fileMod.About;
-            existing.Path = fileMod.Path;
-            existing.ThumbnailPath = fileMod.ThumbnailPath;
-            existing.Local = fileMod.Local;
+    //    // Funkcja pomocnicza do pobierania lub tworzenia modelu w słowniku
+    //    ModModel GetOrAdd(string id)
+    //    {
+    //        if (!dictionary.TryGetValue(id, out var m))
+    //        {
+    //            m = new ModModel { About = new AboutModel { PackageId = id } };
+    //            dictionary[id] = m;
+    //        }
+    //        return m;
+    //    }
 
-            // Kluczowe: Zwracamy moda natychmiast po złożeniu danych plikowych
-            yield return existing;
+    //    // 2. Wypełnij słownik danymi z różnych źródeł
+    //    if (modsConfig?.ActiveMods != null)
+    //    {
+    //        foreach (var id in modsConfig.ActiveMods)
+    //        {
+    //            var m = GetOrAdd(id);
+    //            m.Position = modsConfig.Position(id);
+    //            m.Selected = true;
+    //        }
+    //    }
 
-            // Usuwamy ze słownika, by wiedzieć co zostało (opcjonalne)
-            dictionary.Remove(id);
-        }
+    //    if (modsData?.ModDataList != null)
+    //    {
+    //        foreach (var data in modsData.ModDataList)
+    //        {
+    //            var m = GetOrAdd(data.PackageId);
+    //            m.Data = data;
+    //        }
+    //    }
 
-        // 4. Zwróć resztę (np. mody aktywne, których nie ma fizycznie na dysku)
-        foreach (var remaining in dictionary.Values)
-        {
-            yield return remaining;
-        }
+    //    // 3. Łączymy z plikami i od razu "wypychamy" do VM
+    //    foreach (var fileMod in allFiles)
+    //    {
+    //        var id = fileMod.About?.PackageId;
+    //        if (id == null) continue;
 
-        LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
-    }
+    //        var existing = GetOrAdd(id);
+    //        // Aktualizujemy dane z plików
+    //        existing.About = fileMod.About;
+    //        existing.Path = fileMod.Path;
+    //        existing.ThumbnailPath = fileMod.ThumbnailPath;
+    //        existing.Local = fileMod.Local;
 
-    public IEnumerable<ModModel> LoadMods3_2(string? path = null)
-    {
-        // 1. Ładowanie surowych danych (Metadata)
-        var modsConfig = LoadModsConfig(path);
-        var modsData = LoadModData();
+    //        // Kluczowe: Zwracamy moda natychmiast po złożeniu danych plikowych
+    //        yield return existing;
 
-        // 2. Indeksowanie Configa (PackageId -> Pozycja)
-        // Używamy słownika, aby nie wołać .IndexOf() 500 razy w pętli
-        var activeModsLookup = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        if (modsConfig?.ActiveMods != null)
-        {
-            for (int i = 0; i < modsConfig.ActiveMods.Count; i++)
-            {
-                var id = modsConfig.ActiveMods[i].ToLower();
-                if (!activeModsLookup.ContainsKey(id)) // Zabezpieczenie przed błędami w pliku XML
-                    activeModsLookup[id] = i;
-            }
-        }
+    //        // Usuwamy ze słownika, by wiedzieć co zostało (opcjonalne)
+    //        dictionary.Remove(id);
+    //    }
 
-        // 3. Indeksowanie Cache/Data (PackageId -> ModDataModel)
-        var cacheLookup = modsData?.ModDataList?
-            .Where(x => !string.IsNullOrEmpty(x.PackageId))
-            .GroupBy(x => x.PackageId) // Na wypadek duplikatów w cache
-            .ToDictionary(g => g.Key!, g => g.First(), StringComparer.OrdinalIgnoreCase)
-            ?? new Dictionary<string, ModDataModel>();
+    //    // 4. Zwróć resztę (np. mody aktywne, których nie ma fizycznie na dysku)
+    //    foreach (var remaining in dictionary.Values)
+    //    {
+    //        yield return remaining;
+    //    }
 
-        // 4. Dynamiczne skanowanie plików (Lazy Loading)
-        // Używamy HashSet do śledzenia wysłanych ID (obsługa duplikatów fizycznych)
-        var processedIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    //    LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
+    //}
 
-        foreach (var mod in FindRimWorldAllMods()) // Zakładamy, że zwraca yield return ModModel
-        {
-            var packageId = mod.About?.PackageId;
+    //public IEnumerable<ModModel> LoadMods3_2(string? path = null)
+    //{
+    //    // 1. Ładowanie surowych danych (Metadata)
+    //    var modsConfig = LoadModsConfig(path);
+    //    var modsData = LoadModData();
 
-            if (!string.IsNullOrEmpty(packageId))
-            {
-                // Łączenie z Configiem
-                if (activeModsLookup.TryGetValue(packageId, out int pos))
-                {
-                    mod.Selected = true;
-                    mod.Position = pos;
-                }
+    //    // 2. Indeksowanie Configa (PackageId -> Pozycja)
+    //    // Używamy słownika, aby nie wołać .IndexOf() 500 razy w pętli
+    //    var activeModsLookup = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+    //    if (modsConfig?.ActiveMods != null)
+    //    {
+    //        for (int i = 0; i < modsConfig.ActiveMods.Count; i++)
+    //        {
+    //            var id = modsConfig.ActiveMods[i].ToLower();
+    //            if (!activeModsLookup.ContainsKey(id)) // Zabezpieczenie przed błędami w pliku XML
+    //                activeModsLookup[id] = i;
+    //        }
+    //    }
 
-                // Łączenie z Cache
-                if (cacheLookup.TryGetValue(packageId, out var data))
-                {
-                    mod.Data = data;
-                }
+    //    // 3. Indeksowanie Cache/Data (PackageId -> ModDataModel)
+    //    var cacheLookup = modsData?.ModDataList?
+    //        .Where(x => !string.IsNullOrEmpty(x.PackageId))
+    //        .GroupBy(x => x.PackageId) // Na wypadek duplikatów w cache
+    //        .ToDictionary(g => g.Key!, g => g.First(), StringComparer.OrdinalIgnoreCase)
+    //        ?? new Dictionary<string, ModDataModel>();
 
-                processedIds.Add(packageId);
-            }
+    //    // 4. Dynamiczne skanowanie plików (Lazy Loading)
+    //    // Używamy HashSet do śledzenia wysłanych ID (obsługa duplikatów fizycznych)
+    //    var processedIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            yield return mod;
-        }
+    //    foreach (var mod in FindRimWorldAllMods()) // Zakładamy, że zwraca yield return ModModel
+    //    {
+    //        var packageId = mod.About?.PackageId;
 
-        // 5. ETAP DODATKOWY: Mody wirtualne (widoczne w configu, ale brak ich na dysku)
-        foreach (var activeId in activeModsLookup.Keys)
-        {
-            if (!processedIds.Contains(activeId))
-            {
-                yield return new ModModel
-                {
-                    About = new AboutModel { PackageId = activeId },
-                    Selected = true,
-                    Position = activeModsLookup[activeId],
-                    // Flaga informująca, że mod jest "duchem"
-                    Local = false
-                };
-            }
-        }
-    }
+    //        if (!string.IsNullOrEmpty(packageId))
+    //        {
+    //            // Łączenie z Configiem
+    //            if (activeModsLookup.TryGetValue(packageId, out int pos))
+    //            {
+    //                mod.Selected = true;
+    //                mod.Position = pos;
+    //            }
+
+    //            // Łączenie z Cache
+    //            if (cacheLookup.TryGetValue(packageId, out var data))
+    //            {
+    //                mod.Data = data;
+    //            }
+
+    //            processedIds.Add(packageId);
+    //        }
+
+    //        yield return mod;
+    //    }
+
+    //    // 5. ETAP DODATKOWY: Mody wirtualne (widoczne w configu, ale brak ich na dysku)
+    //    foreach (var activeId in activeModsLookup.Keys)
+    //    {
+    //        if (!processedIds.Contains(activeId))
+    //        {
+    //            yield return new ModModel
+    //            {
+    //                About = new AboutModel { PackageId = activeId },
+    //                Selected = true,
+    //                Position = activeModsLookup[activeId],
+    //                // Flaga informująca, że mod jest "duchem"
+    //                Local = false
+    //            };
+    //        }
+    //    }
+    //}
 
     public IEnumerable<ModModel> LoadModMetaData(string? path = null)
     {
