@@ -466,7 +466,7 @@ public class ModsServices
             c.Add(("SteamId", m => m.About?.SteamId));
             c.Add(("Name", m => m.Label));
             c.Add(("Path", m => m.Path));
-            c.Add(("Autors", m => m.About?.Author));
+            c.Add(("Autors", m => m.About?.Authors));
             c.Add(("Versions", m => m.Versions));
             c.Add(("Color", m => m.Data?.Color));
             c.Add(("Color", m => m.Data?.Comment));

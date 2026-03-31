@@ -1,6 +1,5 @@
 ﻿using KeeperBaseLib.Helper;
 using RimKeeperModOrganizerLib.Models;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace RimKeeperModOrganizerLib.Helpers;
@@ -27,31 +26,38 @@ public static class XMLHelper
             {
                 Url = root.Element("url")?.Value,
                 Name = root.Element("name")?.Value,
-                Author = root.Element("author")?.Value,
                 PackageId = root.Element("packageId")?.Value.ToLower(),
                 Description = root.Element("description")?.Value,
+                    Authors = string.Join(", ",
+                        new[] { root.Element("author")?.Value }
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .Concat(
+                            root.Element("authors")?
+                                .Elements("li")
+                                .Select(e => e.Value)
+                            ?? Enumerable.Empty<string>()
+                        )),
                 SupportedVersions = root.Element("supportedVersions")?
-                                        .Elements("li")
-                                        .Select(e => e.Value).ToList() ?? new List<string>(),
+                    .Elements("li")
+                    .Select(e => e.Value).ToList() ?? new List<string>(),
                 LoadAfter = root.Element("loadAfter")?
-                                        .Elements("li")
-                                        .Select(e => e.Value).ToList() ?? new List<string>(),
+                    .Elements("li")
+                    .Select(e => e.Value).ToList() ?? new List<string>(),
                 LoadBefore = root.Element("loadBefore")?
-                                        .Elements("li")
-                                        .Select(e => e.Value).ToList() ?? new List<string>(),
+                    .Elements("li")
+                    .Select(e => e.Value).ToList() ?? new List<string>(),
                 IncompatibleWith = root.Element("incompatibleWith")?
-                                        .Elements("li")
-                                        .Select(e => e.Value).ToList() ?? new List<string>(),
-
+                    .Elements("li")
+                    .Select(e => e.Value).ToList() ?? new List<string>(),
                 ModDependencies = root.Element("modDependencies")?
-                                        .Elements("li")
-                                        .Select(e => new ModDependency
-                                        {
-                                            PackageId = e.Element("packageId")?.Value.ToLower(),
-                                            DisplayName = e.Element("displayName")?.Value,
-                                            DownloadUrl = e.Element("downloadUrl")?.Value,
-                                            SteamWorkshopUrl = e.Element("steamWorkshopUrl")?.Value,
-                                        }).ToList() ?? new List<ModDependency>()
+                    .Elements("li")
+                    .Select(e => new ModDependency
+                    {
+                        PackageId = e.Element("packageId")?.Value.ToLower(),
+                        DisplayName = e.Element("displayName")?.Value,
+                        DownloadUrl = e.Element("downloadUrl")?.Value,
+                        SteamWorkshopUrl = e.Element("steamWorkshopUrl")?.Value,
+                    }).ToList() ?? new List<ModDependency>()
             };
 
             return meta;
@@ -82,13 +88,13 @@ public static class XMLHelper
             {
                 Version = root.Element("version")?.Value,
                 ActiveMods = root.Element("activeMods")?
-                                .Elements("li")
-                                .Select(e => e.Value)
-                                .ToList() ?? new List<string>(),
+                    .Elements("li")
+                    .Select(e => e.Value)
+                    .ToList() ?? new List<string>(),
                 KnownExpansions = root.Element("knownExpansions")?
-                                .Elements("li")
-                                .Select(e => e.Value)
-                                .ToList() ?? new List<string>()
+                    .Elements("li")
+                    .Select(e => e.Value)
+                    .ToList() ?? new List<string>()
             };
 
             return model;

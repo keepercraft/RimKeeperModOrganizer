@@ -3,7 +3,7 @@
 public class AboutModel
 {
     public string? Name { get; set; }
-    public string? Author { get; set; }
+    public string? Authors { get; set; }
     public string? SteamId { get; set; }
     public string? PackageId { get; set; }
     public List<string>? SupportedVersions { get; set; }

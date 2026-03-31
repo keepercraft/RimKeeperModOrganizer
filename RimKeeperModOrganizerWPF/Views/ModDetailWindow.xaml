@@ -82,7 +82,7 @@
                 </DockPanel>
                 <DockPanel>
                     <TextBlock Text="Author:"/>
-                    <TextBox Text="{Binding SelectedMod.About.Author,Mode=OneWay}"/>
+                    <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
                 </DockPanel>
                 <DockPanel>
                     <TextBlock Text="Package ID:"/>

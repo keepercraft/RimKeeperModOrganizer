@@ -184,7 +184,7 @@
                     Width="*"
                 />
                 <kdg:FilterableTextColumn
-                    Binding="{Binding About.Author}"
+                    Binding="{Binding About.Authors}"
                     Key="author"                      
                     Header="Author"
                 />
@@ -224,12 +224,12 @@
                     Visibility="{Binding Data.ModColumnData[label].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"
                 />
                 <kdg:FilterableTextColumn
-                    Binding="{Binding About.Author}"
+                    Binding="{Binding About.Authors}"
                     Key="Author"                      
                     Header="Autor_OLD"
                 />
                 --><!--<kdg:FilterableTextColumn IsReadOnly="True"
-                    Binding="{Binding About.Author}"
+                    Binding="{Binding About.Authors}"
                     Key="Author"                      
                     Header="Autor"
                     Width="{Binding Data.ModColumnData[author].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
@@ -423,7 +423,7 @@
                     Padding="5"/>
                 
                 <TextBlock Text="Author:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.Author,Mode=OneWay}"/>
+                <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
                 <TextBlock Text="PackageId:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}"/>
                 <TextBlock Text="SteamId:" FontWeight="Bold"/>
