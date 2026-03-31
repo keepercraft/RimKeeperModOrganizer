@@ -4,6 +4,60 @@ namespace RimKeeperModOrganizerLib.Extensions;
 
 public static class ModExtension
 {
+    public static void AlertUpdate(List<string> alerts, string alert, Func<bool> condition)
+    {
+        if (condition())
+            if (!alerts.Contains(alert))
+                alerts.Add(alert);
+        else
+            if (alerts.Contains(alert))
+                alerts.Remove(alert);
+    }
+
+    public static void ModListDuplicateValidation(this IEnumerable<ModModel> modlist)
+    {
+        foreach (var mod in modlist)
+        {
+            string alert_missing_path = "Missing Path:" + mod.Label;
+            if (string.IsNullOrEmpty(mod.Path))
+            {
+                if (!mod.Alert.Contains(alert_missing_path))
+                    mod.Alert.Add(alert_missing_path);
+                continue;
+            }
+            else
+            {
+                if (mod.Alert.Contains(alert_missing_path))
+                    mod.Alert.Remove(alert_missing_path);
+            }
+
+            string alert_missing_pack = "Missing PackageID:" + mod.Label;
+            if (string.IsNullOrEmpty(mod.About?.PackageId))
+            {
+                if (!mod.Alert.Contains(alert_missing_pack))
+                    mod.Alert.Add(alert_missing_pack);
+                continue;
+            }
+            else
+            {
+                if (mod.Alert.Contains(alert_missing_pack))
+                    mod.Alert.Remove(alert_missing_pack);
+            }
+
+            string alert_duplicate = "Duplicate PackageID:" + mod.Label;          
+            if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
+            {
+                if (!mod.Alert.Contains(alert_duplicate))
+                    mod.Alert.Add(alert_duplicate);
+            }
+            else
+            {
+                if (mod.Alert.Contains(alert_duplicate))
+                    mod.Alert.Remove(alert_duplicate);
+            }
+        }
+    }
+
     public static void ModListValidation(this IEnumerable<ModModel> modlist, string? version = null)
     {
         int index = 0;

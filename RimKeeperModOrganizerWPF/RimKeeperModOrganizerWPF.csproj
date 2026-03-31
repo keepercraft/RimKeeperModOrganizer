@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Themes\" />
     <Folder Include="Services\" />
   </ItemGroup>

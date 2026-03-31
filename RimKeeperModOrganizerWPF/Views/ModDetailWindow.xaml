@@ -85,16 +85,6 @@
                     <TextBox Text="{Binding SelectedMod.About.Author,Mode=OneWay}"/>
                 </DockPanel>
                 <DockPanel>
-                    <TextBlock Text="Url:"/>
-                    <TextBox Text="{Binding SelectedMod.About.Url,Mode=OneWay}" Cursor="Hand">
-                        <TextBox.InputBindings>
-                            <MouseBinding MouseAction="LeftDoubleClick"
-                                Command="{Binding OpenLinkCommand}"
-                                CommandParameter="{Binding SelectedMod.About.Url}"/>
-                        </TextBox.InputBindings>
-                    </TextBox>
-                </DockPanel>
-                <DockPanel>
                     <TextBlock Text="Package ID:"/>
                     <TextBox Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}"/>
                 </DockPanel>
@@ -105,6 +95,26 @@
                 <DockPanel>
                     <TextBlock Text="SupportedVersions:"/>
                     <TextBox Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock Text="Path:"/>
+                    <TextBox Text="{Binding SelectedMod.Path,Mode=OneWay}" Cursor="Hand">
+                        <TextBox.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick"
+                                Command="{Binding OpenLinkCommand}"
+                                CommandParameter="{Binding SelectedMod.Path}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock Text="Url:"/>
+                    <TextBox Text="{Binding SelectedMod.About.Url,Mode=OneWay}" Cursor="Hand">
+                        <TextBox.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick"
+                                Command="{Binding OpenLinkCommand}"
+                                CommandParameter="{Binding SelectedMod.About.Url}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </DockPanel>
                 <!--<DockPanel>
                     <TextBlock Padding="3" Width="150" Text="SupportedVersions:" FontWeight="Bold" TextAlignment="Right"/>
@@ -121,7 +131,6 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </DockPanel>-->
-
                 <DockPanel>
                     <TextBlock Text="ModDependencies:"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}">

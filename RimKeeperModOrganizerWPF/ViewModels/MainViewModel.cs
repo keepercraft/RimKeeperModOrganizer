@@ -104,6 +104,25 @@ public class MainViewModel : PropertyModel, IDropTarget
     }
     #endregion
 
+    public void LoadMods_test(string? path = null)
+    {
+        Task.Run(() =>
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Items.Clear();
+            });          
+            foreach (var item in _modsServices.LoadMods3_1(path))
+            {
+                if (item != null)
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        Items.Add(item);
+                    });
+            }
+        });
+    }
+
     public void LoadMods(string? path = null)
     {
         Task.Run(() =>
@@ -116,36 +135,56 @@ public class MainViewModel : PropertyModel, IDropTarget
                 //ModsConfigCollection.Clear();
                 //ModsCollection.Clear();
                 Items.Clear();
-                ModsConfigCollection.CollectionChanged -= ModsConfigCollection_CollectionChanged;
+                //ModsConfigCollection.CollectionChanged -= ModsConfigCollection_CollectionChanged;
                 //AlertPropertyChanged();
             });
-            foreach (var item in _modsServices.LoadMods2(path))
+
+            var metaData = _modsServices.LoadModMetaData(path).ToList();
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (var item in metaData)
+                        Items.InsertInOrder(item, c => c.Position);
+                    AlertPropertyChanged();
+                });
+            foreach (var item in _modsServices.LoadModLazy())
             {
-                if (item != null)
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        Items.InsertInOrder(item, c=>c.Position);
-                        // Items.Add(item);
-                        //  AlertPropertyChanged();
-                        //AllMods.Add(item);
-                        /*
-                        if (item.Selected)
-                        {
-                            ModsConfigCollection.Add(item);
-                            AlertPropertyChanged();
-                        }
-                        else
-                            ModsCollection.Add(item);
-                        */
-                    });
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    _modsServices.ModModelSetLods(Items, item);
+                    AlertPropertyChanged();
+                });
             }
+
+            //foreach (var item in _modsServices.LoadModMetaData(path))
+            //{
+            //    if (item != null)
+            //        App.Current.Dispatcher.Invoke(() =>
+            //        {
+            //            Items.InsertInOrder(item, c => c.Position);
+            //            // Items.Add(item);
+            //            //  AlertPropertyChanged();
+            //            //AllMods.Add(item);
+            //            /*
+            //            if (item.Selected)
+            //            {
+            //                ModsConfigCollection.Add(item);
+            //                AlertPropertyChanged();
+            //            }
+            //            else
+            //                ModsCollection.Add(item);
+            //            */
+            //        });
+            //}
+
+            Items.ModListDuplicateValidation();
+            ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
+            
             App.Current.Dispatcher.Invoke(() =>
             {
                 // Items.Where(w => w.Position != null).SortBy(s => s.Position, s => s.Position >= 0);
                 //SortAndAssignIndexes(ModsConfigCollection);
-                ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
+                //ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
                 LoadData(Items);
-                ModsConfigCollection.CollectionChanged += ModsConfigCollection_CollectionChanged;
                 RaisePropertyChanged(nameof(IsUIListEnabled));
                 AlertPropertyChanged();
                 LoadingUI = false;

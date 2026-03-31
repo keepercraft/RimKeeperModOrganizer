@@ -108,6 +108,7 @@
                 <MenuItem Header="Options" Command="{Binding OptionsCommand}"/>
             </MenuItem>
             <MenuItem Header="[Test]" Command="{Binding TestCommand}"/>
+            <MenuItem Header="{Binding ModsCollection.Count, StringFormat='- {0}'}" HorizontalAlignment="Right" />
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5">
             <MenuItem Header="{Binding GetModConfigStaticLable}" Background="{Binding GetModConfigStaticColor}">
@@ -388,7 +389,7 @@
                     </Style>
                 </StackPanel.Resources>
                 
-                <Image Source="{Binding SelectedMod.ThumbnailPath}" Stretch="UniformToFill" Margin="0,0,0,10" MaxHeight="300"/>
+                <Image Source="{Binding SelectedMod.ThumbnailPath}" Stretch="Uniform" Margin="0,0,0,10" MaxHeight="300"/>
 
                 <TextBox Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18" Cursor="Hand">
                     <TextBox.InputBindings>
@@ -423,6 +424,20 @@
                 
                 <TextBlock Text="Author:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.Author,Mode=OneWay}"/>
+                <TextBlock Text="PackageId:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}"/>
+                <TextBlock Text="SteamId:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+                <TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+                <TextBlock Text="Path:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.Path,Mode=OneWay}" Cursor="Hand">
+                    <TextBox.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick"
+                                Command="{Binding OpenLinkCommand}"
+                                CommandParameter="{Binding SelectedMod.Path}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
                 <TextBlock Text="Url:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.Url,Mode=OneWay}" Cursor="Hand">
                     <TextBox.InputBindings>
@@ -431,12 +446,6 @@
                                 CommandParameter="{Binding SelectedMod.About.Url}"/>
                     </TextBox.InputBindings>
                 </TextBox>
-                <TextBlock Text="PackageId:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}"/>
-                <TextBlock Text="SteamId:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
-                <TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
                 <!--<TextBlock>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.SupportedVersions}">
                         <ItemsControl.ItemsPanel>
