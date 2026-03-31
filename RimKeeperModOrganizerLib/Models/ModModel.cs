@@ -9,7 +9,7 @@ public class ModModel : PropertyModel
     public string? Path { get; set; }
     public bool? Local { get; set; }
     public AboutModel? About { get; set; }
-    public ModDataModel? Data { get; set; }
+    public ModDataModel? Data { get; set; }// = new();
 
     public string? ThumbnailPath { get; set; }
 

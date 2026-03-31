@@ -44,18 +44,26 @@ public class MainViewModel : PropertyModel, IDropTarget
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
 
+    private readonly JsonAutoSaver _autoSaver;
     private readonly ModsServices _modsServices;
     private readonly SettingsService _settingsService;
     public MainViewModel(ModsServices modsServices, SettingsService SettingsService)
     {
         _modsServices = modsServices;
         _settingsService = SettingsService;
+        _autoSaver = new JsonAutoSaver(
+            () => DataChanged,
+            js => _modsServices.SaveLocalData(Items),
+            JsonHelper.Options,
+            true);
+        _autoSaver.Calculate(false);
 
         ModColumnData.BindToSettings(ModsCollectionColumns);
         ModsCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsCollection.CombineFilters(LeftViewFilter);
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsConfigCollection.CombineFilters(RightViewFilter);
+        Items.CollectionChanged += Items_CollectionChanged;
     }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;
@@ -93,7 +101,17 @@ public class MainViewModel : PropertyModel, IDropTarget
     public bool IsModsConfigAlert => Items.Where(x => x.Alert != null).Any(x => x.Alert.Any());
     public List<string> ListModsConfigAlert => Items.Where(x => x.Alert != null).SelectMany(x => x.Alert).ToList();
     public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
-    public string GetModConfigStaticLable => string.Format("Mods ({0}/{1})", ModsConfigCollection.Cast<object>().Count(), ModsCollection.Cast<object>().Count());
+    public string GetModConfigStaticLable
+    {
+        get
+        {
+            var alerts = Items.Sum(c => c.Alert.Count);
+            return string.Format("Mods ({0}/{1}) {2}"
+                , ModsConfigCollection.Cast<object>().Count()
+                , Items.Count()
+                , alerts > 0 ? $"!({alerts})" : "");
+        }
+    }
     public void AlertPropertyChanged()
     {
         RaisePropertyChanged(nameof(ListModsConfigAlert));
@@ -128,7 +146,7 @@ public class MainViewModel : PropertyModel, IDropTarget
     }
     public void LoadMods(string? path = null) => ModCollectionUpdate(() =>
     {
-        App.Current.Dispatcher.Invoke(() => Items.Clear());
+        App.Current.Dispatcher.Invoke(() => Items.ClearSyncProperties(Data_PropertyChanged, c => c?.Data));
 
         var metaData = _modsServices.LoadModMetaData(path).ToList();
         App.Current.Dispatcher.Invoke(() =>
@@ -154,14 +172,21 @@ public class MainViewModel : PropertyModel, IDropTarget
         App.Current.Dispatcher.Invoke(() =>
         {
             Items.AddOrUpdate(metaData);
-           // foreach (var item in Items)
-           //     item.Position = metaData?.Position(item.About?.PackageId);
         });
     });
-    
+    public void LoadModsData(string? path = null) => ModCollectionUpdate(() =>
+    {
+        var metaData = _modsServices.LoadModData(path);
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            Items.AddOrUpdate(metaData);
+            LoadData(Items);
+        });
+    });
+
     public void LoadData(IEnumerable<ModModel> modlist)
     {
-        var data = modlist.Select(s => s.Data).Where(s => s != null);
+        var data = modlist.Select(s => s.Data).Where(s => s.IsNotNull());
         foreach (var item in data.SelectMany(s => s.Groups).Where(w => !string.IsNullOrEmpty(w)).Distinct())
             if (!ModGroups.Contains(item))
                 ModGroups.Add(item);
@@ -169,6 +194,12 @@ public class MainViewModel : PropertyModel, IDropTarget
             if (!ModColors.Contains(item))
                 ModColors.Add(item);
     }
+    public bool DataChanged = false;
+    private void Data_PropertyChanged(object? sender, PropertyChangedEventArgs e) 
+        => DataChanged = true;
+    private void Items_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        => e.SyncProperties<ModModel>(Data_PropertyChanged, c => c?.Data);
+
 
     #region CustomCommand
     public CustomCommand OpenSteamLinkCommand => new CustomCommand(FileHelper.OpenSteamLink);

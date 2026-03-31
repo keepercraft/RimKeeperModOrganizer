@@ -1,6 +1,7 @@
 ﻿using KeeperBaseLib.Model;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 namespace RimKeeperModOrganizerLib.Models;
 
@@ -67,26 +68,5 @@ public class ModDataModel : PropertyModel
                 OnPropertyChanged();
             }
         }
-    }
-}
-
-public static class ModDataModelExtension
-{
-    public static bool IsNotNull(this ModDataModel? model)
-        => !IsNull(model);
-    public static bool IsNull(this ModDataModel? model) 
-        => model == null || (
-            string.IsNullOrEmpty(model.Color) 
-            && !model.Groups.Any() 
-            && !model.PackageGroups.Any() 
-            && string.IsNullOrEmpty(model.Comment)
-        );
-
-    public static void Clear(this ModDataModel model)
-    {
-        model.Color = null;
-        model.Comment = null;
-        model.Groups.Clear();
-        model.PackageGroups.Clear();
     }
 }

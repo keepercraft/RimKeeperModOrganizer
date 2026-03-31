@@ -1,4 +1,5 @@
-﻿using RimKeeperModOrganizerWPF.ViewModels;
+﻿using RimKeeperModOrganizerLib.Extensions;
+using RimKeeperModOrganizerWPF.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -23,6 +24,7 @@ public partial class ChangeColorWindow : Window
         set
         {
             if (DataContext is not MainViewModel vm) return;
+            if (vm.SelectedMod?.Data == null) vm.SelectedMod?.MakeData();
             if (vm.SelectedMod?.Data == null) return;
             vm.SelectedMod.Data.Color = value;
         }

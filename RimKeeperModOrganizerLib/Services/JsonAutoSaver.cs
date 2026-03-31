@@ -17,6 +17,7 @@ public class JsonAutoSaver
         Func<object> getData, 
         Action<string> saveAction,
         JsonSerializerOptions? jsonOptions = null,
+        bool autoStart = false,
         double intervalMs = 10000)
     {
         _jsonOptions = jsonOptions;
@@ -25,7 +26,7 @@ public class JsonAutoSaver
 
         _timer = new Timer(intervalMs);
         _timer.Elapsed += Timer_Elapsed;
-        _timer.AutoReset = true;
+        _timer.AutoReset = autoStart;
         _timer.Start();
     }
 
@@ -37,6 +38,8 @@ public class JsonAutoSaver
         Timer_Elapsed();
         Restart();
     }
+    public void Stop() => _timer.Stop();
+    public void Start() => _timer.Start();
     public void Restart()
     {
         _timer.Stop();

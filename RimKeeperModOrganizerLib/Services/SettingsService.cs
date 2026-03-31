@@ -16,7 +16,8 @@ public class SettingsService
         _autoSaver = new JsonAutoSaver(
             () => DataSettings, 
             js => File.WriteAllText(PathSettings, js), 
-            JsonHelper.Options);
+            JsonHelper.Options,
+            true);
         StartLoad();
     }
 

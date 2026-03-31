@@ -1,8 +1,6 @@
 ﻿using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
-using System.Collections;
-using System.Collections.Generic;
 using FileHelper = RimKeeperModOrganizerLib.Helpers.FileHelper;
 namespace RimKeeperModOrganizerLib.Services;
 
@@ -321,7 +319,7 @@ public class ModsServices
         ModsConfigModel? mods = XMLHelper.LoadModsConfig(aboutPath);
         if (mods == null) return;
         mods.Version = _settingsService.Settings.GameVersion;
-        mods.ActiveMods = modlist.Where(x => x.Data != null).Select(x => x.Data.PackageId).ToList();
+        mods.ActiveMods = modlist.OrderBy(x => x.Position).Select(x => x.About.PackageId).Where(x => !string.IsNullOrEmpty(x)).ToList();
         XMLHelper.SaveModsConfig(path??aboutPath, mods);
         
     }
@@ -331,7 +329,7 @@ public class ModsServices
         // LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
         //  modsData.ModDataList.Clear();
         LocalDataListModel modsData = new LocalDataListModel();
-        foreach (var item in modlist.Where(x => x.Data != null).Where(x => x.Data.IsNotNull()))
+        foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
         {
             modsData.ModDataList.Add(item.Data);
         }     
