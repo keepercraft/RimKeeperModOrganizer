@@ -1,6 +1,6 @@
 ﻿namespace RimKeeperModOrganizerLib.Models;
 
-public class AboutModel
+public record AboutModel
 {
     public string? Name { get; set; }
     public string? Authors { get; set; }
@@ -15,10 +15,11 @@ public class AboutModel
     public string? Url { get; set; }
 }
 
-public class ModDependency
+public record ModDependency
 {
     public string? PackageId { get; set; }
     public string? DisplayName { get; set; }
     public string? DownloadUrl { get; set; }
     public string? SteamWorkshopUrl { get; set; }
 }
+ 

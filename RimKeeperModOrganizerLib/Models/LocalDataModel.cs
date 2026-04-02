@@ -1,7 +1,6 @@
 ﻿using KeeperBaseLib.Model;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Text.Json.Serialization;
 namespace RimKeeperModOrganizerLib.Models;
 
@@ -12,21 +11,39 @@ public class LocalDataListModel
 
 public class ModDataModel : PropertyModel
 {
-    public ModDataModel()
+    private ObservableCollection<string> _groups = new();
+    public ObservableCollection<string> Groups
     {
-        Groups.CollectionChanged += Groups_CollectionChanged;
-        PackageGroups.CollectionChanged += PackageGroups_CollectionChanged;
+        get => _groups;
+        set
+        {
+            if (ReferenceEquals(_groups, value))  return;
+            _groups.CollectionChanged -= Groups_CollectionChanged;
+            _groups = value ?? new();
+            _groups.CollectionChanged += Groups_CollectionChanged;
+            RaisePropertyChanged(nameof(Group));
+        }
     }
-
-    public ObservableCollection<string> Groups { get; set; } = new();
-    [JsonIgnore]
-    public string? Group => (Groups != null && Groups.Any()) ? string.Join(",", Groups) : null;
     private void Groups_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(Group));
-
-    public ObservableCollection<string> PackageGroups { get; set; } = new();
     [JsonIgnore]
-    public string? PackageGroup => (PackageGroups != null && PackageGroups.Any()) ? string.Join(",", PackageGroups) : null;
+    public string? Group => _groups.Count > 0 ? string.Join(",", _groups) : null;
+
+    private ObservableCollection<string> _packageGroups = new();
+    public ObservableCollection<string> PackageGroups
+    {
+        get => _packageGroups;
+        set
+        {
+            if (ReferenceEquals(_packageGroups, value)) return;
+            _packageGroups.CollectionChanged -= PackageGroups_CollectionChanged;
+            _packageGroups = value ?? new();
+            _packageGroups.CollectionChanged += PackageGroups_CollectionChanged;
+            RaisePropertyChanged(nameof(PackageGroup));
+        }
+    }
     private void PackageGroups_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(PackageGroup));
+    [JsonIgnore]
+    public string? PackageGroup => _packageGroups.Count > 0 ? string.Join(",", _packageGroups) : null;
 
     private string? _PackageId = null;
     public string? PackageId
@@ -34,11 +51,9 @@ public class ModDataModel : PropertyModel
         get => _PackageId;
         set
         {
-            if (_PackageId != value)
-            {
-                _PackageId = value;
-                OnPropertyChanged();
-            }
+            if (_PackageId == value) return;          
+            _PackageId = value;
+            OnPropertyChanged();          
         }
     }
 
@@ -48,11 +63,9 @@ public class ModDataModel : PropertyModel
         get => _Color;
         set
         {
-            if (_Color != value)
-            {
-                _Color = value;
-                OnPropertyChanged();
-            }
+            if (_Color == value) return;
+            _Color = value;
+            OnPropertyChanged();           
         }
     }
 
@@ -62,11 +75,9 @@ public class ModDataModel : PropertyModel
         get => _Comment;
         set
         {
-            if (_Comment != value)
-            {
-                _Comment = value;
-                OnPropertyChanged();
-            }
+            if (_Comment == value) return;          
+            _Comment = value;
+            OnPropertyChanged();          
         }
     }
 }

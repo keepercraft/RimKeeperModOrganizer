@@ -1,6 +1,6 @@
 ﻿namespace RimKeeperModOrganizerLib.Models;
 
-public class ModsConfigModel
+public record ModsConfigModel
 {
     public string? Version { get; set; }
     public List<string> ActiveMods { get; set; } = new();
