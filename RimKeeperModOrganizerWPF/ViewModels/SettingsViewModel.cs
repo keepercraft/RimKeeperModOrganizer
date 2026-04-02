@@ -1,4 +1,5 @@
 ﻿using KeeperBaseLib.Model;
+using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
 using RimKeeperModOrganizerWPF.Views.Extensions;
@@ -30,4 +31,5 @@ public class SettingsViewModel : PropertyModel
     }
     public CustomCommand SaveCommand => new CustomCommand(p => Close(true));
     public CustomCommand CancelCommand => new CustomCommand(p => Close());
+    public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
 }
