@@ -1,10 +1,32 @@
 ﻿using KeeperBaseLib.Model;
+using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Helpers;
 namespace RimKeeperModOrganizerLib.Models;
 
 public class ModModel : PropertyModel
 {
-    public string Label => About?.Name ?? About?.PackageId ?? "??";
+    public string ModId { get; set; } = string.Empty;
+    public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(ModId);
+    public override bool Equals(object? obj) => obj is ModModel m && StringComparer.Ordinal.Equals(ModId, m.ModId);
+
+
+    public ModModel()
+    {
+        ModId = this.GenKey();
+    }
+    public ModModel(string path, bool local = false)
+    {
+        Path = path;
+        if (!Directory.Exists(Path)) return;
+        About = XMLHelper.LoadAboutFromModPath(path);
+        if (About == null) return;
+        ThumbnailPath = FileHelper.GetModPreview(path);
+        About.SteamId = FileHelper.GetModPublishID(path);
+        Local = local;
+        ModId = this.GenKey();
+    }
+
+    public string Label => About?.Name ?? About?.PackageId ?? ModId ?? "??";
 
     public string? Path { get; set; }
     public bool? Local { get; set; }
@@ -25,28 +47,16 @@ public class ModModel : PropertyModel
 
     public string? SteamLink => String.IsNullOrEmpty(About?.SteamId) ? null : string.Format(@"https://steamcommunity.com/sharedfiles/filedetails/?id={0}", About?.SteamId);
 
-    public ModModel() 
-    {
-    }
-    public ModModel(string path, bool local = false)
-    {
-        Path = path;
-        if (!Directory.Exists(Path)) return;
-        About = XMLHelper.LoadAboutFromModPath(path);
-        if (About == null) return;
-        ThumbnailPath = FileHelper.GetModPreview(path);
-        About.SteamId = FileHelper.GetModPublishID(path);
-        Local = local;
-    }
 
-    public void TrySet(LocalDataListModel modelList)
-    {
-        if (string.IsNullOrEmpty(About?.PackageId)) return;
-        foreach (ModDataModel item in modelList.ModDataList.Where(w => w.PackageId == About.PackageId))
-        {
-            Data = item;
-            return;
-        }
-        Data = new ModDataModel() { PackageId = About.PackageId };
-    }
+
+    //public void TrySet(LocalDataListModel modelList)
+    //{
+    //    if (string.IsNullOrEmpty(About?.PackageId)) return;
+    //    foreach (ModDataModel item in modelList.ModDataList.Where(w => w.PackageId == About.PackageId))
+    //    {
+    //        Data = item;
+    //        return;
+    //    }
+    //    Data = new ModDataModel() { PackageId = About.PackageId };
+    //}
 }

@@ -388,7 +388,10 @@
                     BorderBrush="Gray"
                     BorderThickness="1"
                     Padding="5"/>
-                
+
+                <TextBlock Text="ModID Key:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.ModId,Mode=OneWay}"/>
+
                 <TextBlock Text="Author:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
                 <TextBlock Text="PackageId:" FontWeight="Bold"/>

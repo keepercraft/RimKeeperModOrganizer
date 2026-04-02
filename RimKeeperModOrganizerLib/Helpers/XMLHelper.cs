@@ -136,56 +136,56 @@ public static class XMLHelper
     }
 
 
-    public static LocalDataListModel? LoadLocalData(string filePath)
-    {
-        if (!File.Exists(filePath)) return null;
-        try
-        {
-            var model = new LocalDataListModel();
-            var doc = XDocument.Load(filePath);
-            var root = doc.Root;
-            doc.Root?
-                .Elements("Mod")
-                .Select(x =>
-                {
-                    var m = new ModDataModel
-                    {
-                        PackageId = (string?)x.Element("PackageId"),
-                        Color = (string?)x.Element("Color"),
-                        //Group = (string?)x.Element("Group"),
-                    };
-                    foreach (var s in x.Elements("Groups"))
-                    {
-                        m.Groups.Add(s.Value);
-                    }
-                    return m;
-                })
-                .Each(x => model.ModDataList.Add(x));
-                //.ToList() ?? new List<ModDataModel>();
-            return model;// new LocalDataListModel { ModDataList = modList };
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Błąd parsowania LoadLocalData: {ex.Message}");
-            return null;
-        }
-    }
+    //public static LocalDataListModel? LoadLocalData(string filePath)
+    //{
+    //    if (!File.Exists(filePath)) return null;
+    //    try
+    //    {
+    //        var model = new LocalDataListModel();
+    //        var doc = XDocument.Load(filePath);
+    //        var root = doc.Root;
+    //        doc.Root?
+    //            .Elements("Mod")
+    //            .Select(x =>
+    //            {
+    //                var m = new ModDataModel
+    //                {
+    //                    PackageId = (string?)x.Element("PackageId"),
+    //                    Color = (string?)x.Element("Color"),
+    //                    //Group = (string?)x.Element("Group"),
+    //                };
+    //                foreach (var s in x.Elements("Groups"))
+    //                {
+    //                    m.Groups.Add(s.Value);
+    //                }
+    //                return m;
+    //            })
+    //            .Each(x => model.ModDataList.Add(x));
+    //            //.ToList() ?? new List<ModDataModel>();
+    //        return model;// new LocalDataListModel { ModDataList = modList };
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"Błąd parsowania LoadLocalData: {ex.Message}");
+    //        return null;
+    //    }
+    //}
 
-    public static void SaveLocalData(LocalDataListModel data, string filePath)
-    {
-        var doc = new XDocument(
-            new XElement("Mods",
-                data.ModDataList.Select(m =>
-                    new XElement("Mod",
-                        new XElement("PackageId", m.PackageId ?? string.Empty),                      
-                        new XElement("Color", m.Color ?? string.Empty),
-                        //new XElement("Group", m.Group ?? string.Empty),
-                        new XElement("Groups", m.Groups.Select(i => new XElement("Group", i)))
-                    )
-                )
-            )
-        );
-        doc.Save(filePath);
-    }
+    //public static void SaveLocalData(LocalDataListModel data, string filePath)
+    //{
+    //    var doc = new XDocument(
+    //        new XElement("Mods",
+    //            data.ModDataList.Select(m =>
+    //                new XElement("Mod",
+    //                    new XElement("PackageId", m.PackageId ?? string.Empty),                      
+    //                    new XElement("Color", m.Color ?? string.Empty),
+    //                    //new XElement("Group", m.Group ?? string.Empty),
+    //                    new XElement("Groups", m.Groups.Select(i => new XElement("Group", i)))
+    //                )
+    //            )
+    //        )
+    //    );
+    //    doc.Save(filePath);
+    //}
 
 }

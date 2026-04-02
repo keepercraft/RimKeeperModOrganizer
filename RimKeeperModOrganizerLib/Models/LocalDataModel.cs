@@ -9,9 +9,16 @@ public class LocalDataListModel
     public List<ModDataModel> ModDataList { get; set; } = new();
 }
 
+public class LocalDataListModel2
+{
+    public Dictionary<string,ModDataModel> ModDataList { get; set; } = new();
+}
+
+
 public class ModDataModel : PropertyModel
 {
-    public string? PackageId { get; set; } //key to change
+    //public string Key { get; set; } = ":";
+    //public string? PackageId { get; set; } //key to change
 
     private ObservableCollection<string> _groups = new();
     public ObservableCollection<string> Groups

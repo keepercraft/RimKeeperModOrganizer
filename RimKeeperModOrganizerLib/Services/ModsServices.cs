@@ -264,17 +264,20 @@ public class ModsServices
         LoadModsActive?.Invoke(LoadModsFromLocalRunning = true);
 
         ModsConfigModel? modsConfig = LoadModsConfig(path);
-        LocalDataListModel? modsData = LoadModData();
+        //LocalDataListModel? modsData = LoadModData();
+        LocalDataListModel2? modsData = LoadModData2();
 
         foreach (var packageId in modsConfig.ActiveMods)
         {
             var newMod = modsConfig.Make(packageId);
-            newMod.Data = modsData?.ModDataList.FirstOrDefault(x => x.PackageId == packageId);
+            //newMod.Data = modsData?.ModDataList.FirstOrDefault(x => x.GetKeyID() == packageId);
+            newMod.Data = modsData?.ModDataList.FindByKey(packageId);//.FirstOrDefault(x => x.GetKeyID() == packageId).Value;
             yield return newMod;
         }
-        foreach (var item in modsData.ModDataList.Where(w => w.PackageId != null && !modsConfig.ActiveMods.Contains(w.PackageId)))
+        foreach (var item in modsData.ModDataList.Where(w => !modsConfig.ActiveMods.Contains(w.GetKeyID())))
         {
             yield return item.Make();
+            // yield return item.Make();
         }
         LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
     }
@@ -287,6 +290,10 @@ public class ModsServices
         }
     }
 
+    public LocalDataListModel2? LoadModData2(string? path = null)
+    {
+        return JsonHelper.DeserializeModel<LocalDataListModel2>(path ?? _settingsService.Settings.PathModData + "2");
+    }
     public LocalDataListModel? LoadModData(string? path = null)
     {
         return JsonHelper.DeserializeModel<LocalDataListModel>(path ?? _settingsService.Settings.PathModData);
@@ -319,22 +326,31 @@ public class ModsServices
         ModsConfigModel? mods = XMLHelper.LoadModsConfig(aboutPath);
         if (mods == null) return;
         mods.Version = _settingsService.Settings.GameVersion;
-        mods.ActiveMods = modlist.OrderBy(x => x.Position).Select(x => x.About.PackageId).Where(x => !string.IsNullOrEmpty(x)).ToList();
+        mods.ActiveMods = modlist.OrderBy(x => x.Position).Select(x => x.About.PackageId).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
         XMLHelper.SaveModsConfig(path??aboutPath, mods);
         
     }
     public void SaveLocalData(IEnumerable<ModModel> modlist)
     {
-        //LocalDataListModel? modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-        // LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-        //  modsData.ModDataList.Clear();
-        LocalDataListModel modsData = new LocalDataListModel();
+        ////LocalDataListModel? modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+        //// LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
+        ////  modsData.ModDataList.Clear();
+        //LocalDataListModel modsData = new LocalDataListModel();
+        //foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
+        //{
+        //    modsData.ModDataList.Add(item.Data);
+        //}     
+        ////XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
+        //JsonHelper.SerializeModel(modsData, _settingsService.Settings.PathModData);
+
+
+        LocalDataListModel2 modsData2 = new LocalDataListModel2();
         foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
         {
-            modsData.ModDataList.Add(item.Data);
-        }     
+            modsData2.ModDataList.Add(item.ModId,item.Data);
+        }
         //XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
-        JsonHelper.SerializeModel(modsData, _settingsService.Settings.PathModData);
+        JsonHelper.SerializeModel(modsData2, _settingsService.Settings.PathModData + "2");
     }
 
     public Dictionary<string, string> LoadRimPyColors(string configPath)
@@ -381,9 +397,9 @@ public class ModsServices
 
     public void ExportCSVMods(IEnumerable<ModModel> modlist, string path)
     {
-        //var modconfig = _settingsService.Settings.ModColumnData.Where(w => w.Value.Visible).ToList();
         CSVHelper.Export(modlist, path, c =>
         {
+            c.Add(("Key", m => m.ModId));
             c.Add(("PackageId", m => m.About?.PackageId));
             c.Add(("SteamId", m => m.About?.SteamId));
             c.Add(("Name", m => m.Label));

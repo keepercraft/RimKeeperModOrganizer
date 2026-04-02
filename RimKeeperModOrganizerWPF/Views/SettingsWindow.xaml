@@ -21,9 +21,7 @@
 
                             <GroupBox Header="PathSettings">
                                 <DockPanel>
-                                    <Button Content="Open" 
-                                        Command="{Binding OpenLinkCommand}" 
-                                        CommandParameter="{Binding Data.PathSettings}" />
+                                    <Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathSettings}" />
                                     <TextBox Text="{Binding Data.PathSettings, Mode=TwoWay}" helpers:PathValidatorHelper.Validate="True" />
                                 </DockPanel>
                             </GroupBox>

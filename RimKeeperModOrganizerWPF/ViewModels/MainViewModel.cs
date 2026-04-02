@@ -176,7 +176,8 @@ public class MainViewModel : PropertyModel, IDropTarget
     });
     public void LoadModsData(string? path = null) => ModCollectionUpdate(() =>
     {
-        var metaData = _modsServices.LoadModData(path);
+       // var metaData = _modsServices.LoadModData(path);
+        var metaData = _modsServices.LoadModData2(path);
         App.Current.Dispatcher.Invoke(() =>
         {
             Items.AddOrUpdate(metaData);
