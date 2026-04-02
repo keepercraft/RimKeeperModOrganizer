@@ -1,4 +1,5 @@
 ﻿using RimKeeperModOrganizerLib.Models;
+using System.Text;
 namespace RimKeeperModOrganizerLib.Extensions;
 
 public static class ModModelExtension

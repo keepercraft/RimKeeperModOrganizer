@@ -346,13 +346,14 @@
         <ScrollViewer Grid.Column="0" Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <StackPanel.Resources>
-                    <Style TargetType="TextBox">
-                        <Setter Property="Margin" Value="0,0,0,5"/>
+                    <Style TargetType="TextBox" x:Key="BaseTextBoxStyle">
+                        <Setter Property="Padding" Value="3"/>
                         <Setter Property="IsReadOnly" Value="True"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="IsReadOnlyCaretVisible" Value="False"/>
                     </Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}"/>
                 </StackPanel.Resources>
 
                 <Image Source="{Binding SelectedMod.ThumbnailPath,TargetNullValue={x:Null}, FallbackValue={x:Null}}" Stretch="Uniform" Margin="0,0,0,10" MaxHeight="300"/>
@@ -391,7 +392,18 @@
                 <TextBlock Text="Author:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
                 <TextBlock Text="PackageId:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}"/>
+                <TextBox Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource BaseTextBoxStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedMod.About.PackageIdAutogen}" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                    <Setter Property="ToolTip" Value="Auto-generated PackageId (unstable)"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
                 <TextBlock Text="SteamId:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
                 <TextBlock Text="SupportedVersions:" FontWeight="Bold"/>

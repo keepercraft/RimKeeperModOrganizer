@@ -11,7 +11,7 @@ public class LocalDataListModel
 
 public class ModDataModel : PropertyModel
 {
-    public string? PackageId { get; set; }
+    public string? PackageId { get; set; } //key to change
 
     private ObservableCollection<string> _groups = new();
     public ObservableCollection<string> Groups

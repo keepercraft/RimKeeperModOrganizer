@@ -1,4 +1,5 @@
 ﻿using KeeperBaseLib.Helper;
+using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Models;
 using System.Xml.Linq;
 
@@ -59,6 +60,7 @@ public static class XMLHelper
                         SteamWorkshopUrl = e.Element("steamWorkshopUrl")?.Value,
                     }).ToList() ?? new List<ModDependency>()
             };
+            meta.TryParsePackageId();
 
             return meta;
         }

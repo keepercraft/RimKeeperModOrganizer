@@ -13,6 +13,7 @@ public record AboutModel
     public List<ModDependency>? ModDependencies { get; set; }
     public string? Description { get; set; }
     public string? Url { get; set; }
+    public bool PackageIdAutogen { get; set; }
 }
 
 public record ModDependency
