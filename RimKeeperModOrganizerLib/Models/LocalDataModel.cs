@@ -6,11 +6,13 @@ namespace RimKeeperModOrganizerLib.Models;
 
 public class LocalDataListModel 
 {
-    public List<ModDataModel> ModDataList { get; set; } = new List<ModDataModel>();
+    public List<ModDataModel> ModDataList { get; set; } = new();
 }
 
 public class ModDataModel : PropertyModel
 {
+    public string? PackageId { get; set; }
+
     private ObservableCollection<string> _groups = new();
     public ObservableCollection<string> Groups
     {
@@ -44,18 +46,6 @@ public class ModDataModel : PropertyModel
     private void PackageGroups_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RaisePropertyChanged(nameof(PackageGroup));
     [JsonIgnore]
     public string? PackageGroup => _packageGroups.Count > 0 ? string.Join(",", _packageGroups) : null;
-
-    private string? _PackageId = null;
-    public string? PackageId
-    {
-        get => _PackageId;
-        set
-        {
-            if (_PackageId == value) return;          
-            _PackageId = value;
-            OnPropertyChanged();          
-        }
-    }
 
     private string? _Color = null;
     public string? Color
