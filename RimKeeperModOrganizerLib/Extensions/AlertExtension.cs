@@ -29,7 +29,6 @@ public static class AlertExtension
             {
                 if (!mod.Alert.Contains(alert_missing_path))
                     mod.Alert.Add(alert_missing_path);
-                continue;
             }
             else
             {
@@ -42,7 +41,6 @@ public static class AlertExtension
             {
                 if (!mod.Alert.Contains(alert_missing_pack))
                     mod.Alert.Add(alert_missing_pack);
-                continue;
             }
             else
             {
@@ -61,6 +59,8 @@ public static class AlertExtension
                 if (mod.Alert.Contains(alert_duplicate))
                     mod.Alert.Remove(alert_duplicate);
             }
+
+            mod.RaisePropertyChanged(nameof(ModModel.HasAlert));
         }
     }
 

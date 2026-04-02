@@ -390,7 +390,7 @@
                     Padding="5"/>
 
                 <TextBlock Text="ModID Key:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.ModId,Mode=OneWay}"/>
+                <TextBox Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
 
                 <TextBlock Text="Author:" FontWeight="Bold"/>
                 <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
