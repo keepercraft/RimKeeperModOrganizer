@@ -10,6 +10,11 @@ public class ModsServices
     public ModsServices(SettingsService SettingsService)
     {
         _settingsService = SettingsService;
+
+        if (!File.Exists(_settingsService.Settings.PathModData))
+        {
+            SaveLocalData();
+        }
     }
 
     public Action<bool> LoadModsActive { get; set; }
@@ -274,6 +279,7 @@ public class ModsServices
             newMod.Data = modsData?.ModDataList.FindByKey(packageId);//.FirstOrDefault(x => x.GetKeyID() == packageId).Value;
             yield return newMod;
         }
+        if (modsData?.ModDataList != null)
         foreach (var item in modsData.ModDataList.Where(w => !modsConfig.ActiveMods.Contains(w.GetKeyID())))
         {
             yield return item.Make();
@@ -292,7 +298,7 @@ public class ModsServices
 
     public LocalDataListModel2? LoadModData2(string? path = null)
     {
-        return JsonHelper.DeserializeModel<LocalDataListModel2>(path ?? _settingsService.Settings.PathModData + "2");
+        return JsonHelper.DeserializeModel<LocalDataListModel2>(path ?? _settingsService.Settings.PathModData);
     }
     public LocalDataListModel? LoadModData(string? path = null)
     {
@@ -330,7 +336,7 @@ public class ModsServices
         XMLHelper.SaveModsConfig(path??aboutPath, mods);
         
     }
-    public void SaveLocalData(IEnumerable<ModModel> modlist)
+    public void SaveLocalData(IEnumerable<ModModel>? modlist = null)
     {
         ////LocalDataListModel? modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
         //// LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
@@ -345,12 +351,13 @@ public class ModsServices
 
 
         LocalDataListModel2 modsData2 = new LocalDataListModel2();
-        foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
-        {
-            modsData2.ModDataList.Add(item.ModId,item.Data);
-        }
+        if (modlist != null)
+            foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
+            {
+                modsData2.ModDataList.Add(item.ModId,item.Data);
+            }
         //XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
-        JsonHelper.SerializeModel(modsData2, _settingsService.Settings.PathModData + "2");
+        JsonHelper.SerializeModel(modsData2, _settingsService.Settings.PathModData);
     }
 
     public Dictionary<string, string> LoadRimPyColors(string configPath)

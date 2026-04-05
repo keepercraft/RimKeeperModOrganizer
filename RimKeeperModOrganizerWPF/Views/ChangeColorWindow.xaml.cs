@@ -27,6 +27,7 @@ public partial class ChangeColorWindow : Window
             if (vm.SelectedMod?.Data == null) vm.SelectedMod?.MakeData();
             if (vm.SelectedMod?.Data == null) return;
             vm.SelectedMod.Data.Color = value;
+            vm.SelectedMod.RaisePropertyChanged();    
         }
     }
 

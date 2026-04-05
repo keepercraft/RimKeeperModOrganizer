@@ -64,6 +64,8 @@ public class MainViewModel : PropertyModel, IDropTarget
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsConfigCollection.CombineFilters(RightViewFilter);
         Items.CollectionChanged += Items_CollectionChanged;
+
+        ModGroups.Add("-");
     }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;

@@ -94,9 +94,9 @@ public static class ModModelExtension
     public static ModModel MakeData(this ModModel data)
     {
         //if (!string.IsNullOrEmpty(data.About?.PackageId))
-            //data.Data = new ModDataModel { PackageId = data.About.PackageId, Key = data.Key };
-            //data.Data = new ModDataModel { Key = data.Key };
-        return data;
+        //data.Data = new ModDataModel { PackageId = data.About.PackageId, Key = data.Key };
+        //data.Data = new ModDataModel { Key = data.Key };
+        return data.Update(new ModDataModel());
     }
 
 

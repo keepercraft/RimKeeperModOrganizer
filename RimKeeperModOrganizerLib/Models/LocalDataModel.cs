@@ -14,9 +14,12 @@ public class LocalDataListModel2
     public Dictionary<string,ModDataModel> ModDataList { get; set; } = new();
 }
 
-
 public class ModDataModel : PropertyModel
 {
+    public ModDataModel() 
+    {
+        Groups = new();
+    }
     //public string Key { get; set; } = ":";
     //public string? PackageId { get; set; } //key to change
 
@@ -62,7 +65,7 @@ public class ModDataModel : PropertyModel
         {
             if (_Color == value) return;
             _Color = value;
-            OnPropertyChanged();           
+            OnPropertyChanged();
         }
     }
 

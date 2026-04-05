@@ -61,6 +61,11 @@
                         IsEditable="True"
                         EnableFiltering="True"
                         SelectionMode="Multiple">
+                        <sdl:MultiSelectComboBox.Resources>
+                            <Style TargetType="TextBox">
+                                <Setter Property="IsReadOnly" Value="False"/>
+                            </Style>
+                        </sdl:MultiSelectComboBox.Resources>
                     </sdl:MultiSelectComboBox>
                 </DockPanel>
                 <DockPanel >

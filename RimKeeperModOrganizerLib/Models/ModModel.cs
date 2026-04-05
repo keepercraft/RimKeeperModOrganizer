@@ -23,6 +23,7 @@ public class ModModel : PropertyModel
         ThumbnailPath = FileHelper.GetModPreview(path);
         About.SteamId = FileHelper.GetModPublishID(path);
         Local = local;
+        this.MakeData();
         ModId = this.GenKey();
     }
 
