@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RimKeeperModOrganizerWPF.Services;
 using RimKeeperModOrganizerWPF.ViewModels;
 using RimKeeperModOrganizerWPF.Views;
 using System.Windows;
@@ -12,6 +13,8 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        CertificateService.EnsureCertificateInstalled();
+
         var builder = Host.CreateApplicationBuilder(e.Args);
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SettingsService>();
