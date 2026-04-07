@@ -79,8 +79,12 @@
 		</PropertyGroup>
 
 		<Message Importance="high" Text="--- PODPISYWANIE PRZY UŻYCIU THUMBPRINT ---" />
-		<Exec Command="powershell -Command &quot;for ($i=1; $i -le 5; $i++) { try { &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com '$(AbsPublishDir)*.exe'; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany, próba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />		
+		<Exec Command="powershell -Command &quot;for ($i=1; $i -le 5; $i++) { try { &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com '$(AbsPublishDir)*.exe'; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany, próba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />
+
+		<Copy SourceFiles="$(AbsPublishDir)$(TargetName).exe"
+			DestinationFiles="$(AbsPublishDir)$(TargetName)_$(VersionPrefix).exe"
+			SkipUnchangedFiles="false" />
 		<Message Importance="high" Text="--- PUBLIKACJA ZAKOŃCZONA ---" />
 	</Target>
-  
+	
 </Project>
