@@ -212,6 +212,10 @@ public class MainViewModel : PropertyModel, IDropTarget
         App.Services.GetRequiredService<SettingsWindow>().ShowDialog();
         RaisePropertyChanged(nameof(ModColumnData));
     }));
+    public CustomCommand AboutCommand => new CustomCommand(p => UILock(() =>
+    {
+        App.Services.GetRequiredService<AboutWindow>().ShowDialog();
+    }));
     public CustomCommand ChangeColorCommand => new CustomCommand(p => UILock(() =>
     {
         if (p != null && p is ModModel model) SelectedMod = model;

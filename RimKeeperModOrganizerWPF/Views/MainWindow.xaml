@@ -141,6 +141,7 @@
                 <Separator/>
                 <MenuItem Header="Options" Command="{Binding OptionsCommand}"/>
             </MenuItem>
+            <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             <MenuItem Header="[Test]" Command="{Binding TestCommand}"/>
         </Menu>
         <Menu Grid.Row="0" Grid.Column="2" Background="Transparent" HorizontalAlignment="Right">

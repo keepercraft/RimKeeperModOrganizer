@@ -10,9 +10,10 @@
 		<LangVersion>preview</LangVersion>
 		<Authors>Keepercraft</Authors>
 		<Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) $(Authors)</Copyright>
+		<RepositoryUrl>https://github.com/keepercraft/RimKeeperModOrganizer</RepositoryUrl>
 		<Major>0</Major>
 		<Minor>3</Minor>
-		<Build>1</Build>
+		<Build>12</Build>
 		<RawSeconds>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds)</RawSeconds>
 		<Revision>$([System.Convert]::ToInt32($([MSBuild]::Divide($(RawSeconds), 2))))</Revision>
 		<VersionPrefix>$(Major).$(Minor).$(Build).$(Revision)</VersionPrefix>	    
