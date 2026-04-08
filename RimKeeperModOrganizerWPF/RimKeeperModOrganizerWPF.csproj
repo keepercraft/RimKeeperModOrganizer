@@ -8,16 +8,26 @@
 		<UseWPF>true</UseWPF>
 		<Platforms>AnyCPU;x64</Platforms>
 		<LangVersion>preview</LangVersion>
+
+		<ProjectName>RimKeeperModOrganizer</ProjectName>
+		<AssemblyName>$(ProjectName)</AssemblyName>
 		<Authors>Keepercraft</Authors>
-		<Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) $(Authors)</Copyright>
+	    <NeutralLanguage>pl-PL</NeutralLanguage>
+	    <SupportedCultures>pl-PL;en-US</SupportedCultures>
+	    <Description>Rimworld Mod Organizer</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>Copyright © $([System.DateTime]::UtcNow.ToString('yyyy')) $(Authors)</Copyright>
 		<RepositoryUrl>https://github.com/keepercraft/RimKeeperModOrganizer</RepositoryUrl>
+	  
 		<Major>0</Major>
 		<Minor>3</Minor>
 		<Build>12</Build>
 		<RawSeconds>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds)</RawSeconds>
-		<Revision>$([System.Convert]::ToInt32($([MSBuild]::Divide($(RawSeconds), 2))))</Revision>
-		<VersionPrefix>$(Major).$(Minor).$(Build).$(Revision)</VersionPrefix>	    
-		<VersionSuffix>$([System.DateTime]::Now.ToString("yyyyMMdd-HHmm"))</VersionSuffix>	  
+		<ComputedRevision>$([System.Convert]::ToInt32($([MSBuild]::Divide($(RawSeconds), 2))))</ComputedRevision>
+		<Timestamp>$([System.DateTime]::UtcNow.ToString("yyyyMMdd-HHmm"))</Timestamp>
+		<Version>$(Major).$(Minor).$(Build)-alpha.$(Timestamp)</Version>
+		<FileVersion>$(Major).$(Minor).$(Build).$(ComputedRevision)</FileVersion>
+		<AssemblyVersion>$(Major).$(Minor).$(Build).0</AssemblyVersion>  
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -82,7 +92,7 @@
 		<Exec Command="powershell -Command &quot;for ($i=1; $i -le 5; $i++) { try { &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com '$(AbsPublishDir)*.exe'; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany, próba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />
 
 		<Copy SourceFiles="$(AbsPublishDir)$(TargetName).exe"
-			DestinationFiles="$(AbsPublishDir)$(TargetName)_$(VersionPrefix).exe"
+			DestinationFiles="$(AbsPublishDir)$(TargetName)_$(FileVersion).exe"
 			SkipUnchangedFiles="false" />
 		<Message Importance="high" Text="--- PUBLIKACJA ZAKOŃCZONA ---" />
 	</Target>
