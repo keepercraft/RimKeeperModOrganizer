@@ -14,8 +14,7 @@
 		<Authors>Keepercraft</Authors>
 	    <NeutralLanguage>pl-PL</NeutralLanguage>
 	    <SupportedCultures>pl-PL;en-US</SupportedCultures>
-	    <Description>Rimworld Mod Organizer</Description>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	    <Description>Rimkeeper MIT</Description>
 		<Copyright>Copyright © $([System.DateTime]::UtcNow.ToString('yyyy')) $(Authors)</Copyright>
 		<RepositoryUrl>https://github.com/keepercraft/RimKeeperModOrganizer</RepositoryUrl>
 	  
