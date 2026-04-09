@@ -1,0 +1,25 @@
+Community Server uses code from the following 3rd party projects:
+
+====================================================================================================
+nuget packages
+====================================================================================================
+
+Package:gong-wpf-dragdrop
+project URL:https://github.com/punker76/gong-wpf-dragdrop
+license Type:BSD-3-Clause
+License File:BSD-3-Clause.licence
+
+Package:Microsoft.Extensions.Hosting
+project URL:https://dot.net/
+license Type:MIT
+License File:MIT.licence
+
+Package:PixiEditor.ColorPicker
+project URL:https://github.com/PixiEditor/ColorPicker
+license Type:MIT
+License File:MIT.licence
+
+Package:Sdl.MultiSelectComboBox
+project URL:https://github.com/punker76/gong-wpf-dragdrop
+license Type:Apache-2.0
+License File:Apache-2.0.licence

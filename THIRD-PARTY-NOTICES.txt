@@ -1,0 +1,34 @@
+####################################################################################################
+Package:gong-wpf-dragdrop
+Version:4.0.0
+project URL:https://github.com/punker76/gong-wpf-dragdrop
+Description:An easy to use drag'n'drop framework for WPF applications.
+licenseUrl:https://www.nuget.org/packages/gong-wpf-dragdrop/4.0.0/License
+license Type:LICENSE
+
+####################################################################################################
+Package:Microsoft.Extensions.Hosting
+Version:10.0.2
+project URL:https://dot.net/
+Description:Hosting and startup infrastructures for applications.
+licenseUrl:https://licenses.nuget.org/MIT
+license Type:MIT
+
+####################################################################################################
+Package:PixiEditor.ColorPicker
+Version:3.4.2.2
+project URL:https://github.com/PixiEditor/ColorPicker
+Description:A collection of various WPF controls used to select colors. See documentation and usage examples in the project repository, https://github.com/PixiEditor/ColorPicker. Supports .NET Framework 4.5.1+, .NET Core 3.1+, .NET 5 - 7.
+
+Originally developed for PixiEditor: https://github.com/PixiEditor/PixiEditor.
+licenseUrl:https://www.nuget.org/packages/PixiEditor.ColorPicker/3.4.2.2/License
+license Type:LICENSE.md
+
+####################################################################################################
+Package:Sdl.MultiSelectComboBox
+Version:1.0.103
+project URL:
+Description:Package Description
+licenseUrl:https://www.apache.org/licenses/LICENSE-2.0.txt
+license Type:Apache-2.0
+
