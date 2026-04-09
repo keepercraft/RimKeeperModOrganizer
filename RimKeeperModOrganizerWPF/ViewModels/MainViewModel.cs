@@ -64,8 +64,6 @@ public class MainViewModel : PropertyModel, IDropTarget
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsConfigCollection.CombineFilters(RightViewFilter);
         Items.CollectionChanged += Items_CollectionChanged;
-
-        ModGroups.Add("-");
     }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;
@@ -168,7 +166,7 @@ public class MainViewModel : PropertyModel, IDropTarget
             });
         }
     });
-    public void LoadModsConfig(string? path = null) => ModCollectionUpdate(() =>
+    public void ReloadModsConfig(string? path = null) => ModCollectionUpdate(() =>
     {
         var metaData = _modsServices.LoadModsConfig(path);
         App.Current.Dispatcher.Invoke(() =>
@@ -176,12 +174,19 @@ public class MainViewModel : PropertyModel, IDropTarget
             Items.AddOrUpdate(metaData);
         });
     });
+    public void ReloadModsData(string? path = null)
+    {
+        foreach (var item in Items)
+        {
+            item.Data = null;
+        }
+        LoadModsData(path);
+    }
     public void LoadModsData(string? path = null) => ModCollectionUpdate(() =>
     {
-       // var metaData = _modsServices.LoadModData(path);
-        var metaData = _modsServices.LoadModData2(path);
         App.Current.Dispatcher.Invoke(() =>
         {
+            var metaData = _modsServices.LoadModData2(path);
             Items.AddOrUpdate(metaData);
             LoadData(Items);
         });
@@ -207,6 +212,7 @@ public class MainViewModel : PropertyModel, IDropTarget
     #region CustomCommand
     public CustomCommand OpenSteamLinkCommand => new CustomCommand(FileHelper.OpenSteamLink);
     public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
+    public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() => new ModDetailWindow(this).ShowDialog()));
     public CustomCommand OptionsCommand => new CustomCommand(p => UILock(() =>
     {
         App.Services.GetRequiredService<SettingsWindow>().ShowDialog();
@@ -230,7 +236,17 @@ public class MainViewModel : PropertyModel, IDropTarget
         new ChangeColorWindow(this).ShowDialog();
     }));
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
-    public CustomCommand LoadConfigCommand => new CustomCommand(p => UILock(() =>
+    public CustomCommand LoadActiveModlistCommand => new CustomCommand(p => UILock(() => ReloadModsConfig()));
+    public CustomCommand SaveActiveModlistCommand => new CustomCommand(p => UILock(() =>
+    {
+        if (Items.Any())
+        {
+            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>());
+            _modsServices.SaveLocalData(Items);
+        }
+    }));
+
+    public CustomCommand LoadFileActiveModlistCommand => new CustomCommand(p => UILock(() =>
     {
         var dialog = new OpenFileDialog
         {
@@ -238,18 +254,19 @@ public class MainViewModel : PropertyModel, IDropTarget
             Title = "Open file",
             Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
             DefaultExt = ".xml",
-            Multiselect = false
+            Multiselect = false,
+            FileName = "ModsConfig.xml"
         };
         if (dialog.ShowDialog() ?? false)
         {
             if (Path.GetDirectoryName(dialog.FileName) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
             if(Items.Any())
-                LoadModsConfig(dialog.FileName);
+                ReloadModsConfig(dialog.FileName);
             else
                 LoadMods(dialog.FileName);
         }
     }));
-    public CustomCommand SaveConfigCommand => new CustomCommand(p => UILock(() =>
+    public CustomCommand SaveFileActiveModlistCommand => new CustomCommand(p => UILock(() =>
     {
         var dialog = new SaveFileDialog
         {
@@ -265,16 +282,8 @@ public class MainViewModel : PropertyModel, IDropTarget
             _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>(), dialog.FileName);
         }
     }));
-    public CustomCommand SaveCommand => new CustomCommand(p => UILock(() =>
-    {
-        if (Items.Any())
-        {
-            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>());
-            _modsServices.SaveLocalData(Items);
-        }
-    }));
 
-    public CustomCommand RimpyColorLoadCommand => new CustomCommand(p => UILock(() =>
+    public CustomCommand LoadRimpyColorsCommand => new CustomCommand(p => UILock(() =>
     {
         var dialog = new OpenFileDialog
         {
@@ -295,6 +304,14 @@ public class MainViewModel : PropertyModel, IDropTarget
     }));
     public CustomCommand ModsToCSVCommand => new CustomCommand(p => UILock(() =>
     {
+        IEnumerable<ModModel>? models = p switch
+        {
+            IEnumerable<ModModel> m => m,
+            ICollectionView view => view.Cast<ModModel>(),
+            _ => null
+        };
+        if (models == null || !models.Any()) return;
+
         var dialog = new SaveFileDialog
         {
             Title = "Zapisz plik",
@@ -305,18 +322,50 @@ public class MainViewModel : PropertyModel, IDropTarget
         if (dialog.ShowDialog() ?? false) _modsServices.ExportCSVMods(Items, dialog.FileName);
     }));
 
-    public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() => new ModDetailWindow(this).ShowDialog()));
-    public CustomCommand ModDataRemoveCommand => new CustomCommand(p => UILock(() =>
+    public CustomCommand LoadMetaDataCommand => new CustomCommand(p => UILock(() =>
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Load local data",
+            Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
+            DefaultExt = ".json",
+            FileName = "RimKeeperModOrganizer LocalData.json"
+        };
+        if (dialog.ShowDialog() ?? false)
+        {
+            if (p is string mode && mode == "reload")
+                ReloadModsData(dialog.FileName);
+            else
+                LoadModsData(dialog.FileName);
+            _modsServices.SaveLocalData(Items);
+        }
+    }));
+    public CustomCommand SaveMetaDataCommand => new CustomCommand(p => UILock(() =>
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Save local data",
+            Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
+            DefaultExt = ".json",
+            FileName = "RimKeeperModOrganizer LocalData.json"
+        };
+        if (dialog.ShowDialog() ?? false)
+        {
+            _modsServices.SaveLocalData(Items, dialog.FileName);
+        }
+    }));
+    public CustomCommand RemoveMetaDataCommand => new CustomCommand(p => UILock(() =>
     {
         if (p is ModModel model)
         {
-            model.Data?.Clear();
-            if (String.IsNullOrEmpty(model.Path))
-            {
-                Items.Remove(model);
-              //  ModsConfigCollection.Remove(model);
-            }
-            AlertPropertyChanged();
+            var result = MessageBox.Show(
+                "Remove local mods data?",
+                "Mods data action",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+            if (result == MessageBoxResult.Yes)
+                model.Data = null;
         }
     }));
 

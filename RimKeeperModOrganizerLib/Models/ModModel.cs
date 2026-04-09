@@ -30,11 +30,21 @@ public class ModModel : PropertyModel
     public string Label => About?.Name ?? About?.PackageId ?? ModId ?? "??";
 
     public string? Path { get; set; }
+    public string? ThumbnailPath { get; set; }
     public bool? Local { get; set; }
     public AboutModel? About { get; set; }
-    public ModDataModel? Data { get; set; }// = new();
 
-    public string? ThumbnailPath { get; set; }
+    private ModDataModel? _data = null;
+    public ModDataModel? Data
+    {
+        get => _data;
+        set
+        {
+            if (ReferenceEquals(_data, value)) return;
+            _data = value;
+            OnPropertyChanged();
+        }
+    }
 
     public int? Position { get; set; }
     public bool Selected { get; set; }

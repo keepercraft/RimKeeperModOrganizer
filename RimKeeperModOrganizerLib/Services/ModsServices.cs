@@ -336,28 +336,17 @@ public class ModsServices
         XMLHelper.SaveModsConfig(path??aboutPath, mods);
         
     }
-    public void SaveLocalData(IEnumerable<ModModel>? modlist = null)
+    public void SaveLocalData(IEnumerable<ModModel>? modlist = null, string? path = null)
     {
-        ////LocalDataListModel? modsData = XMLHelper.LoadLocalData(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-        //// LocalDataListModel modsData = JsonHelper.DeserializeModel<LocalDataListModel>(_settingsService.Settings.PathModData) ?? new LocalDataListModel();
-        ////  modsData.ModDataList.Clear();
-        //LocalDataListModel modsData = new LocalDataListModel();
-        //foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
-        //{
-        //    modsData.ModDataList.Add(item.Data);
-        //}     
-        ////XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
-        //JsonHelper.SerializeModel(modsData, _settingsService.Settings.PathModData);
-
-
-        LocalDataListModel2 modsData2 = new LocalDataListModel2();
+        string p = path ?? _settingsService.Settings.PathModData;
+        if (string.IsNullOrEmpty(p)) return;
+        LocalDataListModel2 modsData = new LocalDataListModel2();
         if (modlist != null)
             foreach (var item in modlist.Where(x => x.Data.IsNotNull()))
             {
-                modsData2.ModDataList.Add(item.ModId,item.Data);
+                modsData.ModDataList.Add(item.ModId,item.Data);
             }
-        //XMLHelper.SaveLocalData(modsData, _settingsService.Settings.PathModData);
-        JsonHelper.SerializeModel(modsData2, _settingsService.Settings.PathModData);
+        JsonHelper.SerializeModel(modsData, p);
     }
 
     public Dictionary<string, string> LoadRimPyColors(string configPath)
