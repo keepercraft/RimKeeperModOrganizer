@@ -49,8 +49,10 @@ public class ModModel : PropertyModel
     public int? Position { get; set; }
     public bool Selected { get; set; }
 
-    public List<string> Alert { get; } = new List<string>();
-    public bool HasAlert => Alert.Any() == true;
+    public AlertsModel Alerts { get; init; } = new ();
+
+   // public List<string> Alert { get; } = new List<string>();
+   // public bool HasAlert => Alert.Any() == true;
 
     public string Versions => About?.SupportedVersions != null && About.SupportedVersions.Any()
         ? string.Join(",", About.SupportedVersions.OrderBy(v => v))

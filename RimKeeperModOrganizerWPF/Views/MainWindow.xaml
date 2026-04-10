@@ -7,6 +7,7 @@
         xmlns:vc="clr-namespace:RimKeeperModOrganizerWPF.Views.ValueConverter"
         xmlns:ex="clr-namespace:RimKeeperModOrganizerWPF.Views.Extensions"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"      
+        xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         mc:Ignorable="d"
         xmlns:kdg="clr-namespace:KeeperDataGrid;assembly=KeeperDataGrid" 
         xmlns:sdl="http://schemas.sdl.com/xaml"
@@ -32,6 +33,33 @@
             <vc:GridLengthConverter x:Key="GridLengthConverter" />
             <BooleanToVisibilityConverter x:Key="BoolVis"/>
 
+            <DrawingImage x:Key="SteamIcon" options:Freeze="True">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="Black"
+                        Geometry="M.329 10.333A8.01 8.01 0 0 0 7.99 16C12.414 16 16 12.418 16 8s-3.586-8-8.009-8A8.006 8.006 0 0 0 0 7.468l.003.006 4.304 1.769A2.2 2.2 0 0 1 5.62 8.88l1.96-2.844-.001-.04a3.046 3.046 0 0 1 3.042-3.043 3.046 3.046 0 0 1 3.042 3.043 3.047 3.047 0 0 1-3.111 3.044l-2.804 2a2.223 2.223 0 0 1-3.075 2.11 2.22 2.22 0 0 1-1.312-1.568L.33 10.333Z"/>
+                        <GeometryDrawing Brush="Black"
+                        Geometry="M4.868 12.683a1.715 1.715 0 0 0 1.318-3.165 1.7 1.7 0 0 0-1.263-.02l1.023.424a1.261 1.261 0 1 1-.97 2.33l-.99-.41a1.7 1.7 0 0 0 .882.84Zm3.726-6.687a2.03 2.03 0 0 0 2.027 2.029 2.03 2.03 0 0 0 2.027-2.029 2.03 2.03 0 0 0-2.027-2.027 2.03 2.03 0 0 0-2.027 2.027m2.03-1.527a1.524 1.524 0 1 1-.002 3.048 1.524 1.524 0 0 1 .002-3.048"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+            <DrawingImage x:Key="FolderIcon" options:Freeze="True">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="Black"
+                        Geometry="M1 3.5A1.5 1.5 0 0 1 2.5 2h2.764c.958 0 1.76.56 2.311 1.184C7.985 3.648 8.48 4 9 4h4.5A1.5 1.5 0 0 1 15 5.5v7a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 12.5zM2.5 3a.5.5 0 0 0-.5.5V6h12v-.5a.5.5 0 0 0-.5-.5H9c-.964 0-1.71-.629-2.174-1.154C6.374 3.334 5.82 3 5.264 3zM14 7H2v5.5a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5z"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+            <DrawingImage x:Key="GearIcon" options:Freeze="True">
+                <DrawingImage.Drawing>
+                    <DrawingGroup>
+                        <GeometryDrawing Brush="Black"
+                        Geometry="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                    </DrawingGroup>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+            
             <ContextMenu x:Key="DataGridContextMenu" 
                  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="Open in Explorer" 
@@ -56,7 +84,7 @@
                   CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
             </ContextMenu>
 
-            <Style TargetType="DataGridRow" x:Key="DataGridRowStyle">
+            <Style TargetType="DataGridRow" x:Key="DataGridRowStyle_old">
                 <Setter Property="Background" Value="{Binding Data.Color,TargetNullValue=Transparent}"/>
                 <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
                 <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
@@ -85,6 +113,34 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Selected}" Value="True">
                         <Setter Property="Background" Value="LightGreen"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="DataGridRow" x:Key="DataGridRowStyle">
+                <Setter Property="Background" Value="{Binding Data.Color,TargetNullValue=Transparent}"/>
+                <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
+                <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
+                <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
+                <!--<Setter Property="Background" Value="{Binding Alerts.Color}"/>-->
+                <Setter Property="ToolTip">
+                    <Setter.Value>
+                        <Border Padding="5" Background="{Binding Color}" BorderBrush="Black" BorderThickness="1" CornerRadius="0">
+                            <ItemsControl ItemsSource="{Binding Alerts.Items}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Message}" Background="{Binding Color}" TextWrapping="Wrap" Padding="4" Margin="1"  FontWeight="Bold" Foreground="Black" Opacity="1"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Alerts.HasAlert}" Value="False">
+                        <Setter Property="ToolTip" Value="{x:Null}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Alerts.HasAlert}" Value="True">
+                        <Setter Property="Background" Value="{Binding Alerts.Color}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -151,17 +207,65 @@
             </MenuItem>
             <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             <!--<MenuItem Header="[Test]" Command="{Binding TestCommand}"/>-->
+            <!--<MenuItem>
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Viewbox Width="16" Height="16">
+                            <Path Fill="Black" Data="
+                                M8,0 
+                                L9.5,5.5 
+                                L15.5,5.5 
+                                L10.5,9 
+                                L12.5,15 
+                                L8,11.5 
+                                L3.5,15 
+                                L5.5,9 
+                                L0.5,5.5 
+                                L6.5,5.5 
+                                Z"/>
+                        </Viewbox>
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem>
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="{StaticResource SteamIcon}" 
+                           Width="16" 
+                           Height="16" 
+                           HorizontalAlignment="Center"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                    </StackPanel>
+                </MenuItem.Header>
+            </MenuItem>-->
+
         </Menu>
         <Menu Grid.Row="0" Grid.Column="2" Background="Transparent" HorizontalAlignment="Right">
             <MenuItem Header="{Binding ModsCollection.Count, StringFormat='- {0}'}" HorizontalAlignment="Right" />
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5">
-            <MenuItem Header="{Binding GetModConfigStaticLable}" Background="{Binding GetModConfigStaticColor}">
+            <MenuItem 
+                Header="{Binding GetModConfigStaticLable}" 
+                Background="{Binding GetModConfigStaticColor}"
+                ToolTipService.InitialShowDelay="0">
                 <MenuItem.ToolTip>
                     <ToolTip>
-                        <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding ListModsConfigAlert}"/>
-                        </ScrollViewer>
+                        <Border Padding="5" Background="{Binding Color}" BorderBrush="Black" BorderThickness="1" CornerRadius="0">
+                            <ScrollViewer MaxHeight="{Binding MainWidowSettings.Height, Mode=OneTime}" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding ListModsConfigAlerts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Message}"
+                                                   Padding="10,4,20,4" Margin="1"
+                                                   Foreground="Black"
+                                                   Background="{Binding Color}"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
                     </ToolTip>
                 </MenuItem.ToolTip>
             </MenuItem>
@@ -342,6 +446,26 @@
                 <kdg:FilterableTextColumn ShowFilter="Collapsed" Width="20" Header="" Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"/>
                 <kdg:FilterableTextColumn Width="*"  Header="Nazwa" Binding="{Binding Label}" />
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
+                
+                <!--<DataGridTemplateColumn Header="Typ" Width="20">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image x:Name="IconControl" 
+                               Width="16" 
+                               Height="16" 
+                               Source="{StaticResource SteamIcon}"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               SnapsToDevicePixels="True"/>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}" Value="L">
+                                    <Setter TargetName="IconControl" Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn> -->
             </kdg:AdvancedFilterDataGrid.Columns>
             <!--<kdg:AdvancedFilterDataGrid.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">

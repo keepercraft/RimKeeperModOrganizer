@@ -98,14 +98,14 @@ public class MainViewModel : PropertyModel, IDropTarget
     #endregion
 
     #region Alert Section
-    public bool IsModsConfigAlert => Items.Where(x => x.Alert != null).Any(x => x.Alert.Any());
-    public List<string> ListModsConfigAlert => Items.Where(x => x.Alert != null).SelectMany(x => x.Alert).ToList();
+    public bool IsModsConfigAlert => ModsConfigCollection.Cast<ModModel>().Any(x => x.Alerts.HasAlert);
+    public List<AlertModel> ListModsConfigAlerts => Items.Cast<ModModel>().SelectMany(x => x.Alerts.Items).ToList();
     public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
     public string GetModConfigStaticLable
     {
         get
         {
-            var alerts = Items.Sum(c => c.Alert.Count);
+            var alerts = Items.Sum(c => c.Alerts.Items.Count);
             return string.Format("Mods ({0}/{1}) {2}"
                 , ModsConfigCollection.Cast<object>().Count()
                 , Items.Count()
@@ -114,7 +114,7 @@ public class MainViewModel : PropertyModel, IDropTarget
     }
     public void AlertPropertyChanged()
     {
-        RaisePropertyChanged(nameof(ListModsConfigAlert));
+        RaisePropertyChanged(nameof(ListModsConfigAlerts));
         RaisePropertyChanged(nameof(GetModConfigStaticColor));
         RaisePropertyChanged(nameof(GetModConfigStaticLable));
     }
@@ -451,9 +451,7 @@ public class MainViewModel : PropertyModel, IDropTarget
             item.Position = Items.IndexOf(item);
         }
 
-        foreach (var item in itemsToMove)
-            if (!isDroppingToAssigned)
-                item.Alert.Clear();
+        itemsToMove.ModListAlertClean();
 
             //Items.Cast<ModModel>().ModListValidation();
         ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);

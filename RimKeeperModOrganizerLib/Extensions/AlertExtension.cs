@@ -17,50 +17,27 @@ public static class AlertExtension
     public static void ModListAlertClean(this IEnumerable<ModModel> modlist)
     {
         foreach (var mod in modlist)
-            mod.Alert.Clear();
+            mod.Alerts.Clear();
     }
 
     public static void ModListDuplicateValidation(this IEnumerable<ModModel> modlist)
     {
         foreach (var mod in modlist)
         {
-            string alert_missing_path = "Missing Path:" + mod.Label;
+            mod.Alerts.Clear([AlertType.MissingPath, AlertType.MissingPackageID, AlertType.DuplicatePackageID]);
+
             if (string.IsNullOrEmpty(mod.Path))
             {
-                if (!mod.Alert.Contains(alert_missing_path))
-                    mod.Alert.Add(alert_missing_path);
+                mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPath, mod.Label);
             }
-            else
-            {
-                if (mod.Alert.Contains(alert_missing_path))
-                    mod.Alert.Remove(alert_missing_path);
-            }
-
-            string alert_missing_pack = "Missing PackageID:" + mod.Label;
             if (string.IsNullOrEmpty(mod.About?.PackageId))
             {
-                if (!mod.Alert.Contains(alert_missing_pack))
-                    mod.Alert.Add(alert_missing_pack);
+                mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPackageID, mod.Label);
             }
-            else
-            {
-                if (mod.Alert.Contains(alert_missing_pack))
-                    mod.Alert.Remove(alert_missing_pack);
-            }
-
-            string alert_duplicate = "Duplicate PackageID:" + mod.Label;          
             if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
             {
-                if (!mod.Alert.Contains(alert_duplicate))
-                    mod.Alert.Add(alert_duplicate);
+                mod.Alerts.Add(AlertLevel.Warning, AlertType.DuplicatePackageID, mod.Label);
             }
-            else
-            {
-                if (mod.Alert.Contains(alert_duplicate))
-                    mod.Alert.Remove(alert_duplicate);
-            }
-
-            mod.RaisePropertyChanged(nameof(ModModel.HasAlert));
         }
     }
 
@@ -70,18 +47,18 @@ public static class AlertExtension
         string? short_version = ModHelper.ShortVersion(version);
         foreach (var mod in modlist)
         {
-            mod.Alert.Clear();
+            mod.Alerts.Clear();
 
             if (string.IsNullOrEmpty(mod.Path))
             {
-                mod.Alert.Add("Missing:" + mod.Label);
+                mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPath, mod.Label);
             }
 
             if (!string.IsNullOrEmpty(short_version) && (mod.About?.SupportedVersions?.Any() ?? false))
             {
                 if (!(mod.About.SupportedVersions.Any(c => c == short_version)))
                 {
-                    mod.Alert.Add("Version:" + mod.Label);
+                    mod.Alerts.Add(AlertLevel.Critical, AlertType.Version, mod.Label);
                 }
             }
 
@@ -93,7 +70,7 @@ public static class AlertExtension
                     if (string.IsNullOrEmpty(mod_dep.PackageId)) continue;
                     if (!modlist.Any(a => a.About?.PackageId == mod_dep.PackageId))
                     {
-                        mod.Alert.Add("Dependency:" + mod_dep.PackageId);
+                        mod.Alerts.Add(AlertLevel.Critical, AlertType.Dependency, mod_dep.PackageId);
                     }
                 }
 
@@ -103,7 +80,7 @@ public static class AlertExtension
                     if (string.IsNullOrEmpty(mod_dep_id)) continue;
                     if (modlist.Any(a => a.About?.PackageId == mod_dep_id))
                     {
-                        mod.Alert.Add("IncompatibleWith:" + mod_dep_id);
+                        mod.Alerts.Add(AlertLevel.Critical, AlertType.IncompatibleWith, mod_dep_id);
                     }
                 }
 
@@ -113,7 +90,7 @@ public static class AlertExtension
                     if (string.IsNullOrEmpty(mod_dep_id)) continue;
                     if (modlist.Skip(index + 1).Where(a => a.About?.PackageId == mod_dep_id).Any(a => a.About?.PackageId == mod_dep_id))
                     {
-                        mod.Alert.Add("LoadAfter:" + mod_dep_id);
+                        mod.Alerts.Add(AlertLevel.Critical, AlertType.LoadAfter, mod_dep_id);
                     }
                 }
 
@@ -123,11 +100,11 @@ public static class AlertExtension
                     if (string.IsNullOrEmpty(mod_dep_id)) continue;
                     if (modlist.Take(index).Where(a => a.About?.PackageId == mod_dep_id).Any(a => a.About?.PackageId == mod_dep_id))
                     {
-                        mod.Alert.Add("LoadBefore:" + mod_dep_id);
+                        mod.Alerts.Add(AlertLevel.Critical, AlertType.LoadBefore, mod_dep_id);
                     }
                 }
 
-            mod.RaisePropertyChanged(nameof(ModModel.HasAlert));
+            //mod.RaisePropertyChanged(nameof(ModModel.HasAlert));
             index++;
         }
     }
