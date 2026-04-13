@@ -64,7 +64,18 @@ public class MainViewModel : PropertyModel, IDropTarget
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsConfigCollection.CombineFilters(RightViewFilter);
         Items.CollectionChanged += Items_CollectionChanged;
+
+        ModTypeIconsList = new List<string>()
+        {
+            string.Empty,
+            ModLocation.DLC.ToString(),
+            ModLocation.Local.ToString(),
+            ModLocation.Steam.ToString(),
+            ModLocation.MetaData.ToString(),
+        };
     }
+
+    public IEnumerable<string> ModTypeIconsList { get; set; }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;
     private bool RightViewFilter(object obj) => ((ModModel)obj)?.Position >= 0;

@@ -312,15 +312,15 @@ public class ModsServices
     }
     public IEnumerable<ModModel> FindRimWorldAllMods()
     {
-        foreach (ModModel item in FileHelper.GetMods(FileHelper.FindRimWorldDLCPath(_settingsService.Settings.PathDirGame), null))
+        foreach (ModModel item in FileHelper.GetMods(FileHelper.FindRimWorldDLCPath(_settingsService.Settings.PathDirGame), null, ModLocation.DLC))
         {
             yield return item;
         }
-        foreach (ModModel item in FileHelper.GetMods(_settingsService.Settings.PathDirModsLocal, true))
+        foreach (ModModel item in FileHelper.GetMods(_settingsService.Settings.PathDirModsLocal, true, ModLocation.Local))
         {
             yield return item;
         }
-        foreach (ModModel item in FileHelper.FindRimWorldWorkshopModsPaths().SelectMany(s => FileHelper.GetMods(s, false)))
+        foreach (ModModel item in FileHelper.FindRimWorldWorkshopModsPaths().SelectMany(s => FileHelper.GetMods(s, false, ModLocation.Steam)))
         {
             yield return item;
         }

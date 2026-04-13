@@ -132,14 +132,15 @@ public static class FileHelper
         return results.ToArray();
     }
 
-    public static IEnumerable<ModModel> GetMods(string? path, bool? local = null)
+    public static IEnumerable<ModModel> GetMods(string? path, bool? local = null, ModLocation location = ModLocation.Unknow)
     {
         if (Directory.Exists(path))
             foreach (var dir in Directory.GetDirectories(path))
             {
                 var model = new ModModel(dir);
-                if (model.About == null) continue;
-                model.Local = local;
+                if (model.About == null) continue;//?
+                //model.Local = local;
+                model.Location = location;
                 yield return model;
             }      
     }
@@ -161,15 +162,15 @@ public static class FileHelper
 
     public static IEnumerable<ModModel> FindRimWorldAllMods()
     {
-        foreach (ModModel item in FileHelper.GetMods(FileHelper.FindRimWorldDLCPath(), null))
+        foreach (ModModel item in FileHelper.GetMods(FileHelper.FindRimWorldDLCPath(), null, ModLocation.DLC))
         {
             yield return item;
         }
-        foreach (ModModel item in FileHelper.GetMods(FileHelper.FindRimWorldLocalModsPath(), true))
+        foreach (ModModel item in FileHelper.GetMods(FileHelper.FindRimWorldLocalModsPath(), true, ModLocation.Local))
         {
             yield return item;
         }
-        foreach (ModModel item in FileHelper.FindRimWorldWorkshopModsPaths().SelectMany(s => FileHelper.GetMods(s, false)))
+        foreach (ModModel item in FileHelper.FindRimWorldWorkshopModsPaths().SelectMany(s => FileHelper.GetMods(s, false, ModLocation.Steam)))
         {
             yield return item;
         }

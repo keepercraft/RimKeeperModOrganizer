@@ -13,22 +13,36 @@
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
-                                <Grid Margin="4,2" x:Name="HeaderGrid" Height="40" VerticalAlignment="Top" >
+                                <Grid Margin="-4,0" x:Name="HeaderGrid" Height="40" VerticalAlignment="Top" >
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Text="{Binding}" FontWeight="Bold"/>
-                                    <TextBox Grid.Row="1" x:Name="FilterTextBox"
-                                         Visibility="{Binding Column.ShowFilter, 
+                                    <TextBlock Text="{Binding}" FontWeight="Bold" Margin="6,0"/>
+                                    <TextBox Grid.Row="1" x:Name="FilterTextBox" 
+                                        Visibility="{Binding Column.ShowFilter, 
                                             RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, 
                                             UpdateSourceTrigger=PropertyChanged}"
-                                         Text="{Binding Column.FilterValue, 
+                                        Text="{Binding Column.FilterValue, 
                                             RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, 
                                             Delay=200,
                                             UpdateSourceTrigger=PropertyChanged}"
-                                         Height="22" 
-                                         Margin="0,2,0,2"
+                                        Margin="6,2" Padding="0,2"
+                                        HorizontalAlignment="Stretch"/>
+                                    <ComboBox Grid.Row="1" x:Name="FilterSelectBox"
+                                         Visibility="{Binding Column.ShowSelectBoxFilter, 
+                                            RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                                         ItemsSource="{Binding Column.SelectBoxFilterList, 
+                                            RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}}"
+                                         SelectedItem="{Binding Column.FilterValue, 
+                                            RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}, 
+                                            Mode=TwoWay}"     
+                                         ItemTemplate="{Binding Column.SelectBoxItemTemplate, 
+                                            RelativeSource={RelativeSource 
+                                            AncestorType=DataGridColumnHeader}}"   
+                                              
+                                         Margin="0,2" Padding="3,3"
                                          HorizontalAlignment="Stretch"/>
                                 </Grid>
                                 <DataTemplate.Triggers>

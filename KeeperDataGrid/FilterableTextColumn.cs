@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using KeeperDataGrid.Models;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -88,6 +91,40 @@ public class FilterableTextColumn : DataGridTextColumn
             }
         });
     }
+    #endregion
+
+    #region SelectBoxFilter
+
+    public Visibility ShowSelectBoxFilter
+    {
+        get => (Visibility)GetValue(ShowSelectBoxFilterProperty);
+        set => SetValue(ShowSelectBoxFilterProperty, value);
+    }
+    public static readonly DependencyProperty ShowSelectBoxFilterProperty =
+        DependencyProperty.Register(nameof(ShowSelectBoxFilter), typeof(Visibility), typeof(FilterableTextColumn),
+            new PropertyMetadata(Visibility.Collapsed));
+
+    public IEnumerable<string> SelectBoxFilterList
+    {
+        get => (IEnumerable<string>)GetValue(SelectBoxFilterListProperty);
+        set => SetValue(SelectBoxFilterListProperty, value);
+    }
+    public static readonly DependencyProperty SelectBoxFilterListProperty =
+        DependencyProperty.Register(nameof(SelectBoxFilterList),
+            typeof(IEnumerable<string>),
+            typeof(FilterableTextColumn),
+            new PropertyMetadata(null));
+    
+    public DataTemplate SelectBoxItemTemplate
+    {
+        get => (DataTemplate)GetValue(SelectBoxItemTemplateProperty);
+        set => SetValue(SelectBoxItemTemplateProperty, value);
+    }
+    public static readonly DependencyProperty SelectBoxItemTemplateProperty =
+        DependencyProperty.Register(nameof(SelectBoxItemTemplate),
+            typeof(DataTemplate),
+            typeof(FilterableTextColumn),
+            new PropertyMetadata(null));
     #endregion
 
     #region FILTER

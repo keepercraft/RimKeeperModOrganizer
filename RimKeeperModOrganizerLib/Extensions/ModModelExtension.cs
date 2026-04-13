@@ -105,6 +105,7 @@ public static class ModModelExtension
     {
         ModId = data.Key,
         //About = new AboutModel { PackageId = data.PackageId },
+        Location = ModLocation.MetaData,
         Data = data.Value,
     };
     //public static ModModel Make(this ModDataModel data) => new ModModel
@@ -149,7 +150,8 @@ public static class ModModelExtension
         data.About = item.About;
         data.Path = item.Path;
         data.ThumbnailPath = item.ThumbnailPath;
-        data.Local = item.Local;
+        //data.Local = item.Local;
+        data.Location = item.Location;
         data.ModId = data.GenKey();
        // if(data.Data != null) data.Data.Key = data.Key;
     }

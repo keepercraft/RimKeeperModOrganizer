@@ -3,10 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vc="clr-namespace:RimKeeperModOrganizerWPF.Views.ValueConverter"
         xmlns:local="clr-namespace:RimKeeperModOrganizerWPF.Views"
         xmlns:sdl="http://schemas.sdl.com/xaml"
         mc:Ignorable="d"
         Title="{Binding SelectedMod.Label}" Height="750" Width="500">
+    <Window.Resources>
+        <ResourceDictionary>
+            <vc:ModIconConverter x:Key="ModIconConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid Background="{Binding SelectedMod.Data.Color,TargetNullValue=Transparent}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -51,37 +58,41 @@
 
                 <Image Source="{Binding SelectedMod.ThumbnailPath,TargetNullValue={x:Null}, FallbackValue={x:Null}}" Stretch="Uniform" MaxHeight="300" Margin="0,0,0,3"/>
 
-                <DockPanel >
-                    <TextBlock Width="80" Text="Groups:"/>
-                    <sdl:MultiSelectComboBox 
-                        x:Name="MyMultiSelect"
-                        ItemsSource="{Binding ModGroups}"
-                        SelectedItems="{Binding SelectedMod.Data.Groups, Mode=TwoWay}"
-                        KeyDown="MultiSelect_KeyDown"
-                        IsEditable="True"
-                        EnableFiltering="True"
-                        SelectionMode="Multiple">
-                        <sdl:MultiSelectComboBox.Resources>
-                            <Style TargetType="TextBox">
-                                <Setter Property="IsReadOnly" Value="False"/>
-                            </Style>
-                        </sdl:MultiSelectComboBox.Resources>
-                    </sdl:MultiSelectComboBox>
+                <DockPanel>
+                    <Image Width="50" Height="50" HorizontalAlignment="Left" Source="{Binding SelectedMod.Location, Converter={StaticResource ModIconConverter}}"/>
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Width="80" Text="Groups:"/>
+                            <sdl:MultiSelectComboBox 
+                                x:Name="MyMultiSelect"
+                                ItemsSource="{Binding ModGroups}"
+                                SelectedItems="{Binding SelectedMod.Data.Groups, Mode=TwoWay}"
+                                KeyDown="MultiSelect_KeyDown"
+                                IsEditable="True"
+                                EnableFiltering="True"
+                                SelectionMode="Multiple">
+                                <sdl:MultiSelectComboBox.Resources>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="IsReadOnly" Value="False"/>
+                                    </Style>
+                                </sdl:MultiSelectComboBox.Resources>
+                            </sdl:MultiSelectComboBox>
+                        </DockPanel>
+                        <DockPanel >
+                            <TextBlock Width="80" Text="Comment:"/>
+                            <TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}" 
+                                 IsReadOnly="False"    
+                                 TextWrapping="Wrap" 
+                                 AcceptsReturn="True"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Top"
+                                 BorderBrush="Gray"
+                                 BorderThickness="1"
+                                 Padding="5"/>
+                        </DockPanel>
+                    </StackPanel>
                 </DockPanel>
-                <DockPanel >
-                    <TextBlock Width="80" Text="Comment:"/>
-                    <TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}" 
-                         IsReadOnly="False"    
-                         TextWrapping="Wrap" 
-                         AcceptsReturn="True"
-                         HorizontalAlignment="Stretch"
-                         VerticalAlignment="Top"
-                         BorderBrush="Gray"
-                         BorderThickness="1"
-                         Padding="5"/>
-                </DockPanel>
-
-
+                
                 <DockPanel >
                     <TextBlock Text="Name:"/>
                     <TextBox Text="{Binding SelectedMod.About.Name,Mode=OneWay}"/>
