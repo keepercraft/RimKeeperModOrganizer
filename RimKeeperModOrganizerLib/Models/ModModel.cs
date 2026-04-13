@@ -73,7 +73,19 @@ public class ModModel : PropertyModel
         }
     }
 
-    public int? Position { get; set; }
+    private int? _position { get; set; }
+    public int? Position
+    {
+        get => _position;
+        set
+        {
+            if (ReferenceEquals(_position, value)) return;
+            _position = value;
+            OnPropertyChanged();
+        }
+    }
+
+
     public bool Selected { get; set; }
 
     public AlertsModel Alerts { get; init; } = new ();

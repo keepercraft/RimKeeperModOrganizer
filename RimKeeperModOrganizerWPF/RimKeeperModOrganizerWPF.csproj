@@ -23,7 +23,7 @@
 	  
 		<Major>0</Major>
 		<Minor>3</Minor>
-		<Build>16</Build>
+		<Build>17</Build>
 		<RawSeconds>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds)</RawSeconds>
 		<ComputedRevision>$([System.Convert]::ToInt32($([MSBuild]::Divide($(RawSeconds), 2))))</ComputedRevision>
 		<Timestamp>$([System.DateTime]::UtcNow.ToString("yyyyMMdd-HHmm"))</Timestamp>

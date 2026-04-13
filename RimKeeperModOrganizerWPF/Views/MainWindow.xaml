@@ -35,26 +35,50 @@
          
             <ContextMenu x:Key="DataGridContextMenu" 
                  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                <MenuItem Header="Open in Explorer" 
-                  Command="{Binding OpenLinkCommand}" 
-                  CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                <MenuItem Header="Open in browser" 
-                  Command="{Binding OpenLinkCommand}" 
-                  CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                 <MenuItem Header="Open in Steam"       
                   Command="{Binding OpenSteamLinkCommand}" 
-                  CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                  CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open in Browser" 
+                  Command="{Binding OpenLinkCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource InternetIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open in Explorer" 
+                  Command="{Binding OpenLinkCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FolderIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Change color" 
                   Command="{Binding ChangeColorCommand}" 
-                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource PaletteIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Remove metadata" 
                   Command="{Binding RemoveMetaDataCommand}" 
-                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource TrashIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Details" 
                   Command="{Binding ModDetailCommand}" 
-                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource GearIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
 
             <Style TargetType="DataGridRow" x:Key="DataGridRowStyle_old">
@@ -154,10 +178,26 @@
         <Menu Grid.Row="0" Grid.ColumnSpan="5" IsEnabled="{Binding IsUIListEnabled}">
             <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
             <MenuItem Header="Mods">
-                <MenuItem Header="Import metadata" Command="{Binding LoadMetaDataCommand}"/>
-                <MenuItem Header="Reload metadata" Command="{Binding LoadMetaDataCommand}" CommandParameter="reload"/>
-                <MenuItem Header="Export metadata" Command="{Binding SaveMetaDataCommand}"/>
-                <MenuItem Header="Export to CSV"   Command="{Binding ModsToCSVCommand}" CommandParameter="{Binding Items}"/>
+                <MenuItem Header="Import metadata" Command="{Binding LoadMetaDataCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Reload metadata" Command="{Binding LoadMetaDataCommand}" CommandParameter="reload">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export metadata" Command="{Binding SaveMetaDataCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export to CSV"   Command="{Binding ModsToCSVCommand}" CommandParameter="{Binding Items}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileCSVIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="SELECTED MOD" IsEnabled="False" FontWeight="Bold"/>
                 <MenuItem Header="Open in Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding SelectedMod.SteamLink}">
@@ -165,26 +205,67 @@
                         <Image Source="{StaticResource SteamIcon}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Open in Browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding SelectedMod.SteamLink}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource InternetIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Open in Explorer" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding SelectedMod.Path}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource FolderIcon}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Change color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding SelectedMod}"/>
-                <MenuItem Header="Remove metadata" Command="{Binding RemoveMetaDataCommand}" CommandParameter="{Binding SelectedMod}"/>
-                <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding SelectedMod}"/>
+                <MenuItem Header="Change color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource PaletteIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Remove metadata" Command="{Binding RemoveMetaDataCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource TrashIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource GearIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Loadout">
-                <MenuItem Header="Load from Rimworld config" Command="{Binding LoadActiveModlistCommand}"/>
-                <MenuItem Header="Save to Rimworld config" Command="{Binding SaveActiveModlistCommand}"/>
+                <MenuItem Header="Load from Rimworld config" Command="{Binding LoadActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileDataIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save to Rimworld config" Command="{Binding SaveActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileDataIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
-                <MenuItem Header="Import from file" Command="{Binding LoadFileActiveModlistCommand}"/>
-                <MenuItem Header="Export to file" Command="{Binding SaveFileActiveModlistCommand}"/>
+                <MenuItem Header="Import from file" Command="{Binding LoadFileActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>                    
+                </MenuItem>
+                <MenuItem Header="Export to file" Command="{Binding SaveFileActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
-                <MenuItem Header="Export to CSV" Command="{Binding ModsToCSVCommand}" CommandParameter="{Binding ModsConfigCollection}"/>
+                <MenuItem Header="Export to CSV" Command="{Binding ModsToCSVCommand}" CommandParameter="{Binding ModsConfigCollection}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileCSVIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Tools">
-                <MenuItem Header="Import colors from Rimpy" Command="{Binding LoadRimpyColorsCommand}"/>
+                <MenuItem Header="Import colors from Rimpy" Command="{Binding LoadRimpyColorsCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileDataIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Options" Command="{Binding OptionsCommand}">
                     <MenuItem.Icon>

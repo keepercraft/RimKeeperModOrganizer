@@ -14,6 +14,7 @@ using RimKeeperModOrganizerWPF.Views.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -64,6 +65,7 @@ public class MainViewModel : PropertyModel, IDropTarget
         ModsConfigCollection = new ListCollectionView(Items); //CollectionViewSource.GetDefaultView(Items);
         ModsConfigCollection.CombineFilters(RightViewFilter);
         Items.CollectionChanged += Items_CollectionChanged;
+        //ModsConfigCollection.SortDescriptions.Add(new SortDescription(nameof(ModModel.Position), ListSortDirection.Ascending));
 
         ModTypeIconsList = new List<string>()
         {
@@ -145,11 +147,11 @@ public class MainViewModel : PropertyModel, IDropTarget
                 ModsCollection.Refresh();
                 AlertPropertyChanged();
             });
-            ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
-            ModsCollection.Cast<ModModel>().ModListAlertClean();
-            Items.ModListDuplicateValidation();
+            //ModsCollection.Cast<ModModel>().ModListAlertClean();          
             App.Current.Dispatcher.Invoke(() =>
             {
+                ModsConfigCollection.Cast<ModModel>().ModListValidation(_settingsService.Settings.GameVersion);
+                Items.ModListDuplicateValidation();
                 AlertPropertyChanged();
                 LoadingUI = false;
             });
@@ -179,10 +181,11 @@ public class MainViewModel : PropertyModel, IDropTarget
     });
     public void ReloadModsConfig(string? path = null) => ModCollectionUpdate(() =>
     {
-        var metaData = _modsServices.LoadModsConfig(path);
+        var config = _modsServices.LoadModsConfig(path);
         App.Current.Dispatcher.Invoke(() =>
         {
-            Items.AddOrUpdate(metaData);
+            Items.AddOrUpdate(config);
+            Items.SortBy(c => c.Position);
         });
     });
     public void ReloadModsData(string? path = null)
