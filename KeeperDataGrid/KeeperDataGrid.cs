@@ -9,12 +9,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 namespace KeeperDataGrid;
 
 public class AdvancedFilterDataGrid : DataGrid
 {
-   // public List<ColumnState> ColumnsState { get; } = new();
     static AdvancedFilterDataGrid()
     {
         DefaultStyleKeyProperty.OverrideMetadata(
@@ -43,11 +41,6 @@ public class AdvancedFilterDataGrid : DataGrid
     protected override void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
     {
         base.OnAutoGeneratingColumn(e);
-        // 1. Sprawdzamy, czy generowana kolumna to tekst (standardowo DataGridTextColumn)
-        //if (e.PropertyType == typeof(string))
-        //{
-        // 2. Tworzymy Twoją własną kolumnę
-        //}
         if (Columns.Cast<FilterableTextColumn>().Any(c => c.Key == e.PropertyName))
         {
             e.Cancel = true;
@@ -59,28 +52,6 @@ public class AdvancedFilterDataGrid : DataGrid
                 var customColumn = new FilterableTextColumn(e.PropertyName, this.ColumnHeaderStyle);
                 e.Column = customColumn;
             }
-            /*
- {
-
-     var config = ColumnsConfig.FirstOrDefault(c => c.PropertyName == e.PropertyName);
-     if (config == null)
-     {
-         config = new ColumnConfig
-         {
-             PropertyName = e.PropertyName,
-             Header = e.Column.Header.ToString(),
-             Width = e.Column.Width,
-         };
-        // ColumnsConfig.Add(config);
-     }
-    // config.SetBinding(e.Column);
-
-        }
-            else
-            {
-
-            }
-                 */
         }
     }
 

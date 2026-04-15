@@ -1,5 +1,4 @@
 ﻿using GongSolutions.Wpf.DragDrop;
-using KeeperBaseLib.Helper;
 using KeeperBaseWPFLib.MVVM;
 using KeeperDataGrid.Extensions;
 using KeeperDataGrid.Models;
@@ -72,7 +71,6 @@ public class MainViewModel : KeeperPropertyModel, IDropTarget
     public ICollectionView ViewPositionsItems { get; }
     public ICollectionView ViewItems { get; }
     public ObservableCollection<TableModel> Items { get; set; } = new();
-    public ObservableCollection<ColumnState> Columns { get; } = new();
    
     private TableModel? _selectedItam;
     public TableModel? SelectedItam
@@ -117,25 +115,6 @@ public class MainViewModel : KeeperPropertyModel, IDropTarget
                 return true;
         return false;
     }
-    
-
-
-    private bool FilterOld(object obj)
-    {
-        if (Columns != null)
-            foreach (var col in Columns)
-            {
-                var prop = obj.GetType().GetProperty(col.PropertyName)?.GetValue(obj);
-                if (prop == null) continue;
-                if (!string.IsNullOrWhiteSpace(col.FilterText))
-                {
-                    if (!prop.ToString().Contains(col.FilterText, StringComparison.OrdinalIgnoreCase)) return false;
-                }
-            }
-        return true;
-    }
-
-
 
     public void DragOver(IDropInfo dropInfo)
     {

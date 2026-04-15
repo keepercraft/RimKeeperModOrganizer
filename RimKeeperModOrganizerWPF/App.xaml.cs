@@ -9,7 +9,6 @@ namespace RimKeeperModOrganizerWPF;
 public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
-    //public static SettingsService SettingsService { get; } = new SettingsService();
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -30,7 +29,5 @@ public partial class App : Application
         };
         mainWindow.Show();
         base.OnStartup(e);
-
-        //Services.GetRequiredService<RimKeeperModOrganizerLib.Services.SettingsService>().StartLoad();
     }
 }

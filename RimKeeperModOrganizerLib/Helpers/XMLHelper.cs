@@ -1,5 +1,4 @@
-﻿using KeeperBaseLib.Helper;
-using RimKeeperModOrganizerLib.Extensions;
+﻿using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Models;
 using System.Xml.Linq;
 

@@ -89,19 +89,6 @@ public class ModModel : PropertyModel
     public bool Selected { get; set; }
 
     public AlertsModel Alerts { get; init; } = new ();
-
-   // public List<string> Alert { get; } = new List<string>();
-   // public bool HasAlert => Alert.Any() == true;
-    //public void TrySet(LocalDataListModel modelList)
-    //{
-    //    if (string.IsNullOrEmpty(About?.PackageId)) return;
-    //    foreach (ModDataModel item in modelList.ModDataList.Where(w => w.PackageId == About.PackageId))
-    //    {
-    //        Data = item;
-    //        return;
-    //    }
-    //    Data = new ModDataModel() { PackageId = About.PackageId };
-    //}
 }
 
 public enum ModLocation: byte

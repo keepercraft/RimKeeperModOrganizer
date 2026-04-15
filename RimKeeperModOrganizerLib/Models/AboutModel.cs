@@ -23,4 +23,3 @@ public record ModDependency
     public string? DownloadUrl { get; set; }
     public string? SteamWorkshopUrl { get; set; }
 }
- 

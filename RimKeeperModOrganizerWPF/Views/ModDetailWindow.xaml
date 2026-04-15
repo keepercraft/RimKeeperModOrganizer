@@ -144,21 +144,6 @@
                         </TextBox.InputBindings>
                     </TextBox>
                 </DockPanel>
-                <!--<DockPanel>
-                    <TextBlock Padding="3" Width="150" Text="SupportedVersions:" FontWeight="Bold" TextAlignment="Right"/>
-                    <ItemsControl ItemsSource="{Binding SelectedMod.About.SupportedVersions}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBox Padding="3" IsReadOnly="True" Text="{Binding Mode=OneWay}"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </DockPanel>-->
                 <DockPanel>
                     <TextBlock Text="ModDependencies:"/>
                     <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}">

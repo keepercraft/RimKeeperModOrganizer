@@ -1,8 +1,4 @@
-﻿using KeeperDataGrid.Models;
-using RimKeeperModOrganizerLib.Models;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-
+﻿using System.Collections.ObjectModel;
 namespace RimKeeperModOrganizerWPF.Extensions;
 
 public static class ObservableCollectionExtensions

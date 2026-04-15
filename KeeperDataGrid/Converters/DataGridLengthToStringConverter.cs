@@ -2,35 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 namespace KeeperDataGrid.Converters;
-
-//public class DataGridLengthToStringConverter : IValueConverter
-//{
-//    public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
-//    {
-//        if(value is string input && !string.IsNullOrWhiteSpace(input))
-//        {
-//            var cvt = new DataGridLengthConverter(); 
-//            return cvt.ConvertFrom(input) ?? new DataGridLength(1, DataGridLengthUnitType.Auto);
-//        }
-//        return new DataGridLength(1, DataGridLengthUnitType.Auto);
-//    }
-//    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-//    {
-//        if (value is DataGridLength length)
-//        {
-//            var cvt = new DataGridLengthConverter();
-//            var result = cvt.ConvertToString(length);
-//            return result ?? "Auto";
-//        }
-//        return "Auto";
-//    }
-//}
-
-using System;
-using System.Globalization;
-using System.Windows.Controls;
-using System.Windows.Data;
-
 public class DataGridLengthToStringConverter : IValueConverter
 {
     // Z Modelu (string) do UI (DataGridLength)

@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
 namespace RimKeeperModOrganizerWPF.Views.Extensions;
 
 public static class DataGridDragDropSelectBehavior
@@ -21,11 +20,8 @@ public static class DataGridDragDropSelectBehavior
             typeof(DataGridDragDropBehavior),
             new PropertyMetadata(false, OnEnableRowDragDropChanged));
 
-    public static bool GetEnableRowDragDrop(DependencyObject obj)
-        => (bool)obj.GetValue(EnableRowDragDropProperty);
-
-    public static void SetEnableRowDragDrop(DependencyObject obj, bool value)
-        => obj.SetValue(EnableRowDragDropProperty, value);
+    public static bool GetEnableRowDragDrop(DependencyObject obj) => (bool)obj.GetValue(EnableRowDragDropProperty);
+    public static void SetEnableRowDragDrop(DependencyObject obj, bool value) => obj.SetValue(EnableRowDragDropProperty, value);
 
     private static void OnEnableRowDragDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -74,38 +70,22 @@ public static class DataGridDragDropSelectBehavior
 
     private static void Grid_Drop(object sender, DragEventArgs e)
     {
-        if (!e.Data.GetDataPresent("DataGridRow") || !e.Data.GetDataPresent("SourceDataGrid"))
-            return;
-
+        if (!e.Data.GetDataPresent("DataGridRow") || !e.Data.GetDataPresent("SourceDataGrid")) return;
         var droppedItem = e.Data.GetData("DataGridRow") as ModModel;
         var sourceGrid = e.Data.GetData("SourceDataGrid") as DataGrid;
         var targetGrid = sender as DataGrid;
-
         if (droppedItem == null || sourceGrid == null || targetGrid == null) return;
         //if ((sourceGrid.ItemsSource is not IList sourceList || targetGrid.ItemsSource is not IList targetList)) return;
         if ((GetListFromItemsSource(sourceGrid.ItemsSource) is not IList sourceList || GetListFromItemsSource(targetGrid.ItemsSource) is not IList targetList)) return;
-
         var targetItem = GetTargetItem(targetGrid, e);
-
-        // Obliczamy indeks
         int newIndex = targetItem != null ? targetList.IndexOf(targetItem) : targetList.Count;
         int oldIndex = sourceList.IndexOf(droppedItem);
-
-        //  if (sourceList == targetList && oldIndex < newIndex)
-        //   newIndex--; // uwzględniamy przesunięcie w tej samej liście
-
-
-
         bool sgc = sourceGrid.Name == "ModsGridConfig";
         bool tgc = targetGrid.Name == "ModsGridConfig";
         if (!sgc && !droppedItem.Selected) droppedItem.Position = targetItem?.Position ?? 0;
         if (!tgc && droppedItem.Selected) droppedItem.Position = -1;
         droppedItem.OnPropertyChanged(nameof(ModModel.Position));
-
         ((ObservableCollection<ModModel>)sourceList).Move(oldIndex, newIndex);
-
-        //  sourceList.Remove(droppedItem);
-        //  targetList.Insert(newIndex, droppedItem);
     }
 
     private static IList? GetListFromItemsSource(object? itemsSource)
@@ -132,22 +112,8 @@ public static class DataGridDragDropSelectBehavior
         while (depObj != null && depObj is not DataGridRow)
             depObj = VisualTreeHelper.GetParent(depObj);
 
-        if (depObj is DataGridRow row && row.Item is ModModel target)
-            return target;
-
-        // Jeśli upuszczamy w puste miejsce, zwracamy ostatni element lub null
-        if (grid.ItemsSource is IList list && list.Count > 0)
-            return list[^1] as ModModel;
-
+        if (depObj is DataGridRow row && row.Item is ModModel target) return target;
+        if (grid.ItemsSource is IList list && list.Count > 0) return list[^1] as ModModel;
         return null;
-    }
-
-    private static void UpdatePositions(IList list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            if (list[i] is ModModel m)
-                m.Position = i; // pamiętaj, że ModModel powinien implementować INotifyPropertyChanged
-        }
     }
 }

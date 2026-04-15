@@ -1,5 +1,4 @@
 ﻿using KeeperDataGrid.Extensions;
-using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,12 +15,6 @@ public class ColumnConfig : KeeperPropertyModel
         set { _header = value; OnPropertyChanged(); }
     }
 
-    //private DataGridLength _width = new DataGridLength(1, DataGridLengthUnitType.Star);
-    //public DataGridLength Width
-    //{
-    //    get => _width;
-    //    set { _width = value; OnPropertyChanged(); }
-    //}
     private string? _width;
     public string? Width
     {

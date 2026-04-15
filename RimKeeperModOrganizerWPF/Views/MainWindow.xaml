@@ -26,13 +26,12 @@
 
             <ex:CustomDragSource x:Key="CustomDragSource"/>
             <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
-           
             <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
             <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
             <vc:ModIconConverter x:Key="ModIconConverter" />
             <vc:GridLengthConverter x:Key="GridLengthConverter" />
             <BooleanToVisibilityConverter x:Key="BoolVis"/>
-         
+
             <ContextMenu x:Key="DataGridContextMenu" 
                  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="Open in Steam"       
@@ -81,38 +80,6 @@
                 </MenuItem>
             </ContextMenu>
 
-            <Style TargetType="DataGridRow" x:Key="DataGridRowStyle_old">
-                <Setter Property="Background" Value="{Binding Data.Color,TargetNullValue=Transparent}"/>
-                <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
-                <Setter Property="ToolTipService.ShowDuration" Value="60000"/>
-                <Setter Property="ToolTipService.BetweenShowDelay" Value="0"/>
-                <Setter Property="ToolTip">
-                    <Setter.Value>
-                        <Border Padding="5" Background="White" BorderBrush="DarkRed" BorderThickness="1" CornerRadius="4">
-                            <StackPanel>
-                                <ItemsControl ItemsSource="{Binding Alert}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}" TextWrapping="Wrap" FontWeight="Bold" Foreground="DarkRed"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </StackPanel>
-                        </Border>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding HasAlert}" Value="False">
-                        <Setter Property="ToolTip" Value="{x:Null}"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding HasAlert}" Value="True">
-                        <Setter Property="Background" Value="LightCoral"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Selected}" Value="True">
-                        <Setter Property="Background" Value="LightGreen"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
             <Style TargetType="DataGridRow" x:Key="DataGridRowStyle">
                 <Setter Property="Background" Value="{Binding Data.Color,TargetNullValue=Transparent}"/>
                 <Setter Property="ToolTipService.InitialShowDelay" Value="0"/>
@@ -143,6 +110,25 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+
+            <Style TargetType="DataGridCell" x:Key="ModTypeIconsDataGridCellStyle">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridCell">
+                            <Image Height="16" Width="16" HorizontalAlignment="Left"
+                                               Source="{Binding Location, Converter={StaticResource ModIconConverter}}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <DataTemplate x:Key="ModIconSelectBoxItemTemplate">
+                <Image Height="16"
+                    Width="16"
+                    HorizontalAlignment="Left"
+                    ToolTip="{Binding}"
+                    Source="{Binding Converter={StaticResource ModIconConverter}}" />
+            </DataTemplate>
 
         </ResourceDictionary>
     </Window.Resources>
@@ -246,7 +232,7 @@
                 <MenuItem Header="Import from file" Command="{Binding LoadFileActiveModlistCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource FileIcon}"/>
-                    </MenuItem.Icon>                    
+                    </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Export to file" Command="{Binding SaveFileActiveModlistCommand}">
                     <MenuItem.Icon>
@@ -393,59 +379,14 @@
             >
             <kdg:AdvancedFilterDataGrid.Columns>
 
-                <!--<DataGridTemplateColumn Width="20" Header="">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Width="16" Height="16" Source="{Binding Local, Converter={StaticResource ModIconConverter}}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-                <!--Binding="{Binding Location, Mode=OneWay, Converter={StaticResource BoolToSLRConverter}}"-->
-                <!--<kdg:FilterableTextColumn 
-                    Binding="{Binding Location, Mode=OneWay}" 
-                    Key="type" Header="" Width="20" ShowFilter="Collapsed"
-                >
-                    <kdg:FilterableTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Image Width="16" Height="16" Source="{Binding Location, Converter={StaticResource ModIconConverter}}"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </kdg:FilterableTextColumn.CellStyle>
-                </kdg:FilterableTextColumn>-->
-
                 <kdg:FilterableTextColumn ShowFilter="Collapsed" ShowSelectBoxFilter="Visible" 
                     Key="type"                      
                     Width="20" Header="" MaxWidth="42"
+                    CellStyle="{StaticResource ModTypeIconsDataGridCellStyle}"   
+                    SelectBoxItemTemplate="{StaticResource ModIconSelectBoxItemTemplate}"                      
                     SelectBoxFilterList="{Binding Data.ModTypeIconsList, Source={StaticResource Proxy}, Mode=OneWay}"                      
                     Binding="{Binding Location}"
-                >
-                    <!--Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"-->
-                    <kdg:FilterableTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Image Height="16" Width="16" HorizontalAlignment="Left"
-                                               Source="{Binding Location, Converter={StaticResource ModIconConverter}}"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </kdg:FilterableTextColumn.CellStyle>
-                    <kdg:FilterableTextColumn.SelectBoxItemTemplate>
-                        <DataTemplate>
-                            <Image Height="16" Width="16" HorizontalAlignment="Left"
-                                   ToolTip="{Binding}"
-                                   Source="{Binding Converter={StaticResource ModIconConverter}}" />
-                        </DataTemplate>
-                    </kdg:FilterableTextColumn.SelectBoxItemTemplate>
-                </kdg:FilterableTextColumn>
-
+                />
 
                 <kdg:FilterableTextColumn              
                     Binding="{Binding Label}" 
@@ -474,61 +415,6 @@
                     Header="Versions"                  
                 />
             </kdg:AdvancedFilterDataGrid.Columns>
-            <!--<kdg:AdvancedFilterDataGrid.Columns>
-                <kdg:FilterableTextColumn
-                    Binding="{Binding Local, Mode=OneWay, Converter={StaticResource BoolToSLRConverter}}" 
-                    Header=""                  
-                    Width="{Binding Data.ModColumnData[type].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding Data.ModColumnData[type].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
-                />
-                <kdg:FilterableTextColumn
-                    Binding="{Binding Data.Group, Mode=OneWay}" 
-                    Header="Grupa"
-                    Width="{Binding Data.ModColumnData[group].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding Data.ModColumnData[group].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"                                        
-                />
-                <kdg:FilterableTextColumn              
-                    Binding="{Binding Label}" 
-                    Header="Nazwa"    
-                    Width="{Binding Data.ModColumnData[label].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding Data.ModColumnData[label].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"
-                />
-                <kdg:FilterableTextColumn
-                    Binding="{Binding About.Authors}"
-                    Key="Author"                      
-                    Header="Autor_OLD"
-                />
-                --><!--<kdg:FilterableTextColumn IsReadOnly="True"
-                    Binding="{Binding About.Authors}"
-                    Key="Author"                      
-                    Header="Autor"
-                    Width="{Binding Data.ModColumnData[author].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding Data.ModColumnData[author].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
-                />--><!--
-                <kdg:FilterableTextColumn 
-                    Binding="{Binding About.PackageId}"
-                    Header="PackageId"
-                    Width="{Binding Data.ModColumnData[packageId].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding Data.ModColumnData[packageId].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
-                />
-                <kdg:FilterableTextColumn 
-                    Binding="{Binding Versions}"
-                    Header="Varsion"
-                    Width="{Binding Data.ModColumnData[versions].Width, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource DoubleToLengthConverter}, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding Data.ModColumnData[versions].Visible, Source={StaticResource Proxy}, Mode=TwoWay, Converter={StaticResource BoolVis}}"            
-                />
-                --><!--<fdg:DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="*"/>--><!--
-            </kdg:AdvancedFilterDataGrid.Columns>-->
-            <!--<kdg:AdvancedFilterDataGrid.ContextMenu>
-                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                </ContextMenu>
-            </kdg:AdvancedFilterDataGrid.ContextMenu>-->
         </kdg:AdvancedFilterDataGrid>
 
         <kdg:AdvancedFilterDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
@@ -559,75 +445,18 @@
                 ScrollViewer.VerticalScrollBarVisibility="Visible"   
             >
             <kdg:AdvancedFilterDataGrid.Columns>
-                <!--<kdg:FilterableTextColumn ShowFilter="Collapsed" Width="30" Header="N" Binding="{Binding Position}"/>-->
-
-                <!--<DataGridTemplateColumn Width="20" MaxWidth="20" Header="">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Margin="1" Source="{Binding Location, Converter={StaticResource ModIconConverter}}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-
                 <kdg:FilterableTextColumn ShowFilter="Collapsed" ShowSelectBoxFilter="Visible" 
                     Width="20" Header="" MaxWidth="42"
+                    CellStyle="{StaticResource ModTypeIconsDataGridCellStyle}"    
+                    SelectBoxItemTemplate="{StaticResource ModIconSelectBoxItemTemplate}"                         
                     SelectBoxFilterList="{Binding Data.ModTypeIconsList, Source={StaticResource Proxy}, Mode=OneWay}"                      
                     Binding="{Binding Location}"
-                >
-                    <!--Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}"-->
-                    <kdg:FilterableTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Image Height="16" Width="16" HorizontalAlignment="Left"
-                                               Source="{Binding Location, Converter={StaticResource ModIconConverter}}"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </kdg:FilterableTextColumn.CellStyle>
-                    <kdg:FilterableTextColumn.SelectBoxItemTemplate>
-                        <DataTemplate>
-                            <Image Height="16" Width="16" HorizontalAlignment="Left"
-                                   ToolTip="{Binding}"
-                                   Source="{Binding Converter={StaticResource ModIconConverter}}" />
-                        </DataTemplate>
-                    </kdg:FilterableTextColumn.SelectBoxItemTemplate>
-                </kdg:FilterableTextColumn>
-                
+                />
+
                 <kdg:FilterableTextColumn Width="*" Header="Nazwa" Binding="{Binding Label}" />
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
-                <!--<DataGridTemplateColumn Header="Typ" Width="20">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image x:Name="IconControl" 
-                               Width="16" 
-                               Height="16" 
-                               Source="{StaticResource SteamIcon}"
-                               Visibility="Collapsed"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               SnapsToDevicePixels="True"/>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Local, Converter={StaticResource BoolToSLRConverter}}" Value="L">
-                                    <Setter TargetName="IconControl" Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn> -->
+
             </kdg:AdvancedFilterDataGrid.Columns>
-            <!--<kdg:AdvancedFilterDataGrid.ContextMenu>
-                <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="Open folder" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.Path, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Open browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Open Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem.SteamLink, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Change Color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Remove Data" Command="{Binding ModDataRemoveCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                    <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
-                </ContextMenu>
-            </kdg:AdvancedFilterDataGrid.ContextMenu>-->
         </kdg:AdvancedFilterDataGrid>
 
         <ScrollViewer Grid.Column="0" Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
@@ -719,20 +548,6 @@
                                 CommandParameter="{Binding SelectedMod.About.Url}"/>
                     </TextBox.InputBindings>
                 </TextBox>
-                <!--<TextBlock>
-                    <ItemsControl ItemsSource="{Binding SelectedMod.About.SupportedVersions}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" Margin="0,0,5,0"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </TextBlock>-->
 
                 <TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
@@ -791,8 +606,8 @@
                 </ItemsControl>
 
                 <TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <TextBox Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>                
-                
+                <TextBox Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>

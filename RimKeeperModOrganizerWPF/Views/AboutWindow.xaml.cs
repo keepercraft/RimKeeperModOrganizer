@@ -1,6 +1,5 @@
 ﻿using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerWPF.Views.Extensions;
-using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 namespace RimKeeperModOrganizerWPF.Views;
@@ -22,10 +21,8 @@ public partial class AboutWindow : Window
         
         GitHubUrl = metadataAttributes.FirstOrDefault(m => m.Key == "RepositoryUrl")?.Value ?? "https://github.com";
         SupportPage = @"https://ko-fi.com/keepercraft";
-
-        FileVersion = FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion ?? "0.0.0.0";
-        ProductVersion = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion ?? "0.0-null";
-
+        FileVersion = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "0.0.0.0";
+        ProductVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0.0";
         Authors = assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company ?? "Nie określono autorów";
         Copyright = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright ?? "Copyright ©";
         Description = assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description ?? "-";
@@ -35,8 +32,5 @@ public partial class AboutWindow : Window
 
     public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        this.Close();
-    }
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 }
