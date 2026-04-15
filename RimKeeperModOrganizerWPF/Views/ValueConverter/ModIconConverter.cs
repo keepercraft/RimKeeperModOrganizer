@@ -33,7 +33,7 @@ public class ModIconConverter : IValueConverter
             case ModLocation.Steam:
                 return Get("SteamIcon");
             case ModLocation.DLC:
-                return Get("GearIcon");
+                return Get("RimworldLogoIcon");
             case ModLocation.MetaData:
                 return Get("MetaDataIcon");
             default:

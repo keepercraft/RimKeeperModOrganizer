@@ -220,12 +220,12 @@
             <MenuItem Header="Loadout">
                 <MenuItem Header="Load from Rimworld config" Command="{Binding LoadActiveModlistCommand}">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource FileDataIcon}"/>
+                        <Image Source="{StaticResource RimworldLogoIcon}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Save to Rimworld config" Command="{Binding SaveActiveModlistCommand}">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource FileDataIcon}"/>
+                        <Image Source="{StaticResource RimworldLogoIcon}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
