@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Keeper\KeeperBaseLib\KeeperBaseLib\KeeperBaseLib.csproj" />
+    <ProjectReference Include="..\KeeperBaseSheredLib\KeeperBaseSheredLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

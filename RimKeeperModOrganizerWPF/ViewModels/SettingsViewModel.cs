@@ -1,4 +1,4 @@
-﻿using KeeperBaseLib.Model;
+﻿using KeeperBaseSharedLib.Models;
 using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;

@@ -1,4 +1,5 @@
 ﻿using GongSolutions.Wpf.DragDrop;
+using KeeperBaseSharedLib.Models;
 using KeeperBaseWPFLib.MVVM;
 using KeeperDataGrid.Extensions;
 using KeeperDataGrid.Models;
@@ -9,10 +10,9 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using KeeperPropertyModel = KeeperDataGrid.Models.KeeperPropertyModel;
 namespace KeeperDataGridExample.ViewModels;
 
-public class MainViewModel : KeeperPropertyModel, IDropTarget
+public class MainViewModel : PropertyModel, IDropTarget
 {
     public ObservableCollection<ColumnConfig> MyColumns { get; } = new();
 

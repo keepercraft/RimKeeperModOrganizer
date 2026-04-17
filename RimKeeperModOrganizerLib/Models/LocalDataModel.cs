@@ -1,4 +1,4 @@
-﻿using KeeperBaseLib.Model;
+﻿using KeeperBaseSharedLib.Models;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Text.Json.Serialization;

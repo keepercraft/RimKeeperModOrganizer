@@ -1,5 +1,5 @@
 ﻿using GongSolutions.Wpf.DragDrop;
-using KeeperBaseLib.Model;
+using KeeperBaseSharedLib.Models;
 using KeeperDataGrid.Extensions;
 using KeeperDataGrid.Models;
 using Microsoft.Extensions.DependencyInjection;

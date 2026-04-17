@@ -13,4 +13,8 @@
     <Folder Include="Interfaces\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KeeperBaseSheredLib\KeeperBaseSheredLib.csproj" />
+  </ItemGroup>
+
 </Project>

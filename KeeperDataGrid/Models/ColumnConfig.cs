@@ -1,10 +1,11 @@
-﻿using KeeperDataGrid.Extensions;
+﻿using KeeperBaseSharedLib.Models;
+using KeeperDataGrid.Extensions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 namespace KeeperDataGrid.Models;
 
-public class ColumnConfig : KeeperPropertyModel
+public class ColumnConfig : PropertyModel
 {
     public string PropertyName { get; set; } = string.Empty;
 

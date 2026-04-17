@@ -1,4 +1,4 @@
-﻿using KeeperBaseLib.Model;
+﻿using KeeperBaseSharedLib.Models;
 namespace RimKeeperModOrganizerLib.Models;
 
 public class SettingsModel : PropertyModel

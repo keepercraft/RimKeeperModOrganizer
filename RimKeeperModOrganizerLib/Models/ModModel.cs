@@ -1,8 +1,7 @@
-﻿using KeeperBaseLib.Model;
+﻿using KeeperBaseSharedLib.Models;
 using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Helpers;
 using System.ComponentModel;
-using System.Diagnostics;
 namespace RimKeeperModOrganizerLib.Models;
 
 public class ModModel : PropertyModel
