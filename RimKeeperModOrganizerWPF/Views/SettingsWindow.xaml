@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:RimKeeperModOrganizerWPF.Views"
         xmlns:helpers="clr-namespace:RimKeeperModOrganizerWPF.Helpers"
         mc:Ignorable="d"
+        Icon="{StaticResource GearIcon}"      
         Title="SettingsWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>

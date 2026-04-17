@@ -8,6 +8,7 @@
         Title="RimKeeper - ModOrganizer - About" 
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
+        Icon="{StaticResource RimworldLogoIcon}"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Height="300" Width="600">
     <Grid Margin="20">
@@ -17,9 +18,21 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="RimKeeper Mod Organizer" 
-                   FontSize="18" FontWeight="Bold" Foreground="#333" 
-                   Margin="0,0,0,20"/>
+        <Border Background="#26000000"  Width="400" Height="400" Margin="-180" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            Grid.RowSpan="99" Grid.ColumnSpan="99">
+            <Border.OpacityMask>
+                <ImageBrush ImageSource="{StaticResource RimworldLogoIcon}"/>
+            </Border.OpacityMask>
+        </Border>
+
+        <DockPanel Grid.Row="0" HorizontalAlignment="Left">
+            <Border Background="#FF00375A" Width="40" Height="40" Margin="5,0">
+                <Border.OpacityMask>
+                    <ImageBrush ImageSource="{StaticResource RimworldLogoIcon}"/>
+                </Border.OpacityMask>
+            </Border>
+            <TextBlock Text="RimKeeper Mod Organizer" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,0" VerticalAlignment="Center" />
+        </DockPanel>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

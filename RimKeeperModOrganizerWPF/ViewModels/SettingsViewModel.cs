@@ -24,6 +24,7 @@ public class SettingsViewModel : PropertyModel
         {
             Data.RaisePropertyChanged();
             _settingsService.ApplyChanges(Data);
+            _settingsService.Settings.RaisePropertyChanged();
             _settingsService.Save();
 
         }

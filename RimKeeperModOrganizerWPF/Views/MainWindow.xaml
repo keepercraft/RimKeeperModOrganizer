@@ -11,6 +11,7 @@
         xmlns:kdg="clr-namespace:KeeperDataGrid;assembly=KeeperDataGrid" 
         xmlns:sdl="http://schemas.sdl.com/xaml"
         Title="RimKeeper - ModOrganizer" 
+        Icon="{StaticResource RimworldLogoIcon}"
         Height="{Binding MainWidowSettings.Height, Mode=TwoWay}" 
         Width="{Binding MainWidowSettings.Width, Mode=TwoWay}"
         Left="{Binding MainWidowSettings.Left, Mode=TwoWay}"
@@ -28,7 +29,7 @@
             <vc:BoolToSLRConverter x:Key="BoolToSLRConverter"/>
             <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
             <vc:DoubleToDataGridLengthConverter x:Key="DoubleToLengthConverter" />
-            <vc:ModIconConverter x:Key="ModIconConverter" />
+            <!--<vc:ModIconConverter x:Key="ModIconConverter" />-->
             <vc:GridLengthConverter x:Key="GridLengthConverter" />
             <BooleanToVisibilityConverter x:Key="BoolVis"/>
 
@@ -190,8 +191,14 @@
         <StatusBar Grid.Row="2" Grid.ColumnSpan="5"></StatusBar>
 
         <Menu Grid.Row="0" Grid.ColumnSpan="5" IsEnabled="{Binding IsUIListEnabled}">
-            <MenuItem Header="Refresh" Command="{Binding RefreshCommand}"/>
             <MenuItem Header="Mods">
+                <MenuItem Header="MODS LIST" IsEnabled="False" FontWeight="Bold"/>
+                <MenuItem Header="Refresh" Command="{Binding RefreshCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource RefreshIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
                 <MenuItem Header="Import metadata" Command="{Binding LoadMetaDataCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource FileIcon}"/>
@@ -213,6 +220,9 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
+            </MenuItem>
+
+            <MenuItem Header="Selected" IsEnabled="{Binding IsSelectedMod}">
                 <MenuItem Header="SELECTED MOD" IsEnabled="False" FontWeight="Bold"/>
                 <MenuItem Header="Refresh mod data" Command="{Binding RefreshModCommand}" CommandParameter="{Binding SelectedMod}">
                     <MenuItem.Icon>
@@ -264,12 +274,12 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Loadout">
-                <MenuItem Header="Load from Rimworld config" Command="{Binding LoadActiveModlistCommand}">
+                <MenuItem Header="Save to Rimworld config" Command="{Binding SaveActiveModlistCommand}">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource RimworldLogoIcon}"/>
+                        <Image Source="{StaticResource SaveIcon}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save to Rimworld config" Command="{Binding SaveActiveModlistCommand}">
+                <MenuItem Header="Load from Rimworld config" Command="{Binding LoadActiveModlistCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource RimworldLogoIcon}"/>
                     </MenuItem.Icon>
@@ -307,47 +317,26 @@
             </MenuItem>
             <MenuItem Header="About" Command="{Binding AboutCommand}"/>
             <MenuItem Header="[Test]" Command="{Binding TestCommand}"/>
-            <!--<MenuItem>
-                <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Viewbox Width="16" Height="16">
-                            <Path Fill="Black" Data="
-                                M8,0 
-                                L9.5,5.5 
-                                L15.5,5.5 
-                                L10.5,9 
-                                L12.5,15 
-                                L8,11.5 
-                                L3.5,15 
-                                L5.5,9 
-                                L0.5,5.5 
-                                L6.5,5.5 
-                                Z"/>
-                        </Viewbox>
-                    </StackPanel>
-                </MenuItem.Header>
-            </MenuItem>
-            <MenuItem>
-                <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="{StaticResource SteamIcon}" 
-                           Width="16" 
-                           Height="16" 
-                           HorizontalAlignment="Center"
-                           RenderOptions.BitmapScalingMode="HighQuality" />
-                    </StackPanel>
-                </MenuItem.Header>
-            </MenuItem>-->
-
         </Menu>
         <Menu Grid.Row="0" Grid.Column="2" Background="Transparent" HorizontalAlignment="Right">
-            <MenuItem Header="{Binding ModsCollection.Count, StringFormat='- {0}'}" HorizontalAlignment="Right" />
+            <!--<MenuItem Header="{Binding ModsCollection.Count, StringFormat='- {0}'}" HorizontalAlignment="Right" />-->
+            <MenuItem Header="{Binding GetModListStaticLable}" HorizontalAlignment="Right" />
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5">
             <MenuItem 
                 Header="{Binding GetModConfigStaticLable}" 
                 Background="{Binding GetModConfigStaticColor}"
                 ToolTipService.InitialShowDelay="0">
+                <MenuItem.Style>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="ToolTipService.IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ListModsConfigAlerts.Count}" Value="0">
+                                <Setter Property="ToolTipService.IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </MenuItem.Style>
                 <MenuItem.ToolTip>
                     <ToolTip>
                         <Border Padding="5" BorderBrush="Black" BorderThickness="1" CornerRadius="0">
@@ -371,29 +360,17 @@
             </MenuItem>
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5" Background="Transparent" HorizontalAlignment="Right">
-            <MenuItem Header="[Save]" Command="{Binding SaveActiveModlistCommand}" />
+            <MenuItem ToolTip="Refresh" Width="30" Command="{Binding RefreshCommand}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource RefreshIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem ToolTip="Save" Width="30" Command="{Binding SaveActiveModlistCommand}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource SaveIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
         </Menu>
-
-        <!--<ToolBar Grid.Row="0" Grid.ColumnSpan="5">
-            <Button Content="Save" Command="{Binding SaveCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="Refresh" Command="{Binding RefreshCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="Import" Command="{Binding LoadConfigCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="Export" Command="{Binding SaveConfigCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="Options" Command="{Binding OptionsCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="ChangeColor" Command="{Binding ChangeColorCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="[RimpyLoad]" Command="{Binding RimpyColorLoadCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="[CSV]" Command="{Binding ModsToCSVCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <Button Content="[TEST]" Command="{Binding TestCommand}" IsEnabled="{Binding IsUIListEnabled}"/>
-            <TextBlock Text="{Binding GetModConfigStaticLable}" Padding="5" Background="{Binding GetModConfigStaticColor}" >
-                <TextBlock.ToolTip>
-                    <ToolTip>
-                        <ScrollViewer MaxHeight="100" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl ItemsSource="{Binding ListModsConfigAlert}"/>
-                        </ScrollViewer>
-                    </ToolTip>
-                </TextBlock.ToolTip>
-            </TextBlock>
-        </ToolBar>-->
 
         <kdg:AdvancedFilterDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
                 CellStyle="{StaticResource DataGridSelectionCellStyle}"      

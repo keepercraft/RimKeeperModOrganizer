@@ -69,7 +69,7 @@ public class ModsServices
         }
         else
         {
-            var newmod = FindRimWorldAllMods().FirstOrDefault(c => c == model);
+            var newmod = FindRimWorldAllMods().FirstOrDefault(c => c.ModId == model.ModId);
             if (newmod != null) model.Update(newmod);
         }
         var newmoddata = LoadModData2()?.ModDataList.FindByKey(model.ModId);

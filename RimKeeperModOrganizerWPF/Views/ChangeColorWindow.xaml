@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:RimKeeperModOrganizerWPF.Views" 
         xmlns:cp="clr-namespace:ColorPicker;assembly=ColorPicker"
         Title="Wybierz kolor"
+        Icon="{StaticResource PaletteIcon}"
         Width="400"
         Height="500"
         WindowStartupLocation="CenterOwner"

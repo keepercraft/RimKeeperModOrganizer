@@ -38,6 +38,7 @@ public class MainViewModel : PropertyModel, IDropTarget
         {
             _selectedMod = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(IsSelectedMod));
         }
     }
     public bool IsSelectedMod => SelectedMod != null;
@@ -115,17 +116,29 @@ public class MainViewModel : PropertyModel, IDropTarget
 
     #region Alert Section
     public bool IsModsConfigAlert => ModsConfigCollection.Cast<ModModel>().Any(x => x.Alerts.HasAlert);
-    public List<AlertModel> ListModsConfigAlerts => Items.Cast<ModModel>().SelectMany(x => x.Alerts.Items).ToList();
+    public List<AlertModel> ListModsConfigAlerts => ModsConfigCollection.Cast<ModModel>().SelectMany(x => x.Alerts.Items).ToList();
     public Brush? GetModConfigStaticColor => IsModsConfigAlert ? Brushes.LightCoral : Brushes.Transparent;
+
+    public string GetModListStaticLable
+    {
+        get
+        {
+            return string.Format("Mods ({0}/{1})"
+                , ModsCollection.Cast<object>().Count()
+                , Items.Count()
+             );
+        }
+    }
     public string GetModConfigStaticLable
     {
         get
         {
-            var alerts = Items.Sum(c => c.Alerts.Items.Count);
-            return string.Format("Mods ({0}/{1}) {2}"
+            var alerts = ModsConfigCollection.Cast<ModModel>().Sum(c => c.Alerts.Items.Count);
+            return string.Format("Loadout ({0}/{1}) {2}"
                 , ModsConfigCollection.Cast<object>().Count()
                 , Items.Count()
-                , alerts > 0 ? $"!({alerts})" : "");
+                , alerts > 0 ? $"!({alerts})" : ""
+             );
         }
     }
     public void AlertPropertyChanged()
@@ -133,6 +146,7 @@ public class MainViewModel : PropertyModel, IDropTarget
         RaisePropertyChanged(nameof(ListModsConfigAlerts));
         RaisePropertyChanged(nameof(GetModConfigStaticColor));
         RaisePropertyChanged(nameof(GetModConfigStaticLable));
+        RaisePropertyChanged(nameof(GetModListStaticLable));
     }
     #endregion
 

@@ -1,4 +1,6 @@
-﻿using Steamworks;
+﻿using RimKeeperModOrganizerLib.Models;
+using Steamworks;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -18,9 +20,15 @@ public class SteamService : IDisposable
     public SteamService(SettingsService? settings = null)
     {
         _settings = settings;
-        string path = settings?.Settings.PathDirGame;
-        LoadLibrary(path);
+        LoadLibrary(settings?.Settings.PathDirGame);
+        if (settings != null) settings.Settings.PropertyChanged += Settings_PropertyChanged;
         //Task.Run(CallbackLoop, _callbackTokenSource.Token);
+    }
+
+    private void Settings_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (!IsLibraryLoaded && e.PropertyName == nameof(SettingsModel.PathDirGame))
+            LoadLibrary(_settings?.Settings.PathDirGame);      
     }
 
     public void Dispose()
@@ -93,8 +101,7 @@ public class SteamService : IDisposable
             {
                 lock (_steamLock)
                 {
-                    if (IsInitialized) SteamAPI.RunCallbacks(); 
-                    else break;
+                    if (IsInitialized) SteamAPI.RunCallbacks(); else break;
                 }
                 await Task.Delay(20, _callbackTokenSource.Token);
             }
@@ -114,17 +121,25 @@ public class SteamService : IDisposable
     }
     public void DeInitialize()
     {
+        if (!IsInitialized) return;
         lock (_steamLock)
         {
-            if (!IsInitialized) return;
-            _callbackTokenSource.Cancel();
-            _callbackTokenSource.Dispose();
+            _callbackTokenSource?.Cancel();
+            _callbackTokenSource?.Dispose();
             _callbackTokenSource = null;
             lock (_activeCallResults) _activeCallResults.Clear();
-            SteamAPI.Shutdown();
-            LibraryStatus = SteamServiceStatus.None;
-            IsInitialized = false;
         }
+        //SteamAPI.Shutdown();
+        Task.WhenAny(DeInitializeWithTimeout()).Wait();
+        LibraryStatus = SteamServiceStatus.None;
+        IsInitialized = false;
+
+    }
+    public async Task DeInitializeWithTimeout(int timeoutMs = 2000)
+    {
+        _callbackTokenSource = new CancellationTokenSource(timeoutMs);
+        var shutdownTask = Task.Run(() => SteamAPI.Shutdown(), _callbackTokenSource.Token);
+        await shutdownTask;
     }
     public T TryInitialize<T>(Func<SteamService, T> func, int millisecondsDelay = 10000)
     {
