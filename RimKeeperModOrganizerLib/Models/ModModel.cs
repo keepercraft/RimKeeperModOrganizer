@@ -2,6 +2,7 @@
 using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Helpers;
 using System.ComponentModel;
+using System.Diagnostics;
 namespace RimKeeperModOrganizerLib.Models;
 
 public class ModModel : PropertyModel
@@ -31,6 +32,7 @@ public class ModModel : PropertyModel
     public string? Path { get; set; }
     public string? ThumbnailPath { get; set; }
 
+    public string PackageId => About?.PackageId ?? About?.PackageId ?? this.GetKeyID();
     public string Label => About?.Name ?? About?.PackageId ?? ModId ?? "??";
     public string Versions => About?.SupportedVersions != null && About.SupportedVersions.Any() ? string.Join(",", About.SupportedVersions.OrderBy(v => v)) : "";
     public string? SteamLink => String.IsNullOrEmpty(About?.SteamId) ? null : string.Format(@"https://steamcommunity.com/sharedfiles/filedetails/?id={0}", About?.SteamId);

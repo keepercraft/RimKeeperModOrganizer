@@ -53,6 +53,31 @@ public class ModsServices
         }
     }
 
+    public IEnumerable<ModModel> RefreshMods(IEnumerable<ModModel> models) //to optimization
+    {
+        foreach (var model in models)
+        {
+            RefreshMod(model);
+            yield return model;
+        }
+    }
+    public ModModel RefreshMod(ModModel model)
+    {
+        if (!string.IsNullOrEmpty(model.Path))
+        {
+            model.Update(new ModModel(model.Path, ModLocation.Steam));
+        }
+        else
+        {
+            var newmod = FindRimWorldAllMods().FirstOrDefault(c => c == model);
+            if (newmod != null) model.Update(newmod);
+        }
+        var newmoddata = LoadModData2()?.ModDataList.FindByKey(model.ModId);
+        if (newmoddata != null) model.Update(newmoddata);
+        model.RaisePropertyChanged();
+        return model;
+    }
+
     public LocalDataListModel2? LoadModData2(string? path = null)
     {
         return JsonHelper.DeserializeModel<LocalDataListModel2>(path ?? _settingsService.Settings.PathModData);

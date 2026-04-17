@@ -387,6 +387,16 @@ public class MainViewModel : PropertyModel, IDropTarget
         }
     }));
 
+    public CustomCommand RefreshModCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel model)
+        {
+            Task.Run(() => UILock(() =>
+            {
+                _modsServices.RefreshMod(model);
+            }));
+        }
+    });
 
     public CustomCommand SubscribeCommand => new CustomCommand(p =>
     {
@@ -401,9 +411,8 @@ public class MainViewModel : PropertyModel, IDropTarget
                     string xpath = model.Path;
                     await Task.Delay(1000);
                     bool fileExists = await TaskHelper.WaitDirectoryExist(xpath);
-                    var newmod = new ModModel(xpath);
+                    var newmod = new ModModel(xpath, ModLocation.Steam);
                     model.Update(newmod);
-                    model.Location = ModLocation.Steam;
                     model.RaisePropertyChanged();
                 }
             }));
@@ -419,6 +428,7 @@ public class MainViewModel : PropertyModel, IDropTarget
                 if(result)
                 {
                     //await Task.Delay(1000);
+                    //Directory.Delete(model.Path);
                     //bool fileExists = await TaskHelper.WaitDirectoryNotExist(model.Path);
                     model.Location = model.Data != null ? ModLocation.MetaData : ModLocation.Unknow;
                     model.RaisePropertyChanged();

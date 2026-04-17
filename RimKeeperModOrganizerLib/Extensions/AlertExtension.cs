@@ -30,13 +30,16 @@ public static class AlertExtension
             {
                 mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPath, mod.Label);
             }
-            if (string.IsNullOrEmpty(mod.About?.PackageId))
+            if (mod.About != null)
             {
-                mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPackageID, mod.Label);
-            }
-            if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
-            {
-                mod.Alerts.Add(AlertLevel.Warning, AlertType.DuplicatePackageID, mod.Label);
+                if (string.IsNullOrEmpty(mod.About?.PackageId))
+                {
+                    mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPackageID, mod.Label);
+                }
+                if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
+                {
+                    mod.Alerts.Add(AlertLevel.Warning, AlertType.DuplicatePackageID, mod.Label);
+                }
             }
         }
     }
