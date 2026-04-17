@@ -219,6 +219,7 @@ public class MainViewModel : PropertyModel, IDropTarget
             if (!ModColors.Contains(item))
                 ModColors.Add(item);
     }
+
     public bool DataChanged = false;
     private void Data_PropertyChanged(object? sender, PropertyChangedEventArgs e) 
         => DataChanged = true;

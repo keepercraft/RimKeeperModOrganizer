@@ -1,6 +1,7 @@
 ﻿using KeeperBaseLib.Model;
 using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Helpers;
+using System.ComponentModel;
 namespace RimKeeperModOrganizerLib.Models;
 
 public class ModModel : PropertyModel
@@ -61,6 +62,7 @@ public class ModModel : PropertyModel
         }
     }
 
+    private void OnSubModelPropertyChanged(object? sender, PropertyChangedEventArgs e) => OnPropertyChanged(nameof(Data));
     private ModDataModel? _data = null;
     public ModDataModel? Data
     {
@@ -68,7 +70,9 @@ public class ModModel : PropertyModel
         set
         {
             if (ReferenceEquals(_data, value)) return;
+            if (_data != null) _data.PropertyChanged -= OnSubModelPropertyChanged;
             _data = value;
+            if (_data != null) _data.PropertyChanged += OnSubModelPropertyChanged;
             OnPropertyChanged();
         }
     }
