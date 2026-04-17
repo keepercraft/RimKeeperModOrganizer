@@ -9,6 +9,7 @@ using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
 using RimKeeperModOrganizerWPF.Extensions;
+using RimKeeperModOrganizerWPF.Helpers;
 using RimKeeperModOrganizerWPF.Views;
 using RimKeeperModOrganizerWPF.Views.Extensions;
 using System.Collections.ObjectModel;
@@ -44,13 +45,18 @@ public class MainViewModel : PropertyModel, IDropTarget
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
 
+    public IEnumerable<string> ModTypeIconsList { get; set; }
+    public bool SteamServiceReady => _steamService?.IsLibraryLoaded ?? false;
+
     private readonly JsonAutoSaver _autoSaver;
     private readonly ModsServices _modsServices;
     private readonly SettingsService _settingsService;
-    public MainViewModel(ModsServices modsServices, SettingsService SettingsService)
+    private readonly SteamService _steamService;
+    public MainViewModel(SettingsService SettingsService, ModsServices modsServices, SteamService steamService)
     {
-        _modsServices = modsServices;
         _settingsService = SettingsService;
+        _modsServices = modsServices;
+        _steamService = steamService;
         _autoSaver = new JsonAutoSaver(
             () => DataChanged,
             js => _modsServices.SaveLocalData(Items),
@@ -75,8 +81,6 @@ public class MainViewModel : PropertyModel, IDropTarget
             ModLocation.MetaData.ToString(),
         };
     }
-
-    public IEnumerable<string> ModTypeIconsList { get; set; }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;
     private bool RightViewFilter(object obj) => ((ModModel)obj)?.Position >= 0;
@@ -382,34 +386,72 @@ public class MainViewModel : PropertyModel, IDropTarget
         }
     }));
 
+
+    public CustomCommand SubscribeCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel model)
+        {
+            Task.Run(() => UILock(async () =>
+            {
+                bool result = _steamService.TryInitializeParse(SelectedMod = model, (c, p) => c.SubscribeItem(p));
+                if (result)
+                {
+                    //string xpath = _settingsService.Settings.PathDirModsSteam + ID
+                    string xpath = model.Path;
+                    await Task.Delay(1000);
+                    bool fileExists = await TaskHelper.WaitDirectoryExist(xpath);
+                    var newmod = new ModModel(xpath);
+                    model.Update(newmod);
+                    model.Location = ModLocation.Steam;
+                    model.RaisePropertyChanged();
+                }
+            }));
+        }
+    });
+    public CustomCommand UnsubscribeCommand => new CustomCommand(p => 
+    {
+        if (p != null && p is ModModel model)
+        {
+            Task.Run(() => UILock(async () =>
+            { 
+                bool result = _steamService.TryInitializeParse(SelectedMod = model, (c, p) => c.UnsubscribeItem(p));
+                if(result)
+                {
+                    //await Task.Delay(1000);
+                    //bool fileExists = await TaskHelper.WaitDirectoryNotExist(model.Path);
+                    model.Location = model.Data != null ? ModLocation.MetaData : ModLocation.Unknow;
+                    model.RaisePropertyChanged();
+                }
+            }));
+        }
+    });
+
     public CustomCommand TestCommand => new CustomCommand(p => UILock(async () =>
     {
         var test_list = ModsCollectionColumns;
-
         var t = Items
             .Select(s => s.About?.SteamId)
             .Where(w => !string.IsNullOrEmpty(w))
             .Take(5)
             .ToList();
 
-       //SteamHelper.GetModDetails(t[0]);
-        //SteamHelper.GetWorkshopSearchAsync();
-        // string? steamid = SteamHelper.GetSteamId(_settingsService.Settings.PathDirSteam);
-        //await SteamHelper.GetSubscribedFilesAsync(steamid);
-        /*
-                var data = await SteamHelper.GetWorkshopItemsAsync(t);
-                var data_f = data.Response.PublishedFileDetails.Select(s => new 
-                { 
-                    s.Id,
-                    s.Updated,
-                    s.Created,
-                    s.TimeUpdatedUnix,
-                    s.TimeCreatedUnix,
-                    s.Views,
-                    s.Favorited,
-                    s.Subscriptions,
-                }).ToList();
-        */
+        var pid = this.SelectedMod.About.SteamId;
+        if(ulong.TryParse(pid, out ulong pid_long))
+        {
+            //_steamService.TryInitialize(c => c.UnsubscribeItem(pid_long));
+
+            //var a = _steamService.Initialize();
+            //var b = _steamService.UnsubscribeItem(pid_long);
+            //_steamService.DeInitialize();
+
+            //Task.Run(() =>
+            //{
+            //    var a = _steamService.Initialize();
+            //    var b = _steamService.UnsubscribeItem(pid_long);
+            //    _steamService.DeInitialize();
+            //});
+        }
+            
     }));
     #endregion CustomCommand
 

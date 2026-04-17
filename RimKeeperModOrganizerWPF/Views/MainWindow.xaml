@@ -55,6 +55,25 @@
                         <Image Source="{StaticResource FolderIcon}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+
+                <Separator />
+                <MenuItem Header="Subscribe"
+                  IsEnabled="{Binding SteamServiceReady}"          
+                  Command="{Binding SubscribeCommand}" 
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Unsubscribe" 
+                  IsEnabled="{Binding SteamServiceReady}"          
+                  Command="{Binding UnsubscribeCommand}"       
+                  CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                
                 <Separator />
                 <MenuItem Header="Change color" 
                   Command="{Binding ChangeColorCommand}" 
@@ -260,7 +279,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="About" Command="{Binding AboutCommand}"/>
-            <!--<MenuItem Header="[Test]" Command="{Binding TestCommand}"/>-->
+            <MenuItem Header="[Test]" Command="{Binding TestCommand}"/>
             <!--<MenuItem>
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -325,7 +344,7 @@
             </MenuItem>
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5" Background="Transparent" HorizontalAlignment="Right">
-            <MenuItem Header="[Save]" Command="{Binding SaveCommand}" />
+            <MenuItem Header="[Save]" Command="{Binding SaveActiveModlistCommand}" />
         </Menu>
 
         <!--<ToolBar Grid.Row="0" Grid.ColumnSpan="5">

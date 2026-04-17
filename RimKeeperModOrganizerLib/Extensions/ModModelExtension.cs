@@ -169,6 +169,7 @@ public static class ModModelExtension
     //public static string GetKeyID(this ModDataModel model) => GetKeyID(model.Key);
     public static string GetKeyID(this ModModel model) => GetKeyID(model.ModId);
     public static string GetKeyID(string model) => model.Split(':')[0];
+    public static string GetSteamID(string model) => model.Split(':')[1];
     public static string GenKey(this ModModel model) => GenKey(model.About?.PackageId,model.Path);
     public static string GenKey(string? packageId, string? path) => packageId + ":" + Path.GetFileName(path);
     public static IEnumerable<ModModel> FindByKey(this IEnumerable<ModModel> models, ModModel item)

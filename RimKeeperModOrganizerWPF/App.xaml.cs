@@ -18,6 +18,7 @@ public partial class App : Application
         builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SettingsService>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.ModsServices>();
+        builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SteamService>();
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<SettingsWindow>();
         builder.Services.AddTransient<AboutWindow>();
