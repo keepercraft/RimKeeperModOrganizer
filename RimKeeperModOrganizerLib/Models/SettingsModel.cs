@@ -19,9 +19,9 @@ public class SettingsModel : PropertyModel
     public List<ColumnSettings> ModColumnData { get; set; } = new List<ColumnSettings>()
     {
         { new ColumnSettings("","type")  },
-        { new ColumnSettings("Grupa","group") },
-        { new ColumnSettings("Nazwa","label")  },
-        { new ColumnSettings("Autor","author") },
+        { new ColumnSettings("Group","group") },
+        { new ColumnSettings("Name","label")  },
+        { new ColumnSettings("Author","author") },
         { new ColumnSettings("Packageid","packageid") },
         { new ColumnSettings("Varsion","versions") }
     };
