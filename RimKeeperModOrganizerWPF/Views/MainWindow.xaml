@@ -476,7 +476,7 @@
                     Binding="{Binding Location}"
                 />
 
-                <kdg:FilterableTextColumn Width="*" Header="Nazwa" Binding="{Binding Label}" />
+                <kdg:FilterableTextColumn Width="*" Header="Name" Binding="{Binding Label}" />
                 <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="40"/>-->
 
             </kdg:AdvancedFilterDataGrid.Columns>
