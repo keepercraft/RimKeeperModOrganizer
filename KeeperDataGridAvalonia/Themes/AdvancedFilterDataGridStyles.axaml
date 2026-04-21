@@ -1,0 +1,206 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:KeeperDataGridAvalonia"
+        x:CompileBindings="False"
+        x:Class="KeeperDataGridAvalonia.AdvancedFilterDataGridStyles">
+    <!--BasedOn="{StaticResource {x:Type DataGridColumnHeader}}"-->
+
+<!--    <Styles.Resources>
+        <ControlTheme x:Key="{x:Type DataGridColumnHeader}" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+            <Setter Property="Background" Value="LightBlue"/>
+        </ControlTheme>
+    </Styles.Resources>-->
+      <Styles.Resources>         
+          <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="MyRowBackground" Color="Transparent"/>
+                    <SolidColorBrush x:Key="MyRowHoverBackground" Color="#11000000"/> 
+                    <SolidColorBrush x:Key="MyRowSelectedBackground" Color="#22000000"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="MyRowBackground" Color="Transparent"/>
+                    <SolidColorBrush x:Key="MyRowHoverBackground" Color="#11000000"/> 
+                    <SolidColorBrush x:Key="MyRowSelectedBackground" Color="#22000000"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+
+            <ControlTheme x:Key="{x:Type DataGridColumnHeader}" TargetType="DataGridColumnHeader">
+              <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+              <!--<Setter Property="HorizontalContentAlignment" Value="Left" />-->
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="SeparatorBrush" Value="{DynamicResource ThemeControlLowColor}" />
+              <Setter Property="Padding" Value="4" />
+              <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}" />
+              <Setter Property="Template">
+                <ControlTemplate>
+                  <Border x:Name="HeaderBorder"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"
+                          CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid Name="PART_ColumnHeaderRoot" ColumnDefinitions="*,Auto">
+
+                      <StackPanel Margin="{TemplateBinding Padding}" 
+                            VerticalAlignment="Top" 
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            >
+                        <Grid >
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" MinWidth="{DynamicResource DataGridSortIconMinWidth}" />
+                          </Grid.ColumnDefinitions>
+                
+                          <ContentPresenter x:Name="PART_ContentPresenter" 
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                
+                          <Path Name="SortIcon"
+                                IsVisible="False"
+                                Grid.Column="1"
+                                Width="8"
+                                Margin="4,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Data="F1 M -5.215,6.099L 5.215,6.099L 0,0L -5.215,6.099 Z "
+                                Fill="{TemplateBinding Foreground}"
+                                Stretch="Uniform" />
+                        </Grid>               
+
+                        <TextBox x:Name="FilterTextBox" Margin="0,0,0,0"
+                                Watermark="Filter..." 
+                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowFilter, FallbackValue=False}"
+                                Text="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay}"/>
+
+                        <ComboBox x:Name="FilterSelectBox"
+                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowSelectBoxFilter, FallbackValue=False}"
+                                ItemsSource="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxFilterList}"
+                                SelectedItem="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay}"/>
+
+                      </StackPanel>
+
+                      <Rectangle Name="VerticalSeparator"
+                                 Grid.Column="1"
+                                 Width="1"
+                                 VerticalAlignment="Stretch"
+                                 Fill="{TemplateBinding SeparatorBrush}"
+                                 IsVisible="{TemplateBinding AreSeparatorsVisible}" />
+                    </Grid>
+                  </Border>
+                </ControlTemplate>
+              </Setter>
+
+              <Style Selector="^:focus-visible /template/ Grid#FocusVisual">
+                <Setter Property="IsVisible" Value="True" />
+              </Style>
+
+              <Style Selector="^:pointerover /template/ Grid#PART_ColumnHeaderRoot">
+                <Setter Property="Background" Value="{DynamicResource DataGridColumnHeaderHoveredBackgroundBrush}" />
+              </Style>
+
+              <Style Selector="^:pressed /template/ Grid#PART_ColumnHeaderRoot">
+                <Setter Property="Background" Value="{DynamicResource DataGridColumnHeaderPressedBackgroundBrush}" />
+              </Style>
+
+              <Style Selector="^:dragIndicator">
+                <Setter Property="Opacity" Value="0.5" />
+              </Style>
+
+              <Style Selector="^:sortascending /template/ Path#SortIcon">
+                <Setter Property="IsVisible" Value="True" />
+              </Style>
+
+              <Style Selector="^:sortdescending /template/ Path#SortIcon">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="RenderTransform">
+                  <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="-1" />
+                  </Setter.Value>
+                </Setter>
+              </Style>
+
+    <!--          <Style Selector="^:sortascending /template/ Path#SortIcon">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Data" Value="{StaticResource DataGridSortIconAscendingPath}" />
+              </Style>
+
+              <Style Selector="^:sortdescending /template/ Path#SortIcon">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Data" Value="{StaticResource DataGridSortIconDescendingPath}" />
+              </Style>-->
+            </ControlTheme>
+
+        </ResourceDictionary>
+    </Styles.Resources>
+
+<Styles>
+  <Style Selector="DataGridRow">
+    <Setter Property="Background" Value="{DynamicResource MyRowBackground}" />
+  </Style>
+  <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource MyRowHoverBackground}" />
+  </Style>
+  <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+    <Setter Property="Fill" Value="{DynamicResource MyRowSelectedBackground}" />
+  </Style>
+</Styles>
+
+    
+<!--    <Style Selector="DataGridColumnHeader" x:DataType="DataGridColumnHeader">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>    
+        <Setter Property="Background" Value="Yellow" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="4">
+                    
+                    <Grid RowDefinitions="Auto,Auto">
+
+                        <ContentPresenter Name="PART_ContentPresenter"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            FontWeight="Bold"
+                            Margin="6,2"
+                            VerticalAlignment="Center"/>
+
+                        <Path Name="SortIcon"
+                            Grid.Column="1"
+                            Fill="{TemplateBinding Foreground}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Stretch="Uniform"
+                            Width="8"
+                            Margin="4,0,8,0"
+                            Data="M0,0 L10,0 L5,5 Z" />
+
+                        <StackPanel Grid.Row="1" 
+                            Margin="0,4,0,0" 
+                            x:DataType="local:FilterableTextColumn"
+
+                            IsVisible="{Binding $self.DataContext, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+                            <TextBox x:Name="FilterTextBox" Watermark="Filter..." IsVisible="{Binding ShowFilter, FallbackValue=True}" />
+
+                            <TextBox x:Name="FilterTextBox"
+                                Watermark="Filter..."
+                                IsVisible="{Binding $parent[DataGridColumnHeader].Column.ShowFilter, FallbackValue=False}"
+                                Text="{Binding $parent[DataGridColumnHeader].Column.FilterValue, Mode=TwoWay}"
+                                Margin="4,2"/>
+                            
+                            <ComboBox x:Name="FilterSelectBox"
+                                IsVisible="{Binding $parent[DataGridColumnHeader].Column.ShowSelectBoxFilter, FallbackValue=False}"
+                                ItemsSource="{Binding $parent[DataGridColumnHeader].Column.SelectBoxFilterList}"
+                                SelectedItem="{Binding $parent[DataGridColumnHeader].Column.FilterValue, Mode=TwoWay}"
+                                Margin="4,2"/>
+
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>-->
+
+</Styles>

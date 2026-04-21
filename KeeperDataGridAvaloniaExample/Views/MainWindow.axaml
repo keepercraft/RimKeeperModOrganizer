@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:keeperdatagridavalonia="using:KeeperDataGridAvalonia"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:KeeperDataGridAvaloniaExample.ViewModels"
+        xmlns:m="using:KeeperDataGridAvaloniaExample.Models"
+        xmlns:kdg="clr-namespace:KeeperDataGridAvalonia;assembly=KeeperDataGridAvalonia" 
+        mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="450"
+        x:DataType="vm:MainViewModel"
+        x:Class="KeeperDataGridAvaloniaExample.MainWindow"
+        Title="KeeperDataGridAvaloniaExample">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    <Window.Resources>  
+    </Window.Resources>
+    <Grid ColumnDefinitions="*, 5, *" RowDefinitions="Auto, Auto, Auto, *">
+
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Header="DataGrid">
+                <MenuItem Header="Refresh" Command="{Binding ViewRefreshCommand}"/>
+            </MenuItem>
+        </Menu>
+        
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" 
+                 Text="{Binding FilterText}" 
+                 Watermark="Filtruj..." />
+
+        <GridSplitter Grid.Row="3" Grid.Column="1" Background="Red" ResizeDirection="Columns"/>
+
+        <DataGrid Grid.Row="3" Grid.Column="0" 
+                  ItemsSource="{Binding LeftViewItems}" 
+                  GridLinesVisibility="Vertical"
+                  CanUserSortColumns="True"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  AutoGenerateColumns="False">          
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" x:DataType="m:TableModel" Width="*" SortMemberPath="Name" />
+                <DataGridTextColumn Header="Age" Binding="{Binding Age}" x:DataType="m:TableModel" Width="*" SortMemberPath="Age" />
+                <DataGridTextColumn Header="Position" Binding="{Binding Position}" x:DataType="m:TableModel" Width="Auto" SortMemberPath="Position" />
+            </DataGrid.Columns>          
+        </DataGrid>
+
+        <kdg:KeeperDataGrid Grid.Row="3" Grid.Column="2" 
+                  ItemsSource="{Binding RightViewItems}" 
+                  ColumnsConfig="{Binding MyColumns}"
+                  GridLinesVisibility="Vertical"
+                  CanUserSortColumns="True"
+                  CanUserReorderColumns="True"
+                  CanUserResizeColumns="True"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">          
+            <DataGrid.Columns>
+                <kdg:AdvancedFilterDataGrid Key="Name" Binding="{Binding Name}" x:DataType="m:TableModel" Width="*" SortMemberPath="Name" />
+                <kdg:AdvancedFilterDataGrid Key="Age" Header="Age" Binding="{Binding Age}" x:DataType="m:TableModel" Width="*" SortMemberPath="Age" />
+                <DataGridTextColumn Header="Position" Binding="{Binding Position}" x:DataType="m:TableModel" Width="Auto" SortMemberPath="Position" />
+            </DataGrid.Columns>          
+        </kdg:KeeperDataGrid>
+
+<!--        <Border Grid.Row="3" Grid.Column="2">
+            <TextBlock Text="Panel boczny" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Border>-->
+
+    </Grid>
+</Window>

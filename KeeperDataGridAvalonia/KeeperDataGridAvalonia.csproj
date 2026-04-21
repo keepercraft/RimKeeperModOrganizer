@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="Themes\AdvancedFilterDataGridStyles.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Themes\AdvancedFilterDataGridStyles.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KeeperBaseSheredLib\KeeperBaseSheredLib.csproj" />
+  </ItemGroup>
+
+</Project>

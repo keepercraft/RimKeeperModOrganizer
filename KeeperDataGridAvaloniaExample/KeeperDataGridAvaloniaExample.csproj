@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+		<CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+		<AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+	</PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="12.0.1" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.0.0" />
+        <PackageReference Include="Avalonia.Desktop" Version="12.0.1" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
+        <PackageReference Include="Avalonia.Themes.Simple" Version="12.0.1" />
+		<!--<PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.1" />-->
+        <!--<PackageReference Include="ReactiveUI" Version="23.2.1" />-->
+  </ItemGroup>
+
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\KeeperBaseSheredLib\KeeperBaseSheredLib.csproj" />
+	  <ProjectReference Include="..\KeeperDataGridAvalonia\KeeperDataGridAvalonia.csproj" />
+	</ItemGroup>
+</Project>

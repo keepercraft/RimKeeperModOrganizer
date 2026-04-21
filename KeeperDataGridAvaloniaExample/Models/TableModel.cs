@@ -1,5 +1,5 @@
 ﻿using KeeperBaseSharedLib.Models;
-namespace KeeperDataGridExample;
+namespace KeeperDataGridAvaloniaExample.Models;
 
 public class TableModel : PropertyModel
 {
