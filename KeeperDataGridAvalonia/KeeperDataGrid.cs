@@ -1,18 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 using KeeperDataGridAvalonia.Extensions;
 using KeeperDataGridAvalonia.Models;
-using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Reflection;
 namespace KeeperDataGridAvalonia;
 
 public partial class AdvancedFilterDataGridStyles : Styles { }
@@ -30,13 +26,8 @@ public class KeeperDataGrid : DataGrid
     private void Columns_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         foreach (var item in e.NewItems)
-        {
-            if(item is AdvancedFilterDataGrid col)
-                foreach (var conf in ColumnsConfig)
-                {
-                    RebuildColumnBinding(conf, col);
-                }
-        }      
+            if (item is AdvancedFilterDataGrid col)
+                col.ColumnBinding(ColumnsConfig);    
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -45,9 +36,9 @@ public class KeeperDataGrid : DataGrid
     }
 
     #region ColumnsConfig
-    public static readonly StyledProperty<ObservableCollection<ColumnConfig>?> ColumnsConfigProperty =
-        AvaloniaProperty.Register<AdvancedFilterDataGrid, ObservableCollection<ColumnConfig>?>(nameof(ColumnsConfig),defaultValue: null);
-    public ObservableCollection<ColumnConfig>? ColumnsConfig
+    public static readonly StyledProperty<ObservableCollection<IColumnConfig>?> ColumnsConfigProperty =
+        AvaloniaProperty.Register<AdvancedFilterDataGrid, ObservableCollection<IColumnConfig>?>(nameof(ColumnsConfig),defaultValue: null);
+    public ObservableCollection<IColumnConfig>? ColumnsConfig
     {
         get => GetValue(ColumnsConfigProperty);
         set => SetValue(ColumnsConfigProperty, value);
@@ -66,49 +57,6 @@ public class KeeperDataGrid : DataGrid
     {
         var cols = grid.Columns.Where(w => w is AdvancedFilterDataGrid).ToList();
     }
-    public void RebuildColumnBinding(ColumnConfig config, AdvancedFilterDataGrid column)
-    {
-        if (config.PropertyName != column.Key) return;
-
-        //column.Binding = new Binding(config.PropertyName);
-        column.Bind(DataGridColumn.HeaderProperty, new Binding
-        {
-            Source = config,
-            Path = nameof(config.Header),
-            Mode = BindingMode.TwoWay
-        });
-        column.Bind(AdvancedFilterDataGrid.WidthProperty, new Binding
-        {
-            Source = config,
-            Path = nameof(config.Width),
-            Mode = BindingMode.TwoWay
-        });
-        column.Bind(AdvancedFilterDataGrid.ShowFilterProperty, new Binding
-        {
-            Source = config,
-            Path = nameof(config.ShowFilter),
-            Mode = BindingMode.TwoWay
-        });
-        column.Bind(AdvancedFilterDataGrid.IsVisibleProperty, new Binding
-        {
-            Source = config,
-            Path = nameof(config.IsVisible),
-            Mode = BindingMode.TwoWay
-        });
-        column.Bind(AdvancedFilterDataGrid.FilterValueProperty, new Binding
-        {
-            Source = config,
-            Path = nameof(config.Filter),
-            Mode = BindingMode.TwoWay
-        });
-        column.Bind(AdvancedFilterDataGrid.ColumnIndexProperty, new Binding
-        {
-            Source = config,
-            Path = nameof(config.ColumnIndex),
-            Mode = BindingMode.TwoWay
-        });
-
-    }
     #endregion
 
     protected override void OnColumnReordered(DataGridColumnEventArgs e)
@@ -117,7 +65,6 @@ public class KeeperDataGrid : DataGrid
             if (column is AdvancedFilterDataGrid col)
                 col.ColumnIndex = col.DisplayIndex;
     }
-
 
 
     protected override void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)

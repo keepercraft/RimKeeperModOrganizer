@@ -17,6 +17,8 @@
     </Window.Resources>
     <Grid ColumnDefinitions="*, 5, *" RowDefinitions="Auto, Auto, Auto, *">
 
+        <GridSplitter Grid.Row="3" Grid.Column="1" Background="Red" ResizeDirection="Columns"/>
+
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="DataGrid">
                 <MenuItem Header="Refresh" Command="{Binding ViewRefreshCommand}"/>
@@ -27,7 +29,7 @@
                  Text="{Binding FilterText}" 
                  Watermark="Filtruj..." />
 
-        <GridSplitter Grid.Row="3" Grid.Column="1" Background="Red" ResizeDirection="Columns"/>
+        <TextBlock  Grid.Row="1" Grid.Column="2" Text="{Binding MyColumnsData}" />
 
         <DataGrid Grid.Row="3" Grid.Column="0" 
                   ItemsSource="{Binding LeftViewItems}" 

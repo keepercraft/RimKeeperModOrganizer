@@ -1,7 +1,7 @@
 ﻿using KeeperBaseSharedLib.Models;
 namespace KeeperDataGridAvalonia.Models;
 
-public class ColumnConfig : PropertyModel
+public class ColumnConfig : PropertyModel, IColumnConfig
 {
     public string PropertyName { get; set; } = string.Empty;
 
@@ -45,13 +45,5 @@ public class ColumnConfig : PropertyModel
     {
         get => _columnIndex;
         set { _columnIndex = value; OnPropertyChanged(); }
-    }
-}
-
-public static class ColumnConfigExtension
-{
-    public static void RebuildColumns(this AdvancedFilterDataGrid grid, IEnumerable<ColumnConfig>? configs = null)
-    {
-
     }
 }
