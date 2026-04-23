@@ -56,8 +56,10 @@
                   AutoGenerateColumns="False">          
             <DataGrid.Columns>
                 <kdg:AdvancedFilterDataGrid Key="Name" Binding="{Binding Name}" x:DataType="m:TableModel" Width="*" SortMemberPath="Name" />
-                <kdg:AdvancedFilterDataGrid Key="Age" Header="Age" Binding="{Binding Age}" x:DataType="m:TableModel" Width="*" SortMemberPath="Age" />
-                <DataGridTextColumn Header="Position" Binding="{Binding Position}" x:DataType="m:TableModel" Width="Auto" SortMemberPath="Position" />
+                <kdg:AdvancedFilterDataGrid Key="Country" Binding="{Binding Country}" x:DataType="m:TableModel" Width="*" SortMemberPath="Country" />
+                <kdg:AdvancedFilterDataGrid Key="Age" Binding="{Binding Age}" x:DataType="m:TableModel" Width="*" SortMemberPath="Age" />
+                <kdg:AdvancedFilterDataGrid Key="Position" Header="P" Binding="{Binding Position}" x:DataType="m:TableModel" Width="*" SortMemberPath="Position" />
+                <!--<DataGridTextColumn Header="Position" Binding="{Binding Position}" x:DataType="m:TableModel" Width="Auto" SortMemberPath="Position" />-->
             </DataGrid.Columns>          
         </kdg:KeeperDataGrid>
 

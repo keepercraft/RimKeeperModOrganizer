@@ -12,6 +12,7 @@
     </Styles.Resources>-->
       <Styles.Resources>         
           <ResourceDictionary>
+
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="MyRowBackground" Color="Transparent"/>
@@ -145,5 +146,28 @@
         <Setter Property="Fill" Value="{DynamicResource MyRowSelectedBackground}" />
       </Style>
     </Styles>
+
+    <Style Selector="DataGridColumnHeader TextBlock">
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="BorderBrush" Value="#666666" />
+        <Setter Property="BorderThickness" Value="0,0,1,2" /> 
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="Background" Value="#f0f0f0" />
+    </Style>
+    <Style Selector="DataGridRow">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderBrush" Value="#666666" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" /> 
+    </Style>
+    <Style Selector="DataGridCell">
+        <Setter Property="BorderBrush" Value="#666666" />
+        <Setter Property="BorderThickness" Value="0,0,1,0" /> 
+        <Setter Property="Padding" Value="0" />
+    </Style>
+    <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+        <Setter Property="Fill" Value="#f0f0f0" />
+    </Style>
 
 </Styles>
