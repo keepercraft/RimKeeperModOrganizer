@@ -1,0 +1,48 @@
+﻿using Avalonia.Controls;
+using Avalonia.Data.Converters;
+using System;
+using System.Globalization;
+namespace RimKeeperModOrganizerAvalonia.Converters;
+
+public class DoubleToDataGridLengthConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is double d && !double.IsNaN(d) && d >= 0)
+            return new DataGridLength(d);
+        return new DataGridLength(100); //new DataGridLength(1, DataGridLengthUnitType.Star); // domyślnie Star
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is DataGridLength length)
+        {
+            // tylko Pixel ma sens do zwracania double
+            if (length.UnitType == DataGridLengthUnitType.Pixel)
+                return (double?)length.Value;
+
+            // Auto lub Star → null w VM
+            return 100;
+        }
+        return 100;
+    }
+}
+
+public class GridLengthConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is double d && !double.IsNaN(d) && !double.IsInfinity(d))
+            return new GridLength(d);
+
+        return new GridLength(1, GridUnitType.Star);
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is GridLength gl)
+            return gl.Value;
+
+        return 0d;
+    }
+}

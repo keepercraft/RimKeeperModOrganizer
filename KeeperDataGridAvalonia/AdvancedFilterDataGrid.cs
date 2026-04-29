@@ -1,6 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Markup.Xaml.Templates;
 using KeeperDataGridAvalonia.Extensions;
 namespace KeeperDataGridAvalonia;
 
@@ -95,6 +98,15 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
     #endregion
 
     #region FILTER / SELECTBOX
+
+    public static readonly StyledProperty<DataTemplate> SelectBoxItemTemplateProperty =
+        AvaloniaProperty.Register<AdvancedFilterDataGrid, DataTemplate>(nameof(SelectBoxItemTemplate), null);
+    public DataTemplate SelectBoxItemTemplate
+    {
+        get => GetValue(SelectBoxItemTemplateProperty);
+        set => SetValue(SelectBoxItemTemplateProperty, value);
+    }
+
     public static readonly StyledProperty<bool> ShowFilterProperty =
         AvaloniaProperty.Register<AdvancedFilterDataGrid, bool>(nameof(ShowFilter), true);
     public bool ShowFilter
@@ -130,7 +142,26 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
 
     public object? GetRowValue(object rowItem)
     {
-        if (string.IsNullOrEmpty(Key) || rowItem == null) return null;
-        return rowItem.GetType().GetProperty(Key)?.GetValue(rowItem);
+        string? bind = GetPropertyNameFromColumn(this);
+        if (string.IsNullOrEmpty(bind) || rowItem == null) return null;
+        return rowItem.GetType().GetProperty(bind)?.GetValue(rowItem);
+    }
+
+    public string? GetPropertyNameFromColumn(DataGridTextColumn column)
+    {
+        var binding = column.Binding;
+        if (binding is CompiledBindingExtension compiled)
+        {
+            return compiled.Path?.ToString();
+        }
+        if (binding is Binding standardBinding)
+        {
+            return standardBinding.Path;
+        }
+        if (binding is CompiledBinding cBinding)
+        {
+            return cBinding.Path.ToString();
+        }
+        return null;
     }
 }

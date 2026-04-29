@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:RimKeeperModOrganizerAvalonia.Controls"
+             x:Class="RimKeeperModOrganizerAvalonia.Controls.TagAutoCompleteBox"
+             x:DataType="local:TagAutoCompleteBox">
+
+    <StackPanel Spacing="5">
+        <ItemsControl ItemsSource="{Binding SelectedTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Border Background="#44888888" CornerRadius="4" Padding="6,2" Margin="2">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                            <Button Content="×" Click="RemoveTag_Click" Tag="{Binding}"
+                                    Background="Transparent" BorderThickness="0" Padding="2,0"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <AutoCompleteBox Name="Part_AutoComplete"
+                         ItemsSource="{Binding AvailableTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}"
+                         FilterMode="Contains"
+                         MinimumPrefixLength="0" 
+                         Watermark="Dodaj tag..."
+                         SelectionChanged="AutoCompleteBox_SelectionChanged"/>
+    </StackPanel>
+</UserControl>

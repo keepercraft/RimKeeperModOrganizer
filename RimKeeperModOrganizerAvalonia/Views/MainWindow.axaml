@@ -1,0 +1,607 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:keeperdatagridavalonia="using:KeeperDataGridAvalonia"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:RimKeeperModOrganizerAvalonia.ViewModels"
+        xmlns:m="using:RimKeeperModOrganizerAvalonia.Models"
+        xmlns:ml="using:RimKeeperModOrganizerLib.Models"
+        xmlns:b="using:RimKeeperModOrganizerAvalonia.Behaviors"
+        xmlns:ex="clr-namespace:RimKeeperModOrganizerAvalonia.Extensions"
+        xmlns:kdg="clr-namespace:KeeperDataGridAvalonia;assembly=KeeperDataGridAvalonia" 
+        xmlns:controls="using:RimKeeperModOrganizerAvalonia.Controls"
+        mc:Ignorable="d" d:DesignWidth="1800" d:DesignHeight="450"
+        x:DataType="vm:MainViewModel"
+        x:Class="RimKeeperModOrganizerAvalonia.Views.MainWindow"
+        Height="{Binding MainWidowSettings.Height, Mode=TwoWay}" 
+        Width="{Binding MainWidowSettings.Width, Mode=TwoWay}"
+        b:WindowPositionBinding.TrackPosition="True"
+        b:WindowPositionBinding.ProxyPosition="{Binding WindowPosition, Mode=TwoWay}"
+        Title="RimKeeper - ModOrganizer - Avalonia">
+
+<Window.Resources>
+    <ResourceDictionary>
+
+        <ex:BindingProxy x:Key="Proxy" Data="{Binding}" />
+
+        <ControlTheme x:Key="{x:Type MenuItem}" TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">       
+            <Setter Property="FontSize" Value="12" />
+        <!--<Setter Property="Foreground" Value="Red" />-->
+            <Setter Property="BorderThickness" Value="1" /> 
+            <!--<Setter Property="BorderBrush" Value="Blue" />-->
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="-2" />
+            <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+                <Setter Property="BorderThickness" Value="1,0,0,0" /> 
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="Padding" Value="3" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="MinHeight" Value="21" />  
+            </Style>
+        </ControlTheme>
+        <ControlTheme x:Key="{x:Type Separator}" TargetType="Separator" BasedOn="{StaticResource {x:Type Separator}}"> 
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0,1,0,0" /> 
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <!--<Setter Property="Padding" Value="0" />-->
+            <Setter Property="Margin" Value="24,0,0,0" />
+        </ControlTheme>
+
+        <DataTemplate x:Key="ModIconSelectBoxItemTemplate" x:DataType="x:String">
+            <Image Height="16"
+                   Width="16"
+                   HorizontalAlignment="Left"
+                   ToolTip.Tip="{Binding}"
+                   Source="{Binding Converter={StaticResource ModIconConverter}}" />
+
+        </DataTemplate>
+
+        <ContextMenu x:Key="DataGridContextMenu" x:DataType="vm:MainViewModel"
+                     DataContext="{Binding $parent[DataGrid].DataContext}">
+
+            <MenuItem Header="Refresh mod data"
+                      Command="{Binding RefreshModCommand}"
+                      CommandParameter="{Binding Path=SelectedMod}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource RefreshIcon}" Width="16" Height="16"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator />
+            <MenuItem Header="Open in Steam" 
+                      Command="{Binding OpenSteamLinkCommand}"
+                      CommandParameter="{Binding SelectedMod.SteamLink}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource SteamIcon}" Width="16" Height="16"/>
+                </MenuItem.Icon>
+            </MenuItem>
+                <MenuItem Header="Open in Browser" 
+                  Command="{Binding OpenLinkCommand}" 
+                  CommandParameter="{Binding SelectedMod.SteamLink}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource InternetIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open in Explorer" 
+                  Command="{Binding OpenLinkCommand}" 
+                  CommandParameter="{Binding SelectedMod.Path}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FolderIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <Separator />
+                <MenuItem Header="Subscribe"
+                  IsEnabled="{Binding SteamServiceReady}"          
+                  Command="{Binding SubscribeCommand}" 
+                  CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Unsubscribe" 
+                  IsEnabled="{Binding SteamServiceReady}"          
+                  Command="{Binding UnsubscribeCommand}"       
+                  CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <Separator />
+                <MenuItem Header="Change color" 
+                  Command="{Binding ChangeColorCommand}" 
+                  CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource PaletteIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Remove metadata" 
+                  Command="{Binding RemoveMetaDataCommand}" 
+                  CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource TrashIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Details" 
+                  Command="{Binding ModDetailCommand}" 
+                  CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource GearIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+        </ContextMenu>
+
+    </ResourceDictionary>
+</Window.Resources>
+<Window.Styles>
+
+    <Style Selector="DataGridRow" x:DataType="ml:ModModel">
+        <Setter Property="Classes.has_alert" Value="{Binding Alerts.HasAlert}" />
+        <Setter Property="Background" Value="{Binding Data.Color, FallbackValue=Transparent}"/>
+        <Setter Property="ToolTip.ShowDelay" Value="0"/>
+        <Style Selector="^.has_alert">
+            <Setter Property="Background" Value="{Binding Alerts.Color}"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="ToolTip.Tip">
+                <Template>
+                    <Border Padding="5" Background="{Binding Alerts.Color}" BorderBrush="Black" BorderThickness="1">
+                        <ItemsControl ItemsSource="{Binding Alerts.Items}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Message}" 
+                                               Background="{Binding Color}" 
+                                               TextWrapping="Wrap" 
+                                               Padding="4" Margin="1" 
+                                               FontWeight="Bold" Foreground="Black"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </Template>
+            </Setter>
+        </Style>
+        <Style Selector="^:not(.has_alert)">
+            <Setter Property="ToolTip.Tip" Value="{x:Null}"/>
+        </Style>
+    </Style>
+
+    <Style Selector="DataGridCell.modIconStyle">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Image Height="16" Width="16" 
+                       HorizontalAlignment="Left" x:DataType="ml:ModModel"
+                       Source="{Binding Location, Converter={StaticResource ModIconConverter}}"/>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="DataGridRow">
+        <Setter Property="BorderThickness" Value="0,2,0,2" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="DataGridRow.insert-top">
+        <Setter Property="BorderThickness" Value="0,2,0,0" />
+        <Setter Property="BorderBrush" Value="#0078D7" /> 
+    </Style>
+    <Style Selector="DataGridRow.insert-bottom">
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="BorderBrush" Value="#0078D7" />
+    </Style>
+
+</Window.Styles>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding MainWidowSettings.DetailPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="{Binding MainWidowSettings.ConfigModPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <GridSplitter Grid.Column="1" Grid.Row="1"
+                      Width="5"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="Gray"
+                      ShowsPreview="True"/>
+        <GridSplitter Grid.Column="3" Grid.Row="1"
+                      Width="5"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Background="Gray"
+                      ShowsPreview="True"/>
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="5" IsEnabled="{Binding IsUIListEnabled}">
+            <MenuItem Header="Mods">
+                <MenuItem Header="MODS LIST" IsEnabled="False" FontWeight="Bold"/>
+                <MenuItem Header="Refresh" Command="{Binding RefreshCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource RefreshIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Import metadata" Command="{Binding LoadMetaDataCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Reload metadata" Command="{Binding LoadMetaDataCommand}" CommandParameter="reload">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export metadata" Command="{Binding SaveMetaDataCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export to CSV"   Command="{Binding ModsToCSVCommand}" CommandParameter="{Binding Items}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileCSVIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+            </MenuItem>
+
+            <MenuItem Header="Selected" IsEnabled="{Binding IsSelectedMod}">
+                <MenuItem Header="SELECTED MOD" IsEnabled="False" FontWeight="Bold"/>
+                <MenuItem Header="Refresh mod data" Command="{Binding RefreshModCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource RefreshIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Open in Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding SelectedMod.SteamLink}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open in Browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding SelectedMod.SteamLink}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource InternetIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open in Explorer" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding SelectedMod.Path}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FolderIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Subscribe" IsEnabled="{Binding SteamServiceReady}" Command="{Binding SubscribeCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Unsubscribe" IsEnabled="{Binding SteamServiceReady}" Command="{Binding UnsubscribeCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SteamIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Change color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource PaletteIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Remove metadata" Command="{Binding RemoveMetaDataCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource TrashIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Details" Command="{Binding ModDetailCommand}" CommandParameter="{Binding SelectedMod}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource GearIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Loadout">
+                <MenuItem Header="Save to Rimworld config" Command="{Binding SaveActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource SaveIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Load from Rimworld config" Command="{Binding LoadActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource RimworldLogoIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Import from file" Command="{Binding LoadFileActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Export to file" Command="{Binding SaveFileActiveModlistCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Export to CSV" Command="{Binding ModsToCSVCommand}" CommandParameter="{Binding ModsConfigCollection}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileCSVIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Import colors from Rimpy" Command="{Binding LoadRimpyColorsCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource FileDataIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Options" Command="{Binding OptionsCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="{StaticResource GearIcon}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="About" Command="{Binding AboutCommand}"/>
+            <!--<MenuItem Header="[Test]" Command="{Binding TestCommand}"/>-->
+        </Menu>
+        <Menu Grid.Row="0" Grid.Column="2" Background="Transparent" HorizontalAlignment="Right">
+            <MenuItem Header="{Binding GetModListStaticLable}" HorizontalAlignment="Right" />
+        </Menu>
+        <Menu Grid.Row="0" Grid.Column="5">
+            <MenuItem Header="{Binding GetModConfigStaticLable}" 
+                      Background="{Binding GetModConfigStaticColor}"
+                      ToolTip.ShowDelay="0">      
+                <MenuItem.Styles>
+                    <Style Selector="MenuItem">
+                        <Setter Property="ToolTip.Tip">
+                            <Template>
+                                <Border Padding="5" BorderBrush="Black" BorderThickness="1" CornerRadius="0" Background="White">
+                                    <ScrollViewer MaxHeight="{Binding MainWidowSettings.Height}" VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding ListModsConfigAlerts}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Message}"
+                                                               Padding="10,4,20,4" Margin="1"
+                                                               Foreground="Black"
+                                                               Background="{Binding Color}"
+                                                               FontWeight="Bold"
+                                                               TextWrapping="Wrap"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>
+                            </Template>
+                        </Setter>
+                    </Style>
+
+                    <Style Selector="MenuItem[Tag=False]">
+                        <Setter Property="ToolTip.Tip" Value="{x:Null}" />
+                    </Style>
+                </MenuItem.Styles>
+            </MenuItem>
+        </Menu>
+        <Menu Grid.Row="0" Grid.Column="5" Background="Transparent" HorizontalAlignment="Right">
+            <MenuItem ToolTip.Tip="Refresh" Width="30" Command="{Binding RefreshCommand}">
+                <MenuItem.Header>
+                    <Viewbox>
+                        <Image Source="{StaticResource RefreshIcon}"/>
+                    </Viewbox>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem ToolTip.Tip="Save" Width="30" Command="{Binding SaveActiveModlistCommand}">
+                <MenuItem.Header>
+                    <Viewbox>
+                        <Image Source="{StaticResource SaveIcon}"/>
+                    </Viewbox>
+                </MenuItem.Header>
+            </MenuItem>
+        </Menu>
+
+        <kdg:KeeperDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 
+                    ItemsSource="{Binding ModsCollection}" 
+                    SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"    
+                    ColumnsConfig="{Binding ModsCollectionColumns}"
+                    ContextMenu="{StaticResource DataGridContextMenu}"
+                    DragDrop.AllowDrop="True"
+                    SelectionMode="Extended"
+                    GridLinesVisibility="Vertical"
+                    CanUserSortColumns="True"
+                    CanUserReorderColumns="True"
+                    CanUserResizeColumns="True"
+                    IsReadOnly="True"
+                    AutoGenerateColumns="False">  
+              <DataGrid.Columns>
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Location}" x:DataType="ml:ModModel"
+                    Width="20" Header="" MaxWidth="50"
+                    ShowFilter="False" ShowSelectBoxFilter="True" 
+                    SortMemberPath="Location" 
+                    CellStyleClasses="modIconStyle"
+                    SelectBoxItemTemplate="{StaticResource ModIconSelectBoxItemTemplate}"
+                    SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModTypeIconsList, Source={StaticResource Proxy}}" >
+                </kdg:AdvancedFilterDataGrid>    
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Label}" x:DataType="ml:ModModel" Key="label" SortMemberPath="Label" />                   
+                <kdg:AdvancedFilterDataGrid Binding="{Binding About.Authors}" x:DataType="ml:ModModel" Key="author" SortMemberPath="About.Authors"/>            
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Data.Group}" x:DataType="ml:ModModel" Key="group" SortMemberPath="Data.Group"/>            
+                <kdg:AdvancedFilterDataGrid Binding="{Binding About.PackageId}" x:DataType="ml:ModModel" Key="packageid" SortMemberPath="About.PackageId"/>            
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Versions}" x:DataType="ml:ModModel" Key="versions"  SortMemberPath="Versions"  />            
+              </DataGrid.Columns>   
+        </kdg:KeeperDataGrid>
+
+        <kdg:KeeperDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
+                    ItemsSource="{Binding ModsConfigCollection}" 
+                    SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"    
+                    ContextMenu="{StaticResource DataGridContextMenu}"
+                    DragDrop.AllowDrop="True"
+                    SelectionMode="Extended"
+                    GridLinesVisibility="Vertical"
+                    CanUserSortColumns="True"
+                    CanUserReorderColumns="True"
+                    CanUserResizeColumns="True"
+                    IsReadOnly="True"
+                    AutoGenerateColumns="False">  
+              <DataGrid.Columns>
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Location}" x:DataType="ml:ModModel"
+                    Width="20" Header="" MaxWidth="50"
+                    ShowFilter="False" ShowSelectBoxFilter="True"
+                    SortMemberPath="Location" 
+                    CellStyleClasses="modIconStyle" 
+                    SelectBoxItemTemplate="{StaticResource ModIconSelectBoxItemTemplate}"
+                    SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModTypeIconsList, Source={StaticResource Proxy}}" >
+                </kdg:AdvancedFilterDataGrid>       
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Label}" x:DataType="ml:ModModel" Header="Name" Width="*" SortMemberPath="Label"  />            
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Position}" x:DataType="ml:ModModel" Header="Position" Width="50" ShowFilter="False"/>            
+              </DataGrid.Columns>      
+        </kdg:KeeperDataGrid>
+
+        <ScrollViewer Grid.Column="0" Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+<!--                <StackPanel.Styles>
+                    <Style Selector="TextBox.BaseStyle">
+                        <Setter Property="Padding" Value="3"/>
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="CaretBrush" Value="Transparent"/>
+                    </Style>
+
+                    <Style Selector="TextBox">
+                        <Setter Property="Padding" Value="3"/>
+                        <Setter Property="IsReadOnly" Value="True"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                </StackPanel.Styles>-->
+
+                <Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" 
+                    Stretch="Uniform" 
+                    Margin="0,0,0,10" 
+                    MaxHeight="300"/>
+
+                <SelectableTextBlock Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18" 
+                     Cursor="Hand"
+                     DoubleTapped="ModDetailCommand"
+                     SelectionBrush="LightBlue">
+                </SelectableTextBlock>
+
+                <TextBlock Text="Groups:" FontWeight="Bold"/>
+                <!--MultiSelectComboBox-->
+<!--                <controls:TagAutoCompleteBox 
+                    ItemsSource="{Binding ModGroups, Mode=TwoWay}"
+                    SelectedItems="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />-->
+                                    <controls:TagAutoCompleteBox 
+                    AvailableTags="{Binding ModGroups, Mode=TwoWay}"
+                    SelectedTags="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />
+                <!--<AutoCompleteBox x:Name="animals" FilterMode="StartsWith" />-->
+
+                <TextBlock Text="Comment:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}" 
+                    IsReadOnly="False"
+                    TextWrapping="Wrap" 
+                    AcceptsReturn="True"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Padding="5"/>
+
+                <TextBlock Text="ModID Key:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
+
+                <TextBlock Text="Author:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
+                <TextBlock Text="PackageId:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.About.PackageId, Mode=OneWay}"
+                         Classes="BaseTextBoxStyle"
+                         Classes.autogen="{Binding SelectedMod.About.PackageIdAutogen}">
+                    <TextBox.Styles>
+                        <Style Selector="TextBox.autogen">
+                            <Setter Property="Foreground" Value="Red"/>
+                            <Setter Property="ToolTip.Tip" Value="Auto-generated PackageId (unstable)"/>
+                        </Style>
+                    </TextBox.Styles>
+                </TextBox>
+                <TextBlock Text="SteamId:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+                <TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
+                <TextBox Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+                <TextBlock Text="Path:" FontWeight="Bold"/>
+                <SelectableTextBlock Text="{Binding SelectedMod.Path}" 
+                     Cursor="Hand"
+                     DoubleTapped="OpenLinkCommand"
+                     SelectionBrush="LightBlue">
+                </SelectableTextBlock>
+                <TextBlock Text="Url:" FontWeight="Bold"/>
+                <SelectableTextBlock Text="{Binding SelectedMod.About.Url}" 
+                     Cursor="Hand"
+                     DoubleTapped="OpenLinkCommand"
+                     SelectionBrush="LightBlue">
+                </SelectableTextBlock>
+
+                <TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="LoadAfter:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="LoadBefore:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="IncompatibleWith:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}" 
+                                IsReadOnly="True" Foreground="Red"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

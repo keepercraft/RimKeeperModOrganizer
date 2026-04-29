@@ -56,6 +56,9 @@ public class KeeperDataGrid : DataGrid
     public void RebuildColumns(KeeperDataGrid grid)
     {
         var cols = grid.Columns.Where(w => w is AdvancedFilterDataGrid).ToList();
+        foreach (var item in cols)
+            if (item is AdvancedFilterDataGrid col)
+                col.ColumnBinding(ColumnsConfig);
     }
     #endregion
 

@@ -1,12 +1,10 @@
 using Avalonia.Controls;
+namespace KeeperDataGridAvaloniaExample;
 
-namespace KeeperDataGridAvaloniaExample
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
