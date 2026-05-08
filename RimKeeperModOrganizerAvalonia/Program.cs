@@ -1,4 +1,6 @@
 ﻿using Avalonia;
+using Avalonia.Media;
+using Avalonia.Media.Fonts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RimKeeperModOrganizerAvalonia.ViewModels;
@@ -41,5 +43,18 @@ internal class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            //.ConfigureFonts(fontManager =>
+            //{
+            //    fontManager.AddFontCollection(new MyFontCollection());
+            //})
             .LogToTrace();
 }
+
+//public sealed class MyFontCollection : EmbeddedFontCollection
+//{
+//    public MyFontCollection() : base(
+//        new Uri("fonts:MyFonts", UriKind.Absolute),
+//        new Uri("avares://MyApp/Assets/Fonts", UriKind.Absolute))
+//    {
+//    }
+//}

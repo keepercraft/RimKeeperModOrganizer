@@ -16,7 +16,7 @@
                     <Border Background="#44888888" CornerRadius="4" Padding="6,2" Margin="2">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
-                            <Button Content="×" Click="RemoveTag_Click" Tag="{Binding}"
+                            <Button Content="X" Click="RemoveTag_Click" Tag="{Binding}"
                                     Background="Transparent" BorderThickness="0" Padding="2,0"/>
                         </StackPanel>
                     </Border>

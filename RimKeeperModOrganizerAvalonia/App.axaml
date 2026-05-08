@@ -4,18 +4,18 @@
              x:Class="RimKeeperModOrganizerAvalonia.App"
              RequestedThemeVariant="Light">
     <Application.Resources>
-        <ResourceDictionary>
+        <ResourceDictionary>    
+            <FontFamily x:Key="InterFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://RimKeeperModOrganizerAvalonia/Resources/Icons.axaml"/>
             </ResourceDictionary.MergedDictionaries>
             <c:GridLengthConverter x:Key="GridLengthConverter" />
             <c:PathToBitmapConverter x:Key="PathToBitmapConverter" />
-            <c:ModIconConverter x:Key="ModIconConverter" />
+            <c:ModIconConverter x:Key="ModIconConverter" />            
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>
         <SimpleTheme />
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Simple.xaml"/>
-        <!--<StyleInclude Source="avares://RimKeeperModOrganizerAvalonia/Controls/TagAutoCompleteBox.axaml"/>-->
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Simple.xaml"/>       
     </Application.Styles>
 </Application>

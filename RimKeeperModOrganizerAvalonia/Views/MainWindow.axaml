@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+ï»¿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:keeperdatagridavalonia="using:KeeperDataGridAvalonia"
@@ -547,10 +547,10 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Path=., 
-                                StringFormat='• {0}', 
+                                StringFormat='â€¢ {0}', 
                                 Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}" 
+                                TargetNullValue='â€¢', 
+                                FallbackValue='â€¢'}" 
                                 IsReadOnly="True" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -561,10 +561,10 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Path=., 
-                                StringFormat='• {0}', 
+                                StringFormat='â€¢ {0}', 
                                 Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}" 
+                                TargetNullValue='â€¢', 
+                                FallbackValue='â€¢'}" 
                                 IsReadOnly="True" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -575,10 +575,10 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Path=., 
-                                StringFormat='• {0}', 
+                                StringFormat='â€¢ {0}', 
                                 Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}" 
+                                TargetNullValue='â€¢', 
+                                FallbackValue='â€¢'}" 
                                 IsReadOnly="True" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -589,10 +589,10 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Path=., 
-                                StringFormat='• {0}', 
+                                StringFormat='â€¢ {0}', 
                                 Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}" 
+                                TargetNullValue='â€¢', 
+                                FallbackValue='â€¢'}" 
                                 IsReadOnly="True" Foreground="Red"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
