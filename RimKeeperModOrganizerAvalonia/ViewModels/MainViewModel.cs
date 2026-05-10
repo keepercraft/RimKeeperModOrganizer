@@ -8,6 +8,7 @@ using KeeperDataGridAvalonia.Models;
 using RimKeeperModOrganizerAvalonia.Extensions;
 using RimKeeperModOrganizerAvalonia.Helpers;
 using RimKeeperModOrganizerAvalonia.Services;
+using RimKeeperModOrganizerAvalonia.Views;
 using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
@@ -268,6 +269,7 @@ public class MainViewModel : PropertyModel
     public CustomCommand AboutCommand => new CustomCommand(p => UILock(() =>
     {
     //    Program.Services.GetRequiredService<AboutWindow>().ShowDialog();
+        OpenDialog.ShowDialog<AboutWindow>();
     }));
     public CustomCommand ChangeColorCommand => new CustomCommand(p => UILock(() =>
     {
@@ -280,7 +282,8 @@ public class MainViewModel : PropertyModel
         {
             ModColors.Add(item);
         }
-    //    new ChangeColorWindow(this).ShowDialog();
+        //new ChangeColorWindow(this).ShowDialog();
+        OpenDialog.ShowDialog<ChangeColorWindow>(this);       
     }));
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
     public CustomCommand LoadActiveModlistCommand => new CustomCommand(p => UILock(() => ReloadModsConfig()));
@@ -496,7 +499,4 @@ public class MainViewModel : PropertyModel
 
     }));
     #endregion CustomCommand
-
-
-
 }

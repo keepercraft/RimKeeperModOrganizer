@@ -28,7 +28,7 @@
                          ItemsSource="{Binding AvailableTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}"
                          FilterMode="Contains"
                          MinimumPrefixLength="0" 
-                         Watermark="Dodaj tag..."
+                         Watermark="Add tag..."
                          SelectionChanged="AutoCompleteBox_SelectionChanged"/>
     </StackPanel>
 </UserControl>

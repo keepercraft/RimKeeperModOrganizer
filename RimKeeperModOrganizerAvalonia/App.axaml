@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="using:RimKeeperModOrganizerAvalonia.Converters"
+             xmlns:templates="clr-namespace:ColorPicker.AvaloniaUI.Templates;assembly=ColorPicker.AvaloniaUI"
              x:Class="RimKeeperModOrganizerAvalonia.App"
              RequestedThemeVariant="Light">
     <Application.Resources>
@@ -16,6 +17,9 @@
     </Application.Resources>
     <Application.Styles>
         <SimpleTheme />
+        <templates:SimpleColorPickerTheme />
+		<!--<FluentTheme />
+        <templates:PixiPerfectColorPickerTheme />-->
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Simple.xaml"/>       
     </Application.Styles>
 </Application>

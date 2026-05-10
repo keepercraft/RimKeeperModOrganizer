@@ -12,6 +12,26 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace RimKeeperModOrganizerAvalonia.Services;
 
+public class OpenDialog
+{
+    public static Window? GetMainWindow()
+    {
+        var desktop = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        return desktop?.MainWindow;
+    }
+    public static void ShowDialog<T>(object? dataContext = null) where T : Window, new()
+    {
+        Window? window = GetMainWindow();
+        if (window != null)
+        {
+            T new_window = new T();
+            if (dataContext != null)
+                new_window.DataContext = dataContext;
+            new_window.ShowDialog(window);
+        }
+    }
+}
+
 public class OpenFileDialog
 {
     public string? InitialDirectory { get; set; }

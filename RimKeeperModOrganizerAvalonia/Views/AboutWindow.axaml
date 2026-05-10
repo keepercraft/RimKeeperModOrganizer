@@ -1,0 +1,83 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:RimKeeperModOrganizerAvalonia.Views"
+		x:DataType="vm:AboutWindow"
+        x:Class="RimKeeperModOrganizerAvalonia.Views.AboutWindow"
+		mc:Ignorable="d"
+		CanResize="False"
+		Width="600"
+        Height="300"
+        Title="RimKeeper - ModOrganizer - About">
+
+	<Grid Margin="20" RowDefinitions="Auto,*,Auto" >
+
+		<Border Background="#26000000"  Width="400" Height="400" Margin="-180" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+            Grid.RowSpan="99" Grid.ColumnSpan="99">
+			<Border.OpacityMask>
+				<VisualBrush>
+					<VisualBrush.Visual>
+						<Image Source="{StaticResource RimworldLogoIcon}" Stretch="Uniform"/>
+					</VisualBrush.Visual>
+				</VisualBrush>
+			</Border.OpacityMask>
+		</Border>	
+		
+		<DockPanel Grid.Row="0" HorizontalAlignment="Left">
+			<Border Background="#FF00375A"
+					Width="40"
+					Height="40"
+					Margin="5,0">
+				<Border.OpacityMask>
+					<VisualBrush>
+						<VisualBrush.Visual>
+							<Image Source="{StaticResource RimworldLogoIcon}" Stretch="Uniform"/>
+						</VisualBrush.Visual>
+					</VisualBrush>
+				</Border.OpacityMask>
+			</Border>			
+			<TextBlock Text="RimKeeper Mod Organizer" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,0" VerticalAlignment="Center" />
+		</DockPanel>
+
+		<Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="150,*">
+			
+			<TextBlock Grid.Row="1" Grid.Column="0" Text="Authors:" HorizontalAlignment="Right"
+				FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
+			<SelectableTextBlock Grid.Row="1" Grid.Column="1" x:Name="AuthorsText" Text="{Binding Authors,Mode=OneWay}"
+				VerticalAlignment="Center" TextWrapping="Wrap"/>
+
+			<TextBlock Grid.Row="2" Grid.Column="0" Text="Copyright:" HorizontalAlignment="Right"
+                FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
+			<SelectableTextBlock Grid.Row="2" Grid.Column="1" x:Name="CopyrightText" Text="{Binding Copyright,Mode=OneWay}" 
+                VerticalAlignment="Center" TextWrapping="Wrap"/>
+
+			<TextBlock Grid.Row="3" Grid.Column="0" Text="Description:" HorizontalAlignment="Right"
+                FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
+			<SelectableTextBlock   Grid.Row="3" Grid.Column="1" x:Name="DescriptionText" Text="{Binding Description,Mode=OneWay}"
+                VerticalAlignment="Center" TextWrapping="Wrap"/>
+
+			<TextBlock Grid.Row="4" Grid.Column="0" Text="Support:" HorizontalAlignment="Right"
+				FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
+			<SelectableTextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SupportPage,Mode=OneWay}"
+                Cursor="Hand" SelectionBrush="LightBlue"
+				DoubleTapped="OpenLinkCommand"
+				VerticalAlignment="Center" TextWrapping="Wrap"/>
+
+			<TextBlock Grid.Row="5" Grid.Column="0" Text="Support:" HorizontalAlignment="Right"
+                       FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
+			<SelectableTextBlock   Grid.Row="5" Grid.Column="1" Text="{Binding SupportPage,Mode=OneWay}"
+                Cursor="Hand" SelectionBrush="LightBlue"
+				DoubleTapped="OpenLinkCommand"
+				VerticalAlignment="Center" TextWrapping="Wrap"/>
+
+			<TextBlock Grid.Row="6" Grid.Column="0" Text="Version:" HorizontalAlignment="Right"
+                       FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
+			<StackPanel Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">
+				<SelectableTextBlock Text="{Binding FileVersion,Mode=OneWay}" Foreground="#2980B9"/>
+				<SelectableTextBlock Text="{Binding ProductVersion,Mode=OneWay}" FontSize="7" Foreground="#27AE60"/>
+			</StackPanel>
+			
+		</Grid>
+	</Grid>	
+</Window>

@@ -184,7 +184,7 @@ public partial class MainWindow : Window
     }
     public void DataGrid_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        _lastSelectedItmes.Clear();
+        _lastSelectedItmes?.Clear();
         _lastPressedArgs = null;
         //_isReadyToDrag = false;
         ClearDragHighlight();
