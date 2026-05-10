@@ -12,7 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
             <c:GridLengthConverter x:Key="GridLengthConverter" />
             <c:PathToBitmapConverter x:Key="PathToBitmapConverter" />
-            <c:ModIconConverter x:Key="ModIconConverter" />            
+			<c:ModIconConverter x:Key="ModIconConverter" />        
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>

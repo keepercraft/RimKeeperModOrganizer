@@ -38,7 +38,7 @@ public class ModIconConverter : IValueConverter
         return new WindowIcon(ms);
     }
 
-    public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public static DrawingImage? GetIconKey(object? value)
     {
         if (value == null) return null;
         ModLocation location = ModLocation.Unknow;
@@ -68,6 +68,11 @@ public class ModIconConverter : IValueConverter
             default:
                 return Get("WarningIcon");
         }
+    }
+
+    public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return GetIconKey(value);
     }
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => AvaloniaProperty.UnsetValue;
 }

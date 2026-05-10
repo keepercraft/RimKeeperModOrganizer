@@ -258,8 +258,9 @@ public class MainViewModel : PropertyModel
     public CustomCommand OpenSteamLinkCommand => new CustomCommand(FileHelper.OpenSteamLink);
     public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
     public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() =>
-    { 
-    //    new ModDetailWindow(this).ShowDialog(); 
+    {
+        //    new ModDetailWindow(this).ShowDialog(); 
+        OpenDialog.ShowDialog<ModDetailWindow>(this);
     }));
     public CustomCommand OptionsCommand => new CustomCommand(p => UILock(() =>
     {

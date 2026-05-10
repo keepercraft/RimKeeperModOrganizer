@@ -139,8 +139,10 @@
 
     <Style Selector="DataGridRow" x:DataType="ml:ModModel">
         <Setter Property="Classes.has_alert" Value="{Binding Alerts.HasAlert}" />
-        <Setter Property="Background" Value="{Binding Data.Color, FallbackValue=Transparent}"/>
         <Setter Property="ToolTip.ShowDelay" Value="0"/>
+		<Style Selector="^:not(.has_alert)">
+			<Setter Property="Background" Value="{Binding Data.Color}"/>
+		</Style>
         <Style Selector="^.has_alert">
             <Setter Property="Background" Value="{Binding Alerts.Color}"/>
             <Setter Property="Foreground" Value="Black"/>

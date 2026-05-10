@@ -1,0 +1,169 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="using:RimKeeperModOrganizerAvalonia.Controls"
+		xmlns:vm="using:RimKeeperModOrganizerAvalonia.ViewModels"
+		x:DataType="vm:MainViewModel"
+        mc:Ignorable="d"
+        x:Class="RimKeeperModOrganizerAvalonia.Views.ModDetailWindow"
+		Height="750" Width="500"
+        Title="ModDetailWindow">
+	<Grid RowDefinitions="Auto,*">
+		<Menu Grid.Row="0">
+			<MenuItem Header="Actions">
+				<MenuItem Header="Open in Steam" Command="{Binding OpenSteamLinkCommand}" CommandParameter="{Binding SelectedMod.SteamLink}">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource SteamIcon}"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Open in Browser" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding SelectedMod.SteamLink}">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource InternetIcon}"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Open in Explorer" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding SelectedMod.Path}">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource FolderIcon}"/>
+					</MenuItem.Icon>
+				</MenuItem>
+				<MenuItem Header="Change color" Command="{Binding ChangeColorCommand}" CommandParameter="{Binding SelectedMod}">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource PaletteIcon}"/>
+					</MenuItem.Icon>
+				</MenuItem>
+			</MenuItem>
+		</Menu>
+
+		<ScrollViewer Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
+			<StackPanel>
+
+				<Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}"
+                    Stretch="Uniform"
+                    Margin="0,0,0,10"
+                    MaxHeight="300"/>
+
+				<SelectableTextBlock Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18"
+                     Cursor="Hand"
+                     DoubleTapped="ModDetailCommand"
+                     SelectionBrush="LightBlue">
+				</SelectableTextBlock>
+
+				<TextBlock Text="Groups:" FontWeight="Bold"/>
+				<!--MultiSelectComboBox-->
+				<!--                <controls:TagAutoCompleteBox 
+                    ItemsSource="{Binding ModGroups, Mode=TwoWay}"
+                    SelectedItems="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />-->
+				<controls:TagAutoCompleteBox
+					AvailableTags="{Binding ModGroups, Mode=TwoWay}"
+					SelectedTags="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />
+				<!--<AutoCompleteBox x:Name="animals" FilterMode="StartsWith" />-->
+
+				<TextBlock Text="Comment:" FontWeight="Bold"/>
+				<TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}"
+                    IsReadOnly="False"
+                    TextWrapping="Wrap"
+                    AcceptsReturn="True"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    BorderBrush="Gray"
+                    BorderThickness="1"
+                    Padding="5"/>
+
+				<TextBlock Text="ModID Key:" FontWeight="Bold"/>
+				<TextBox Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
+
+				<TextBlock Text="Author:" FontWeight="Bold"/>
+				<TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
+				<TextBlock Text="PackageId:" FontWeight="Bold"/>
+				<TextBox Text="{Binding SelectedMod.About.PackageId, Mode=OneWay}"
+                         Classes="BaseTextBoxStyle"
+                         Classes.autogen="{Binding SelectedMod.About.PackageIdAutogen}">
+					<TextBox.Styles>
+						<Style Selector="TextBox.autogen">
+							<Setter Property="Foreground" Value="Red"/>
+							<Setter Property="ToolTip.Tip" Value="Auto-generated PackageId (unstable)"/>
+						</Style>
+					</TextBox.Styles>
+				</TextBox>
+				<TextBlock Text="SteamId:" FontWeight="Bold"/>
+				<TextBox Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+				<TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
+				<TextBox Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+				<TextBlock Text="Path:" FontWeight="Bold"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.Path}"
+                     Cursor="Hand"
+                     DoubleTapped="OpenLinkCommand"
+                     SelectionBrush="LightBlue">
+				</SelectableTextBlock>
+				<TextBlock Text="Url:" FontWeight="Bold"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.About.Url}"
+                     Cursor="Hand"
+                     DoubleTapped="OpenLinkCommand"
+                     SelectionBrush="LightBlue">
+				</SelectableTextBlock>
+
+				<TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
+				<ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}"
+                                IsReadOnly="True" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<TextBlock Text="LoadAfter:" FontWeight="Bold" Margin="0,5,0,0"/>
+				<ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}"
+                                IsReadOnly="True" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<TextBlock Text="LoadBefore:" FontWeight="Bold" Margin="0,5,0,0"/>
+				<ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}"
+                                IsReadOnly="True" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<TextBlock Text="IncompatibleWith:" FontWeight="Bold" Margin="0,5,0,0"/>
+				<ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBox Text="{Binding Path=., 
+                                StringFormat='• {0}', 
+                                Mode=OneWay,
+                                TargetNullValue='•', 
+                                FallbackValue='•'}"
+                                IsReadOnly="True" Foreground="Red"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
+				<TextBox Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+			</StackPanel>
+		</ScrollViewer>
+
+	</Grid>
+</Window>
