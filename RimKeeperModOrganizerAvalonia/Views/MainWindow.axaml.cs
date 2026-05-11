@@ -2,21 +2,17 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 using RimKeeperModOrganizerAvalonia.Converters;
 using RimKeeperModOrganizerAvalonia.ViewModels;
+using RimKeeperModOrganizerLib.Extensions;
 using RimKeeperModOrganizerLib.Models;
-using RimKeeperModOrganizerLib.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using RimKeeperModOrganizerLib.Extensions;
 namespace RimKeeperModOrganizerAvalonia.Views;
 
 public partial class MainWindow : Window
@@ -55,6 +51,18 @@ public partial class MainWindow : Window
         //DragDrop.AddDragLeaveHandler(ModsGridConfig, OnDrop2);
 
         //ModsGrid.LoadingRow += OnLoadingRow;
+    }
+
+    private void ToggleThemeClick(object? sender, RoutedEventArgs e)
+    {
+        Application.Current!.RequestedThemeVariant = 
+            Application.Current!.RequestedThemeVariant == ThemeVariant.Light
+                ? ThemeVariant.Dark
+                : ThemeVariant.Light;
+        var content = Content;
+        Content = null;
+        Content = content;
+        InvalidateVisual();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

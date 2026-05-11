@@ -37,7 +37,7 @@
 					</VisualBrush>
 				</Border.OpacityMask>
 			</Border>			
-			<TextBlock Text="RimKeeper Mod Organizer" FontSize="18" FontWeight="Bold" Foreground="#333" Margin="0,0,0,0" VerticalAlignment="Center" />
+			<TextBlock Text="RimKeeper Mod Organizer" FontSize="18" FontWeight="Bold" Margin="0,0,0,0" VerticalAlignment="Center" />
 		</DockPanel>
 
 		<Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="150,*">

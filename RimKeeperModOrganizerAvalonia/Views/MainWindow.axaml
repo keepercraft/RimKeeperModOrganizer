@@ -388,6 +388,13 @@
             </MenuItem>
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5" Background="Transparent" HorizontalAlignment="Right">
+			<MenuItem ToolTip.Tip="Change Theme" Width="30" Click="ToggleThemeClick">
+				<MenuItem.Header>
+					<Viewbox>
+						<Image Source="{StaticResource PaletteIcon}"/>
+					</Viewbox>
+				</MenuItem.Header>
+			</MenuItem>
             <MenuItem ToolTip.Tip="Refresh" Width="30" Command="{Binding RefreshCommand}">
                 <MenuItem.Header>
                     <Viewbox>
@@ -479,7 +486,8 @@
                     </Style>
                 </StackPanel.Styles>-->
 
-                <Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}" 
+                <Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}"
+					HorizontalAlignment="Left"   
                     Stretch="Uniform" 
                     Margin="0,0,0,10" 
                     MaxHeight="300"/>
@@ -512,31 +520,34 @@
                     Padding="5"/>
 
                 <TextBlock Text="ModID Key:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
 
                 <TextBlock Text="Author:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
+				
                 <TextBlock Text="PackageId:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.PackageId, Mode=OneWay}"
-                         Classes="BaseTextBoxStyle"
-                         Classes.autogen="{Binding SelectedMod.About.PackageIdAutogen}">
-                    <TextBox.Styles>
-                        <Style Selector="TextBox.autogen">
-                            <Setter Property="Foreground" Value="Red"/>
-                            <Setter Property="ToolTip.Tip" Value="Auto-generated PackageId (unstable)"/>
-                        </Style>
-                    </TextBox.Styles>
-                </TextBox>
+				<SelectableTextBlock Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}">
+					<SelectableTextBlock.Styles>
+						<Style Selector="SelectableTextBlock.autogen">
+							<Setter Property="Foreground" Value="Red"/>
+							<Setter Property="ToolTip.Tip" Value="Auto-generated PackageId (unstable)"/>
+						</Style>
+					</SelectableTextBlock.Styles>
+				</SelectableTextBlock>
+				
                 <TextBlock Text="SteamId:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+				
                 <TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+				
                 <TextBlock Text="Path:" FontWeight="Bold"/>
                 <SelectableTextBlock Text="{Binding SelectedMod.Path}" 
                      Cursor="Hand"
                      DoubleTapped="OpenLinkCommand"
                      SelectionBrush="LightBlue">
                 </SelectableTextBlock>
+				
                 <TextBlock Text="Url:" FontWeight="Bold"/>
                 <SelectableTextBlock Text="{Binding SelectedMod.About.Url}" 
                      Cursor="Hand"
@@ -548,12 +559,11 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=., 
+							<SelectableTextBlock Text="{Binding PackageId, 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
-                                FallbackValue='•'}" 
-                                IsReadOnly="True" />
+                                FallbackValue='•'}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -562,12 +572,11 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=., 
+							<SelectableTextBlock Text="{Binding Path=., 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
-                                FallbackValue='•'}" 
-                                IsReadOnly="True" />
+                                FallbackValue='•'}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -576,12 +585,11 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=., 
+							<SelectableTextBlock Text="{Binding Path=., 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
-                                FallbackValue='•'}" 
-                                IsReadOnly="True" />
+                                FallbackValue='•'}"  />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -590,18 +598,18 @@
                 <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=., 
+							<SelectableTextBlock Text="{Binding Path=., 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
                                 FallbackValue='•'}" 
-                                IsReadOnly="True" Foreground="Red"/>
+                                Foreground="Red"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
                 <TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <TextBox Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+				<SelectableTextBlock Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
 
             </StackPanel>
         </ScrollViewer>

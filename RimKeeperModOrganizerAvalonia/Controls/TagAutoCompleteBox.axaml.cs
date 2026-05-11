@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Input;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 

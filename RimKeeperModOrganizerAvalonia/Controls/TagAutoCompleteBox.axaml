@@ -4,31 +4,49 @@
              x:Class="RimKeeperModOrganizerAvalonia.Controls.TagAutoCompleteBox"
              x:DataType="local:TagAutoCompleteBox">
 
-    <StackPanel Spacing="5">
-        <ItemsControl ItemsSource="{Binding SelectedTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="x:String">
-                    <Border Background="#44888888" CornerRadius="4" Padding="6,2" Margin="2">
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
-                            <Button Content="X" Click="RemoveTag_Click" Tag="{Binding}"
-                                    Background="Transparent" BorderThickness="0" Padding="2,0"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+	<Border BorderBrush="Gray" BorderThickness="0" CornerRadius="0" Padding="0" Margin="0">
+        <StackPanel Spacing="0">
+            <ItemsControl ItemsSource="{Binding SelectedTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Border BorderBrush="Gray" BorderThickness="1"
+							    CornerRadius="3" Padding="5" Margin="0,0,2,0">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                <Button Content="X" Click="RemoveTag_Click" Tag="{Binding}" FontWeight="Bold"
+                                        Background="Transparent" BorderThickness="0" Padding="2,0">
+								    <Button.Styles>
+									    <Style Selector="Button">
+										    <Setter Property="Foreground" Value="Gray"/>
+										    <Setter Property="Cursor" Value="Hand"/>
+									    </Style>
+									    <Style Selector="Button:pointerover">
+										    <Setter Property="Background" Value="Gray"/>
+										    <Setter Property="Foreground" Value="Red"/>
+									    </Style>
+									    <Style Selector="Button:pressed">
+										    <Setter Property="Background" Value="Red"/>
+									    </Style>
+								    </Button.Styles>
+							    </Button>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
-        <AutoCompleteBox Name="Part_AutoComplete"
-                         ItemsSource="{Binding AvailableTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}"
-                         FilterMode="Contains"
-                         MinimumPrefixLength="0" 
-                         Watermark="Add tag..."
-                         SelectionChanged="AutoCompleteBox_SelectionChanged"/>
-    </StackPanel>
+            <AutoCompleteBox Name="Part_AutoComplete"
+			    Padding="6"	 	
+                ItemsSource="{Binding AvailableTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}"
+                FilterMode="Contains"
+                MinimumPrefixLength="0" 
+                Watermark="Add tag..."
+                SelectionChanged="AutoCompleteBox_SelectionChanged"/>
+        </StackPanel>
+	</Border>
 </UserControl>
