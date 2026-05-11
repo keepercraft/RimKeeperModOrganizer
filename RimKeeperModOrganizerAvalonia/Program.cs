@@ -15,8 +15,11 @@ internal class Program
     public static void Main(string[] args)
     {
         var builder = Host.CreateApplicationBuilder(args);
+        builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddSingleton<MainViewModel>();
+        builder.Services.AddTransient<SettingsWindow>();
         builder.Services.AddSingleton<MainWindow>();
+        builder.Services.AddTransient<AboutWindow>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SettingsService>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.ModsServices>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SteamService>();       

@@ -5,6 +5,7 @@ using KeeperBaseSharedLib.Models;
 using KeeperBaseSheredLib;
 using KeeperDataGridAvalonia.Extensions;
 using KeeperDataGridAvalonia.Models;
+using Microsoft.Extensions.DependencyInjection;
 using RimKeeperModOrganizerAvalonia.Extensions;
 using RimKeeperModOrganizerAvalonia.Helpers;
 using RimKeeperModOrganizerAvalonia.Services;
@@ -264,7 +265,10 @@ public class MainViewModel : PropertyModel
     }));
     public CustomCommand OptionsCommand => new CustomCommand(p => UILock(() =>
     {
-    //    Program.Services.GetRequiredService<SettingsWindow>().ShowDialog();
+        //    Program.Services.GetRequiredService<SettingsWindow>().ShowDialog();
+        //OpenDialog.ShowDialog<SettingsWindow, SettingsViewModel>();
+        OpenDialog.ShowServiceDialog<SettingsWindow>();
+        //Program.Services.GetRequiredService<SettingsWindow>().ShowDialog();
         RaisePropertyChanged(nameof(ModColumnData));
     }));
     public CustomCommand AboutCommand => new CustomCommand(p => UILock(() =>

@@ -30,6 +30,28 @@ public class OpenDialog
             new_window.ShowDialog(window);
         }
     }
+
+    public static void ShowDialog<T, D>() 
+        where T : Window, new()
+        where D : new()
+    {
+        Window? window = GetMainWindow();
+        if (window != null)
+        {
+            T new_window = new T();
+            new_window.DataContext = new D();
+            new_window.ShowDialog(window);
+        }
+    }
+
+    public static void ShowServiceDialog<T>() where T : Window
+    {
+        Window? window = GetMainWindow();
+        if (window != null)
+        {
+            Program.Services.GetRequiredService<T>().ShowDialog(window);
+        }
+    }
 }
 
 public class OpenFileDialog
