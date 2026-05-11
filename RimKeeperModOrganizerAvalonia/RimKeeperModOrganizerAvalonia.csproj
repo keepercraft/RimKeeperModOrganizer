@@ -7,8 +7,31 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <LangVersion>preview</LangVersion>
-  </PropertyGroup>
 
+	<ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+	<Product>RimKeeperModOrganizer</Product>
+	<Authors>Keepercraft</Authors>
+	<Company>$(Authors)</Company>
+	<Copyright>Copyright © $([System.DateTime]::UtcNow.ToString('yyyy')) $(Authors) Contains third-party components.</Copyright>
+	<Description>Rimkeeper Apache-2.0 license</Description>
+	<RepositoryUrl>https://github.com/keepercraft/RimKeeperModOrganizer</RepositoryUrl>
+
+	<ProjectName>RimKeeperModOrganizerAvalonia</ProjectName>
+	<AssemblyName>$(ProjectName)</AssemblyName>
+	<NeutralLanguage>pl-PL</NeutralLanguage>
+	<SupportedCultures>pl-PL;en-US</SupportedCultures>
+
+	<Major>0</Major>
+	<Minor>5</Minor>
+	<Build>1</Build>
+	<RawSeconds>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds)</RawSeconds>
+	<ComputedRevision>$([System.Convert]::ToInt32($([MSBuild]::Divide($(RawSeconds), 2))))</ComputedRevision>
+	<Timestamp>$([System.DateTime]::UtcNow.ToString("yyyyMMdd-HHmm"))</Timestamp>
+	<Version>$(Major).$(Minor).$(Build)-alpha.$(Timestamp)</Version>
+	<FileVersion>$(Major).$(Minor).$(Build).$(ComputedRevision)</FileVersion>
+	<AssemblyVersion>$(Major).$(Minor).$(Build).0</AssemblyVersion>
+
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.0.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.0.1" />
@@ -37,5 +60,15 @@
     <Reference Include="ColorPicker.Models">
       <HintPath>..\..\..\GitHub\ColorPicker-master\src\ColorPicker.AvaloniaUI\bin\Release\net8.0\ColorPicker.Models.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\icon.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Remove="Resources\icon.ico" />
   </ItemGroup>
 </Project>

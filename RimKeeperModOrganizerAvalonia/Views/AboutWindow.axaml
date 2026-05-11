@@ -57,9 +57,9 @@
 			<SelectableTextBlock   Grid.Row="3" Grid.Column="1" x:Name="DescriptionText" Text="{Binding Description,Mode=OneWay}"
                 VerticalAlignment="Center" TextWrapping="Wrap"/>
 
-			<TextBlock Grid.Row="4" Grid.Column="0" Text="Support:" HorizontalAlignment="Right"
+			<TextBlock Grid.Row="4" Grid.Column="0" Text="Repository:" HorizontalAlignment="Right"
 				FontWeight="SemiBold" Margin="0,5,10,5" VerticalAlignment="Center"/>
-			<SelectableTextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SupportPage,Mode=OneWay}"
+			<SelectableTextBlock Grid.Row="4" Grid.Column="1" Text="{Binding GitHubUrl,Mode=OneWay}"
                 Cursor="Hand" SelectionBrush="LightBlue"
 				DoubleTapped="OpenLinkCommand"
 				VerticalAlignment="Center" TextWrapping="Wrap"/>
