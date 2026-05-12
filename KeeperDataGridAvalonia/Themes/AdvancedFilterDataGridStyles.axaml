@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="using:KeeperDataGridAvalonia"
+        xmlns:bahaviors="using:KeeperDataGridAvalonia.Behaviors"
         x:CompileBindings="False"
         x:Class="KeeperDataGridAvalonia.AdvancedFilterDataGridStyles">
     <!--BasedOn="{StaticResource {x:Type DataGridColumnHeader}}"-->
@@ -75,6 +76,7 @@
                                 Text="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay}"/>
 
                         <ComboBox x:Name="FilterSelectBox"
+								bahaviors:DragAndDropBehavior.BlockGridDrag="True"
                                 IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowSelectBoxFilter, FallbackValue=False}"
                                 ItemsSource="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxFilterList}"
                                 ItemTemplate="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxItemTemplate}"
