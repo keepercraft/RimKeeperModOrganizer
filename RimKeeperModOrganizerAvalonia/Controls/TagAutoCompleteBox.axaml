@@ -16,17 +16,25 @@
                     <DataTemplate x:DataType="x:String">
                         <Border BorderBrush="Gray" BorderThickness="1"
 							    CornerRadius="3" Padding="5" Margin="0,0,2,0">
+							<Border.Styles>
+								<Style Selector="Border">
+									<Setter Property="Background" Value="Transparent"/>
+								</Style>
+								<Style Selector="Border:pointerover">
+									<Setter Property="Background" Value="{DynamicResource ThemeControlMidColor}"/>
+								</Style>
+							</Border.Styles>
                             <StackPanel Orientation="Horizontal" Spacing="5">
                                 <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
                                 <Button Content="X" Click="RemoveTag_Click" Tag="{Binding}" FontWeight="Bold"
                                         Background="Transparent" BorderThickness="0" Padding="2,0">
 								    <Button.Styles>
 									    <Style Selector="Button">
-										    <Setter Property="Foreground" Value="Gray"/>
+										    <Setter Property="Foreground" Value="{DynamicResource ThemeControlVeryHighColor}"/>
 										    <Setter Property="Cursor" Value="Hand"/>
 									    </Style>
 									    <Style Selector="Button:pointerover">
-										    <Setter Property="Background" Value="Gray"/>
+										    <Setter Property="Background" Value="LightCoral"/>
 										    <Setter Property="Foreground" Value="Red"/>
 									    </Style>
 									    <Style Selector="Button:pressed">

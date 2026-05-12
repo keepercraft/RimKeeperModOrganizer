@@ -145,11 +145,11 @@
 		</Style>
         <Style Selector="^.has_alert">
             <Setter Property="Background" Value="{Binding Alerts.Color}"/>
-            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="ToolTip.Tip">
                 <Template>
-                    <Border Padding="5" Background="{Binding Alerts.Color}" BorderBrush="Black" BorderThickness="1">
+                    <Border Padding="5" Background="{Binding Alerts.Color}" BorderBrush="{DynamicResource ThemeBorderMidColor}" BorderThickness="1">
                         <ItemsControl ItemsSource="{Binding Alerts.Items}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -157,7 +157,7 @@
                                                Background="{Binding Color}" 
                                                TextWrapping="Wrap" 
                                                Padding="4" Margin="1" 
-                                               FontWeight="Bold" Foreground="Black"/>
+                                               FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundColor}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -361,14 +361,16 @@
                     <Style Selector="MenuItem">
                         <Setter Property="ToolTip.Tip">
                             <Template>
-                                <Border Padding="5" BorderBrush="Black" BorderThickness="1" CornerRadius="0" Background="White">
+                                <Border Padding="5" BorderThickness="1" CornerRadius="0"
+										BorderBrush="{DynamicResource ThemeForegroundColor}"
+										Background="{DynamicResource ThemeBackgroundColor}">
                                     <ScrollViewer MaxHeight="{Binding MainWidowSettings.Height}" VerticalScrollBarVisibility="Auto">
                                         <ItemsControl ItemsSource="{Binding ListModsConfigAlerts}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Message}"
                                                                Padding="10,4,20,4" Margin="1"
-                                                               Foreground="Black"
+                                                               Foreground="{DynamicResource ThemeForegroundColor}"
                                                                Background="{Binding Color}"
                                                                FontWeight="Bold"
                                                                TextWrapping="Wrap"/>
@@ -498,7 +500,36 @@
                      SelectionBrush="LightBlue">
                 </SelectableTextBlock>
 
-                <TextBlock Text="Groups:" FontWeight="Bold"/>
+				<!--<TextBlock Text="ThemeControlVeryHighColor">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="Background" Value="{DynamicResource ThemeControlVeryHighColor}"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+				<TextBlock Text="ThemeControlMidColor">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="Background" Value="{DynamicResource ThemeControlMidColor}"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+				<TextBlock Text="ThemeControlLowColor">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="Background" Value="{DynamicResource ThemeControlLowColor}"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+				<TextBlock Text="ThemeControlHighlightMidColor">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="Background" Value="{DynamicResource ThemeControlHighlightMidColor}"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>-->
+
+				<TextBlock Text="Groups:" FontWeight="Bold"/>
                 <!--MultiSelectComboBox-->
 <!--                <controls:TagAutoCompleteBox 
                     ItemsSource="{Binding ModGroups, Mode=TwoWay}"

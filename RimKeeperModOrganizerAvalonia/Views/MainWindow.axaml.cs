@@ -24,10 +24,6 @@ public partial class MainWindow : Window
     }
     public MainWindow(MainViewModel viewModel)
     {
-        var ico = ModIconConverter.Get("RimworldLogoIcon");
-        if (ico != null)
-            this.Icon = ModIconConverter.CreateIconFromDrawingImage(ico);
-
         InitializeComponent();
         //AvaloniaXamlLoader.Load(this);
         DataContext = viewModel;
@@ -68,6 +64,14 @@ public partial class MainWindow : Window
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+
+        if (change.Property == ContentProperty)
+        {
+            var ico = ModIconConverter.Get("RimworldLogoIcon");
+            if (ico != null)
+                this.Icon = ModIconConverter.CreateIconFromDrawingImage(ico);
+        }
+
         var property = change.Property.Name;
         var newvalue = change.NewValue;
         Debug.WriteLine(">>"+ property+" - "+ newvalue + " :::: " + this.Position.X +":"+ this.Position.Y);
@@ -346,6 +350,7 @@ public partial class MainWindow : Window
         vm.AlertPropertyChanged();
     }
     private DataGridRow? _highlightedRow;
+
     private void ClearDragHighlight()
     {
         if (_highlightedRow != null)

@@ -16,8 +16,8 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="MyRowBackground" Color="Transparent"/>
-                    <SolidColorBrush x:Key="MyRowHoverBackground" Color="#11000000"/> 
-                    <SolidColorBrush x:Key="MyRowSelectedBackground" Color="#22000000"/>
+                    <SolidColorBrush x:Key="MyRowHoverBackground" Color="#EE000000"/> 
+                    <SolidColorBrush x:Key="MyRowSelectedBackground" Color="#DD000000"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Default">
                     <SolidColorBrush x:Key="MyRowBackground" Color="Transparent"/>
@@ -152,23 +152,23 @@
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
     <Style Selector="DataGridColumnHeader">
-        <Setter Property="BorderBrush" Value="#666666" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMidColor}" />
         <Setter Property="BorderThickness" Value="0,0,1,2" /> 
         <Setter Property="Padding" Value="2" />
-        <Setter Property="Background" Value="#f0f0f0" />
+        <Setter Property="Background" Value="{DynamicResource ThemeControlMidColor}" />
     </Style>
     <Style Selector="DataGridRow">
         <Setter Property="Padding" Value="0" />
-        <Setter Property="BorderBrush" Value="#666666" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMidColor}" />
         <Setter Property="BorderThickness" Value="0,0,0,1" /> 
     </Style>
     <Style Selector="DataGridCell">
-        <Setter Property="BorderBrush" Value="#666666" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderMidColor}" />
         <Setter Property="BorderThickness" Value="0,0,1,0" /> 
         <Setter Property="Padding" Value="0" />
     </Style>
     <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
-        <Setter Property="Fill" Value="#f0f0f0" />
+        <Setter Property="Fill" Value="{DynamicResource ThemeControlHighlightMidColor}" />
     </Style>
 
 </Styles>
