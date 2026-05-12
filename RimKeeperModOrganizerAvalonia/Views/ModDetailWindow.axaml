@@ -35,7 +35,7 @@
 			</MenuItem>
 		</Menu>
 
-		<ScrollViewer Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+		<ScrollViewer Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
 
 				<Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}"
