@@ -138,17 +138,16 @@
 <Window.Styles>
     
     <Style Selector="DataGridRow" x:DataType="ml:ModModel">
+		<Setter Property="Foreground" Value="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"/>
 		<Setter Property="ContextMenu" Value="{StaticResource DataGridContextMenu}"/>
         <Setter Property="Classes.has_alert" Value="{Binding Alerts.HasAlert}" />
         <Setter Property="ToolTip.ShowDelay" Value="0"/>
 		<Style Selector="^:not(.has_alert)">
 			<Setter Property="Background" Value="{Binding Data.Color}"/>
 			<!--<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>-->
-			<Setter Property="Foreground" Value="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"/>
 		</Style>
         <Style Selector="^.has_alert">
             <Setter Property="Background" Value="{Binding Alerts.Color}"/>
-            <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="ToolTip.Tip">
                 <Template>
