@@ -392,6 +392,13 @@
             </MenuItem>
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5" Background="Transparent" HorizontalAlignment="Right">
+			<MenuItem ToolTip.Tip="Change Theme" Width="30" Command="{Binding ChangeTheme}">
+				<MenuItem.Header>
+					<Viewbox>
+						<Image Source="{StaticResource GearIcon}"/>
+					</Viewbox>
+				</MenuItem.Header>
+			</MenuItem>
 			<MenuItem ToolTip.Tip="Change Theme" Width="30" Click="ToggleThemeClick">
 				<MenuItem.Header>
 					<Viewbox>

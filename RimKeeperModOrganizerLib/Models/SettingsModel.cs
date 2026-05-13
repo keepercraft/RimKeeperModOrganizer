@@ -13,6 +13,7 @@ public class SettingsModel : PropertyModel
     public string GameVersion { get; set; } = "";
     public string PathModSettingsArchive { get; set; } = "";
     public string PathRimpyManager { get; set; } = "";
+    public ThemeFlag WindowTheme { get; set; } = ThemeFlag.Light;
 
     public MainWidowSettings MainWidow { get; set; } = new();
 
@@ -71,4 +72,10 @@ public class MainWidowSettings : WidowSettings
 {
     public double DetailPanelWidth { get; set; } = 150;
     public double ConfigModPanelWidth { get; set; } = 150;
+}
+
+public enum ThemeFlag : byte
+{
+    Light = 0,
+    Dark = 1,
 }

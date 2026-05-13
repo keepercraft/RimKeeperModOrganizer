@@ -3,6 +3,7 @@ using Avalonia.Media;
 using Avalonia.Media.Fonts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RimKeeperModOrganizerAvalonia.Services;
 using RimKeeperModOrganizerAvalonia.ViewModels;
 using RimKeeperModOrganizerAvalonia.Views;
 using System;
@@ -22,7 +23,8 @@ internal class Program
         builder.Services.AddTransient<AboutWindow>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SettingsService>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.ModsServices>();
-        builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SteamService>();       
+        builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SteamService>();
+        builder.Services.AddSingleton<ThemeService>();
         //builder.Services.AddSingleton<MainWindow>(sp => new MainWindow
         //{
         //    DataContext = sp.GetRequiredService<MainViewModel>()

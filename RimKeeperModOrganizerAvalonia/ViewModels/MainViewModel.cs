@@ -5,7 +5,6 @@ using KeeperBaseSharedLib.Models;
 using KeeperBaseSheredLib;
 using KeeperDataGridAvalonia.Extensions;
 using KeeperDataGridAvalonia.Models;
-using Microsoft.Extensions.DependencyInjection;
 using RimKeeperModOrganizerAvalonia.Extensions;
 using RimKeeperModOrganizerAvalonia.Helpers;
 using RimKeeperModOrganizerAvalonia.Services;
@@ -53,6 +52,7 @@ public class MainViewModel : PropertyModel
     private readonly ModsServices _modsServices;
     private readonly SettingsService _settingsService;
     private readonly SteamService _steamService;
+    private readonly ThemeService _themeService;
 
     public string GameVersion => _settingsService.Settings.GameVersion;
 
@@ -68,11 +68,12 @@ public class MainViewModel : PropertyModel
 
     public string SteamIconKey { get; set; } = "Steam";
 
-    public MainViewModel(SettingsService SettingsService, ModsServices modsServices, SteamService steamService)
+    public MainViewModel(SettingsService SettingsService, ModsServices modsServices, SteamService steamService, ThemeService themeService)
     {
         _settingsService = SettingsService;
         _modsServices = modsServices;
         _steamService = steamService;
+        _themeService = themeService;
         _autoSaver = new JsonAutoSaver(
             () => DataChanged,
             js => _modsServices.SaveLocalData(Items),
@@ -256,6 +257,7 @@ public class MainViewModel : PropertyModel
     }
 
     #region CustomCommand
+    public CustomCommand ChangeTheme => new CustomCommand(_themeService.SwitchTheme);
     public CustomCommand OpenSteamLinkCommand => new CustomCommand(FileHelper.OpenSteamLink);
     public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
     public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() =>

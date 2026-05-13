@@ -55,10 +55,10 @@ public partial class MainWindow : Window
             Application.Current!.RequestedThemeVariant == ThemeVariant.Light
                 ? ThemeVariant.Dark
                 : ThemeVariant.Light;
-        var content = Content;
-        Content = null;
-        Content = content;
-        InvalidateVisual();
+        //var content = Content;
+        //Content = null;
+        //Content = content;
+        //InvalidateVisual();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
