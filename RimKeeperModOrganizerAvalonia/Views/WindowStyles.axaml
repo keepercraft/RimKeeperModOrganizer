@@ -1,0 +1,30 @@
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:ClassModifier="internal">
+	<Style Selector="Window">
+		<Setter Property="ExtendClientAreaToDecorationsHint" Value="True"/>
+		<Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<LayoutTransformControl>
+					<Border BorderThickness="1" BorderBrush="{DynamicResource ThemeControlMidColor}">
+						<VisualLayerManager>
+							<Grid RowDefinitions="Auto,*">
+								<Border Height="30" Grid.Row="0"
+									Background="#10FF0000" ZIndex="999"
+									/>
+								<!--Background="{DynamicResource ThemeControlMidColor}"-->
+								<ContentPresenter Grid.Row="1"
+									Padding="{TemplateBinding Padding}"
+									Background="{TemplateBinding Background}"
+									Content="{TemplateBinding Content}"
+									ContentTemplate="{TemplateBinding ContentTemplate}"
+									/>
+							</Grid>
+						</VisualLayerManager>
+					</Border>
+				</LayoutTransformControl>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+</Styles>

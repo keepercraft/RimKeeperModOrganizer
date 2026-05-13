@@ -162,35 +162,41 @@ public partial class MainWindow : Window
 
         if (Math.Abs(delta.X) > 5 || Math.Abs(delta.Y) > 5)
         {
-            // Pobieramy dane do przeciągnięcia
-            //var visual = e.Source as Visual;
-           // var datagrid = visual?.FindAncestorOfType<DataGrid>();
-            var items2 = _lastSelectedItmes;
-            //var items = datagrid.SelectedItems;
-            //var row = visual?.FindAncestorOfType<DataGridRow>();
-            //var draggedData = row?.DataContext;
-            if (items2.Count == 0)
+            try
             {
-                List<object> list = new List<object>();
-                foreach (var item in (sender as DataGrid)?.SelectedItems)
+                // Pobieramy dane do przeciągnięcia
+                //var visual = e.Source as Visual;
+                // var datagrid = visual?.FindAncestorOfType<DataGrid>();
+                var items2 = _lastSelectedItmes;
+                //var items = datagrid.SelectedItems;
+                //var row = visual?.FindAncestorOfType<DataGridRow>();
+                //var draggedData = row?.DataContext;
+                if (items2.Count == 0)
                 {
-                    items2.Add(item);
+                    List<object> list = new List<object>();
+                    foreach (var item in (sender as DataGrid)?.SelectedItems)
+                    {
+                        items2.Add(item);
+                    }
+                }
+                //if (draggedData != null)
+                if (items2.Count > 0)
+                {
+                    var item = new DataTransferItem();
+                    item.Set(RowDragFormat, items2);
+
+                    var data = new DataTransfer();
+                    data.Add(item);
+
+                    // UŻYWAMY ZAPISANYCH ARGUMENTÓW Z POINTERPRESSED
+                    var triggerArgs = _lastPressedArgs;
+                    _lastPressedArgs = null; // Czyścimy, aby nie odpalić dwa razy
+
+                    await DragDrop.DoDragDropAsync(triggerArgs, data, DragDropEffects.Move);
                 }
             }
-                //if (draggedData != null)
-            if (items2.Count > 0)
+            catch
             {
-                var item = new DataTransferItem();
-                item.Set(RowDragFormat, items2);
-
-                var data = new DataTransfer();
-                data.Add(item);
-
-                // UŻYWAMY ZAPISANYCH ARGUMENTÓW Z POINTERPRESSED
-                var triggerArgs = _lastPressedArgs;
-                _lastPressedArgs = null; // Czyścimy, aby nie odpalić dwa razy
-
-                await DragDrop.DoDragDropAsync(triggerArgs, data, DragDropEffects.Move);
             }
         }
     }
@@ -260,6 +266,7 @@ public partial class MainWindow : Window
         var visual = e.Source as Visual;
         var targetDataGrid = visual?.FindAncestorOfType<DataGrid>();
         var targetRowTarget = visual?.FindAncestorOfType<DataGridRow>();
+        if (targetRowTarget == null) return;
         var position = e.GetPosition(targetRowTarget);
         bool isTopHalf = position.Y < (targetRowTarget.Bounds.Height / 2);
 

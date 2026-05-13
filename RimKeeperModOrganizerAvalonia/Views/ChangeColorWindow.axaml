@@ -32,6 +32,7 @@
 			<ListBox.Styles>
 				<Style Selector="ListBoxItem">
 					<Setter Property="Background" Value="{Binding}"/>
+					<Setter Property="Foreground" Value="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"/>
 				</Style>
 			</ListBox.Styles>
 		</ListBox>

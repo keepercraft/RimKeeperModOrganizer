@@ -75,73 +75,76 @@
                     <Image Source="{StaticResource SteamIcon}" Width="16" Height="16"/>
                 </MenuItem.Icon>
             </MenuItem>
-                <MenuItem Header="Open in Browser" 
-                  Command="{Binding OpenLinkCommand}" 
-                  CommandParameter="{Binding SelectedMod.SteamLink}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource InternetIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Open in Explorer" 
-                  Command="{Binding OpenLinkCommand}" 
-                  CommandParameter="{Binding SelectedMod.Path}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource FolderIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
+            <MenuItem Header="Open in Browser" 
+                Command="{Binding OpenLinkCommand}" 
+                CommandParameter="{Binding SelectedMod.SteamLink}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource InternetIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Open in Explorer" 
+                Command="{Binding OpenLinkCommand}" 
+                CommandParameter="{Binding SelectedMod.Path}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource FolderIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
 
-                <Separator />
-                <MenuItem Header="Subscribe"
-                  IsEnabled="{Binding SteamServiceReady}"          
-                  Command="{Binding SubscribeCommand}" 
-                  CommandParameter="{Binding SelectedMod}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource SteamIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Unsubscribe" 
-                  IsEnabled="{Binding SteamServiceReady}"          
-                  Command="{Binding UnsubscribeCommand}"       
-                  CommandParameter="{Binding SelectedMod}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource SteamIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
+            <Separator />
+            <MenuItem Header="Subscribe"
+                IsEnabled="{Binding SteamServiceReady}"          
+                Command="{Binding SubscribeCommand}" 
+                CommandParameter="{Binding SelectedMod}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource SteamIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Unsubscribe" 
+                IsEnabled="{Binding SteamServiceReady}"          
+                Command="{Binding UnsubscribeCommand}"       
+                CommandParameter="{Binding SelectedMod}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource SteamIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
                 
-                <Separator />
-                <MenuItem Header="Change color" 
-                  Command="{Binding ChangeColorCommand}" 
-                  CommandParameter="{Binding SelectedMod}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource PaletteIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Remove metadata" 
-                  Command="{Binding RemoveMetaDataCommand}" 
-                  CommandParameter="{Binding SelectedMod}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource TrashIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Details" 
-                  Command="{Binding ModDetailCommand}" 
-                  CommandParameter="{Binding SelectedMod}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource GearIcon}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
+            <Separator />
+            <MenuItem Header="Change color" 
+                Command="{Binding ChangeColorCommand}" 
+                CommandParameter="{Binding SelectedMod}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource PaletteIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Remove metadata" 
+                Command="{Binding RemoveMetaDataCommand}" 
+                CommandParameter="{Binding SelectedMod}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource TrashIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Details" 
+                Command="{Binding ModDetailCommand}" 
+                CommandParameter="{Binding SelectedMod}">
+                <MenuItem.Icon>
+                    <Image Source="{StaticResource GearIcon}"/>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
 
     </ResourceDictionary>
 </Window.Resources>
 <Window.Styles>
-
+    
     <Style Selector="DataGridRow" x:DataType="ml:ModModel">
+		<Setter Property="ContextMenu" Value="{StaticResource DataGridContextMenu}"/>
         <Setter Property="Classes.has_alert" Value="{Binding Alerts.HasAlert}" />
         <Setter Property="ToolTip.ShowDelay" Value="0"/>
 		<Style Selector="^:not(.has_alert)">
 			<Setter Property="Background" Value="{Binding Data.Color}"/>
+			<!--<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>-->
+			<Setter Property="Foreground" Value="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"/>
 		</Style>
         <Style Selector="^.has_alert">
             <Setter Property="Background" Value="{Binding Alerts.Color}"/>
@@ -171,6 +174,7 @@
     </Style>
 
     <Style Selector="DataGridCell.modIconStyle">
+		<Setter Property="Margin" Value="2" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Image Height="16" Width="16" 
@@ -204,22 +208,20 @@
             <ColumnDefinition Width="{Binding MainWidowSettings.ConfigModPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <GridSplitter Grid.Column="1" Grid.Row="1"
-                      Width="5"
+                      Width="4"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
-                      Background="Gray"
-                      ShowsPreview="True"/>
+                      ShowsPreview="True"/> 
         <GridSplitter Grid.Column="3" Grid.Row="1"
-                      Width="5"
+                      Width="4"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
-                      Background="Gray"
                       ShowsPreview="True"/>
 
         <Menu Grid.Row="0" Grid.ColumnSpan="5" IsEnabled="{Binding IsUIListEnabled}">
@@ -356,9 +358,9 @@
         <Menu Grid.Row="0" Grid.Column="5">
             <MenuItem Header="{Binding GetModConfigStaticLable}" 
                       Background="{Binding GetModConfigStaticColor}"
-                      ToolTip.ShowDelay="0">      
+                      ToolTip.ShowDelay="100">      
                 <MenuItem.Styles>
-                    <Style Selector="MenuItem">
+                    <Style Selector="MenuItem" >
                         <Setter Property="ToolTip.Tip">
                             <Template>
                                 <Border Padding="5" BorderThickness="1" CornerRadius="0"
@@ -417,7 +419,6 @@
                     ItemsSource="{Binding ModsCollection}" 
                     SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"    
                     ColumnsConfig="{Binding ModsCollectionColumns}"
-                    ContextMenu="{StaticResource DataGridContextMenu}"
                     DragDrop.AllowDrop="True"
                     SelectionMode="Extended"
                     GridLinesVisibility="Vertical"
@@ -446,7 +447,6 @@
         <kdg:KeeperDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
                     ItemsSource="{Binding ModsConfigCollection}" 
                     SelectedItem="{Binding SelectedMod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"    
-                    ContextMenu="{StaticResource DataGridContextMenu}"
                     DragDrop.AllowDrop="True"
                     SelectionMode="Extended"
                     GridLinesVisibility="Vertical"
@@ -469,9 +469,10 @@
               </DataGrid.Columns>      
         </kdg:KeeperDataGrid>
 
-        <ScrollViewer Grid.Column="0" Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-<!--                <StackPanel.Styles>
+		<Border Grid.Column="0" Grid.Row="1" BorderBrush="{DynamicResource ThemeBorderLowColor}" BorderThickness="1">
+			<ScrollViewer Padding="1" VerticalScrollBarVisibility="Auto">
+				<StackPanel>
+					<!--                <StackPanel.Styles>
                     <Style Selector="TextBox.BaseStyle">
                         <Setter Property="Padding" Value="3"/>
                         <Setter Property="IsReadOnly" Value="True"/>
@@ -488,19 +489,19 @@
                     </Style>
                 </StackPanel.Styles>-->
 
-                <Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}"
-					HorizontalAlignment="Left"   
-                    Stretch="Uniform" 
-                    Margin="0,0,0,10" 
-                    MaxHeight="300"/>
+					<Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}"
+						HorizontalAlignment="Left"
+						Stretch="Uniform"
+						Margin="0,0,0,10"
+						MaxHeight="300"/>
 
-                <SelectableTextBlock Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18" 
-                     Cursor="Hand"
-                     DoubleTapped="ModDetailCommand"
-                     SelectionBrush="LightBlue">
-                </SelectableTextBlock>
+					<SelectableTextBlock Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18"
+						 Cursor="Hand"
+						 DoubleTapped="ModDetailCommand"
+						 SelectionBrush="LightBlue">
+					</SelectableTextBlock>
 
-				<!--<TextBlock Text="ThemeControlVeryHighColor">
+					<!--<TextBlock Text="ThemeControlVeryHighColor">
 					<TextBlock.Styles>
 						<Style Selector="TextBlock">
 							<Setter Property="Background" Value="{DynamicResource ThemeControlVeryHighColor}"/>
@@ -529,120 +530,116 @@
 					</TextBlock.Styles>
 				</TextBlock>-->
 
-				<TextBlock Text="Groups:" FontWeight="Bold"/>
-                <!--MultiSelectComboBox-->
-<!--                <controls:TagAutoCompleteBox 
-                    ItemsSource="{Binding ModGroups, Mode=TwoWay}"
-                    SelectedItems="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />-->
-                                    <controls:TagAutoCompleteBox 
-                    AvailableTags="{Binding ModGroups, Mode=TwoWay}"
-                    SelectedTags="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />
-                <!--<AutoCompleteBox x:Name="animals" FilterMode="StartsWith" />-->
+					<TextBlock Text="Groups:" FontWeight="Bold"/>
+					<controls:TagAutoCompleteBox
+	                    AvailableTags="{Binding ModGroups, Mode=TwoWay}"
+	                    SelectedTags="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />
 
-                <TextBlock Text="Comment:" FontWeight="Bold"/>
-                <TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}" 
-                    IsReadOnly="False"
-                    TextWrapping="Wrap" 
-                    AcceptsReturn="True"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    BorderBrush="Gray"
-                    BorderThickness="1"
-                    Padding="5"/>
+					<TextBlock Text="Comment:" FontWeight="Bold"/>
+					<TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}"
+						IsReadOnly="False"
+						TextWrapping="Wrap"
+						AcceptsReturn="True"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Top"
+						BorderBrush="Gray"
+						BorderThickness="1"
+						Padding="5"/>
 
-                <TextBlock Text="ModID Key:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
+					<TextBlock Text="ModID Key:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
 
-                <TextBlock Text="Author:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
-				
-                <TextBlock Text="PackageId:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}">
-					<SelectableTextBlock.Styles>
-						<Style Selector="SelectableTextBlock.autogen">
-							<Setter Property="Foreground" Value="Red"/>
-							<Setter Property="ToolTip.Tip" Value="Auto-generated PackageId (unstable)"/>
-						</Style>
-					</SelectableTextBlock.Styles>
-				</SelectableTextBlock>
-				
-                <TextBlock Text="SteamId:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
-				
-                <TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
-				
-                <TextBlock Text="Path:" FontWeight="Bold"/>
-                <SelectableTextBlock Text="{Binding SelectedMod.Path}" 
-                     Cursor="Hand"
-                     DoubleTapped="OpenLinkCommand"
-                     SelectionBrush="LightBlue">
-                </SelectableTextBlock>
-				
-                <TextBlock Text="Url:" FontWeight="Bold"/>
-                <SelectableTextBlock Text="{Binding SelectedMod.About.Url}" 
-                     Cursor="Hand"
-                     DoubleTapped="OpenLinkCommand"
-                     SelectionBrush="LightBlue">
-                </SelectableTextBlock>
+					<TextBlock Text="Author:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
 
-                <TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-							<SelectableTextBlock Text="{Binding PackageId, 
+					<TextBlock Text="PackageId:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}">
+						<SelectableTextBlock.Styles>
+							<Style Selector="SelectableTextBlock.autogen">
+								<Setter Property="Foreground" Value="Red"/>
+								<Setter Property="ToolTip.Tip" Value="Auto-generated PackageId (unstable)"/>
+							</Style>
+						</SelectableTextBlock.Styles>
+					</SelectableTextBlock>
+
+					<TextBlock Text="SteamId:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+
+					<TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+
+					<TextBlock Text="Path:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.Path}"
+						 Cursor="Hand"
+						 DoubleTapped="OpenLinkCommand"
+						 SelectionBrush="LightBlue">
+					</SelectableTextBlock>
+
+					<TextBlock Text="Url:" FontWeight="Bold"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.About.Url}"
+						 Cursor="Hand"
+						 DoubleTapped="OpenLinkCommand"
+						 SelectionBrush="LightBlue">
+					</SelectableTextBlock>
+
+					<TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
+					<ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<SelectableTextBlock Text="{Binding PackageId, 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
                                 FallbackValue='•'}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
-                <TextBlock Text="LoadAfter:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-							<SelectableTextBlock Text="{Binding Path=., 
+					<TextBlock Text="LoadAfter:" FontWeight="Bold" Margin="0,5,0,0"/>
+					<ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<SelectableTextBlock Text="{Binding Path=., 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
                                 FallbackValue='•'}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
-                <TextBlock Text="LoadBefore:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-							<SelectableTextBlock Text="{Binding Path=., 
+					<TextBlock Text="LoadBefore:" FontWeight="Bold" Margin="0,5,0,0"/>
+					<ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<SelectableTextBlock Text="{Binding Path=., 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
                                 FallbackValue='•'}"  />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
-                <TextBlock Text="IncompatibleWith:" FontWeight="Bold" Margin="0,5,0,0"/>
-                <ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-							<SelectableTextBlock Text="{Binding Path=., 
+					<TextBlock Text="IncompatibleWith:" FontWeight="Bold" Margin="0,5,0,0"/>
+					<ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<SelectableTextBlock Text="{Binding Path=., 
                                 StringFormat='• {0}', 
                                 Mode=OneWay,
                                 TargetNullValue='•', 
-                                FallbackValue='•'}" 
-                                Foreground="Red"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                FallbackValue='•'}"
+									Foreground="Red"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 
-                <TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+					<TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
+					<SelectableTextBlock Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
 
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+				</StackPanel>
+			</ScrollViewer>
+		</Border>
+   </Grid>
 </Window>
