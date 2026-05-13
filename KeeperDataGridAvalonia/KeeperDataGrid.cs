@@ -11,6 +11,7 @@ using KeeperDataGridAvalonia.Models;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 namespace KeeperDataGridAvalonia;
 
 public partial class AdvancedFilterDataGridStyles : Styles { }
@@ -88,6 +89,7 @@ public class KeeperDataGrid : DataGrid
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        //Debug.WriteLine("DataGrid: " + change.Property.Name);
         base.OnPropertyChanged(change);
         if (change.Property == ItemsSourceProperty)
         {

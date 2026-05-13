@@ -17,6 +17,16 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
     {
         Width = new DataGridLength(1, DataGridLengthUnitType.Star);
         ColumnIndexProperty.Changed.AddClassHandler<AdvancedFilterDataGrid>((x, e) => x.OnColumnsColumnIndexChanged(e));
+        
+        this.HeaderPointerPressed += (s, e) =>
+        {
+            if (e.GetCurrentPoint(null).Properties.IsRightButtonPressed)
+            {
+                if(s is AdvancedFilterDataGrid fdg)
+                    foreach (var col in fdg.OwningGrid.Columns)
+                        col.ClearSort();
+            }
+        };
     }
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -105,10 +115,10 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
 
     private void OnWidthChanged(DataGridLength currentWidth)
     {
-        Debug.WriteLine("AdvancedFilterDataGrid:OnWidthChanged: " + this.Key
-            + " v"       + currentWidth.Value 
-            + " display" + currentWidth.DisplayValue
-            + " desire"  + currentWidth.DesiredValue);
+        //Debug.WriteLine("AdvancedFilterDataGrid:OnWidthChanged: " + this.Key
+        //    + " v"       + currentWidth.Value 
+        //    + " display" + currentWidth.DisplayValue
+        //    + " desire"  + currentWidth.DesiredValue);
 
         if (_isInternalUpdate) return;
         if (currentWidth.IsAbsolute && double.IsNaN(currentWidth.Value)) return;
