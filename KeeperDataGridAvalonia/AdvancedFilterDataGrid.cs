@@ -5,6 +5,7 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.Templates;
 using KeeperDataGridAvalonia.Extensions;
+using System.Diagnostics;
 namespace KeeperDataGridAvalonia;
 
 public class AdvancedFilterDataGrid : DataGridTextColumn
@@ -36,6 +37,24 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
         {
             OnWidthChanged(change.GetNewValue<DataGridLength>());
         }
+        //else if (change.Property == ShowFilterProperty)
+        //{
+        if (ShowSelectBoxFilter && SelectBoxFilterList != null && FilterValue == null)
+        {
+            ShowFilter = false;
+            foreach (var item in SelectBoxFilterList)
+            {
+                if (string.IsNullOrEmpty(item))
+                {
+                    FilterValue = item;
+                    break;
+                }
+            }
+        }
+        //}
+        //var property = change.Property.Name;
+        //var newvalue = change.NewValue;
+        //Debug.WriteLine("AdvancedFilterDataGrid: " + property + " -> " + newvalue);
     }
 
     #region ColumnIndex
@@ -72,6 +91,7 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
         if (newStr.Equals("NaN", StringComparison.OrdinalIgnoreCase)) return;
         try
         {
+            Debug.WriteLine("AdvancedFilterDataGrid:OnWidthTextChanged: " + this.Key + " v" + newStr.ToString());
             var length = (DataGridLength?)_lengthConverter.ConvertFromInvariantString(newStr);
             if (length.HasValue)
             {
@@ -85,6 +105,11 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
 
     private void OnWidthChanged(DataGridLength currentWidth)
     {
+        Debug.WriteLine("AdvancedFilterDataGrid:OnWidthChanged: " + this.Key
+            + " v"       + currentWidth.Value 
+            + " display" + currentWidth.DisplayValue
+            + " desire"  + currentWidth.DesiredValue);
+
         if (_isInternalUpdate) return;
         if (currentWidth.IsAbsolute && double.IsNaN(currentWidth.Value)) return;
         string newWidthText = currentWidth.ToXamlString();
@@ -142,9 +167,17 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
 
     public object? GetRowValue(object rowItem)
     {
-        string? bind = GetPropertyNameFromColumn(this);
-        if (string.IsNullOrEmpty(bind) || rowItem == null) return null;
-        return rowItem.GetType().GetProperty(bind)?.GetValue(rowItem);
+        var path = GetPropertyNameFromColumn(this);
+        if (string.IsNullOrEmpty(path) || rowItem == null) return null;
+        object? current = rowItem;
+        foreach (var part in path.Split('.'))
+        {
+            if (current == null) return null;
+            var prop = current.GetType().GetProperty(part);
+            if (prop == null) return null;
+            current = prop.GetValue(current);
+        }
+        return current;
     }
 
     public string? GetPropertyNameFromColumn(DataGridTextColumn column)

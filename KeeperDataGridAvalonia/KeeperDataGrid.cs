@@ -1,7 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 using KeeperDataGridAvalonia.Extensions;
@@ -64,11 +66,15 @@ public class KeeperDataGrid : DataGrid
 
     protected override void OnColumnReordered(DataGridColumnEventArgs e)
     {
-        foreach (var column in Columns)
-            if (column is AdvancedFilterDataGrid col)
-                col.ColumnIndex = col.DisplayIndex;
+        int index = 0;
+        foreach (var column in Columns.OrderBy(c => c.DisplayIndex))
+        {
+            if (column is AdvancedFilterDataGrid col) 
+                col.ColumnIndex = index;
+            column.DisplayIndex = index;
+            index++;
+        }
     }
-
 
     protected override void OnAutoGeneratingColumn(DataGridAutoGeneratingColumnEventArgs e)
     {

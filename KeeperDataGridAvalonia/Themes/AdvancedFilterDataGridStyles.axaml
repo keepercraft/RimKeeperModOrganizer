@@ -72,15 +72,15 @@
 
                         <TextBox x:Name="FilterTextBox" Margin="0,0,0,0"
                                 Watermark="Filter..." 
-                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowFilter, FallbackValue=False}"
+                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowFilter, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
                                 Text="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay}"/>
 
                         <ComboBox x:Name="FilterSelectBox"
 								bahaviors:DragAndDropBehavior.BlockGridDrag="True"
-                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowSelectBoxFilter, FallbackValue=False}"
-                                ItemsSource="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxFilterList}"
-                                ItemTemplate="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxItemTemplate}"
-                                SelectedItem="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay}"/>
+                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowSelectBoxFilter, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
+                                ItemsSource="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxFilterList, UpdateSourceTrigger=PropertyChanged}"
+                                ItemTemplate="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxItemTemplate, UpdateSourceTrigger=PropertyChanged}"
+                                SelectedItem="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                       </StackPanel>
 
@@ -173,4 +173,7 @@
         <Setter Property="Fill" Value="{DynamicResource ThemeControlHighlightMidColor}" />
     </Style>
 
+	<Style Selector="ComboBox /template/ ToggleButton">
+		<Setter Property="IsVisible" Value="False"/>
+	</Style>
 </Styles>
