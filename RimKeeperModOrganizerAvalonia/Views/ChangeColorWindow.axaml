@@ -15,12 +15,14 @@
 		<DockPanel x:Name="BtnList" Grid.Row="0" Grid.Column="0">
 			<Button Content="Update"
                 Width="80"
-                Margin="0,0,0,0"
+				Margin="1"
+				BorderThickness="1"	
                 IsDefault="True"
                 Click="List_Update_Click"/>
 			<Button Content="X"
                 Width="20"
-                Margin="0,0,0,0"
+                Margin="1"
+				BorderThickness="1"
                 IsDefault="True"
                 Click="List_Delete_Click"/>
 		</DockPanel>

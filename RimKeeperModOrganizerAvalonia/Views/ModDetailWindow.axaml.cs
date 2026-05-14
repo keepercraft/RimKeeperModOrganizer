@@ -28,11 +28,19 @@ public partial class ModDetailWindow : Window
         }
     }
 
+    public void OpenSelectedImageCommand(object? sender, Avalonia.Input.TappedEventArgs e)
+    {
+        if (DataContext is MainViewModel vm)
+        {
+            vm.OpenLinkCommand.Execute(vm.SelectedModPreviewsSelection);
+        }
+    }
+
     public void OpenLinkCommand(object? sender, Avalonia.Input.TappedEventArgs e)
     {
-        if (DataContext is MainViewModel vm && sender is TextBlock context)
+        if (DataContext is MainViewModel vm)
         {
-            vm.OpenLinkCommand.Execute(context.Text);
+            if (sender is TextBlock context) vm.OpenLinkCommand.Execute(context.Text);
         }
     }
 

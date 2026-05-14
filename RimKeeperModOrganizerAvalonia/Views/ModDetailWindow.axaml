@@ -38,11 +38,32 @@
 		<ScrollViewer Grid.Row="1" Padding="10" VerticalScrollBarVisibility="Auto">
 			<StackPanel>
 
-				<Image Source="{Binding SelectedMod.ThumbnailPath, Converter={StaticResource PathToBitmapConverter}}"
-                    HorizontalAlignment="Left"
-					Stretch="Uniform"
-                    Margin="0,0,0,10"
-                    MaxHeight="300"/>
+				<StackPanel Margin="0,0,0,10">				
+					<Image Source="{Binding SelectedModPreviewsSelection, Converter={StaticResource PathToBitmapConverter}}"
+						DoubleTapped="OpenSelectedImageCommand"
+						HorizontalAlignment="Left"
+						Stretch="Uniform"
+						MaxHeight="300"/>
+					<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+						<ListBox x:Name="ImageList" Padding="0" Margin="0" BorderThickness="0"
+								 ItemsSource="{Binding SelectedModPreviews}" 
+								 SelectedItem="{Binding SelectedModPreviewsSelection}"
+								 >
+							<ListBox.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" Spacing="0"/>
+								</ItemsPanelTemplate>
+							</ListBox.ItemsPanel >
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<Border MaxHeight="40" CornerRadius="0" ClipToBounds="True">
+										<Image Source="{Binding, Converter={StaticResource PathToBitmapConverter}}" Stretch="UniformToFill"/>
+									</Border>
+								</DataTemplate>
+							</ListBox.ItemTemplate >
+						</ListBox >
+					</ScrollViewer>
+				</StackPanel>
 
 				<SelectableTextBlock Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18"
                      Cursor="Hand"

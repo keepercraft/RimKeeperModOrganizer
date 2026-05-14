@@ -55,7 +55,6 @@ public class MainViewModel : PropertyModel
     private readonly ThemeService _themeService;
 
     public string GameVersion => _settingsService.Settings.GameVersion;
-
     public PixelPoint WindowPosition
     {
         get => new PixelPoint((int)MainWidowSettings.Left, (int)MainWidowSettings.Top);
@@ -63,6 +62,23 @@ public class MainViewModel : PropertyModel
         {
             MainWidowSettings.Left = value.X;
             MainWidowSettings.Top = value.Y;
+        }
+    }
+
+    public IList<string>? SelectedModPreviews => FileHelper.GetModPreviews(SelectedMod?.Path??"");
+    public string? _selectedModPreviewsSelection;
+    public string? SelectedModPreviewsSelection
+    {
+        get => SelectedModPreviews != null 
+            && _selectedModPreviewsSelection != null 
+            && SelectedModPreviews.Contains(_selectedModPreviewsSelection) 
+            ? _selectedModPreviewsSelection
+            : SelectedMod?.ThumbnailPath?.ToLower();
+        set
+        {
+            if (value == null) return;
+            _selectedModPreviewsSelection = value;
+            OnPropertyChanged();
         }
     }
 

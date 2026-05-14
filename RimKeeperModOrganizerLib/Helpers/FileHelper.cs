@@ -196,6 +196,18 @@ public static class FileHelper
         return aboutFile;
     }
 
+    public static IList<string> GetModPreviews(string path, bool recursive = false)
+    {
+        string aboutDir = Path.Combine(path, "About");
+        if (!Directory.Exists(aboutDir)) return null;
+        string[] extensions = [".png",".jpg",".jpeg",".bmp",".gif",".webp"];
+        SearchOption option = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+        return Directory
+            .EnumerateFiles(aboutDir, "*.*", option)
+            .Where(f => extensions.Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))
+            .ToList();
+    }
+
     public static string? GetModsConfig(string? path = null)
     {
         if (string.IsNullOrEmpty(path)) path = FindRimWorldConfigPath();
