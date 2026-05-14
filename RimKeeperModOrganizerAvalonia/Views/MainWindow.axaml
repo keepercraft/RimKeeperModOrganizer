@@ -159,7 +159,7 @@
                                                Background="{Binding Color}" 
                                                TextWrapping="Wrap" 
                                                Padding="4" Margin="1" 
-                                               FontWeight="Bold" Foreground="{DynamicResource ThemeForegroundColor}"/>
+                                               FontWeight="Bold" Foreground="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -376,7 +376,7 @@
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Message}"
                                                                Padding="10,4,20,4" Margin="1"
-                                                               Foreground="{DynamicResource ThemeForegroundColor}"
+                                                               Foreground="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"
                                                                Background="{Binding Color}"
                                                                FontWeight="Bold"
                                                                TextWrapping="Wrap"/>
