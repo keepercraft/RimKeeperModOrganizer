@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 using KeeperDataGridAvalonia.Extensions;
@@ -13,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reflection;
+using System.Reflection.Emit;
 namespace KeeperDataGridAvalonia;
 
 public partial class AdvancedFilterDataGridStyles : Styles { }
@@ -28,6 +30,22 @@ public class KeeperDataGrid : DataGrid
         remove { RemoveHandler(PointerPressedSelectionEvent, value); }
     }
 
+    public Button settingsButton = new Button
+    {
+        ZIndex = 1000,
+        Content = "⚙",
+        Width = 13,
+        Height = 13,
+        Padding = new Thickness(0),
+        BorderThickness = new Thickness(0),
+        BorderBrush = Brushes.Transparent,
+        Background = Brushes.Transparent,
+        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+        [ToolTip.TipProperty] = "Reset",
+        Margin = new Thickness(0,3,6,0)
+    };
+
     protected override Type StyleKeyOverride => typeof(DataGrid);
     public KeeperDataGrid() : base()
     {
@@ -37,6 +55,28 @@ public class KeeperDataGrid : DataGrid
         //AddHandler(PointerPressedSelectionEvent, OnPointerReleased2, RoutingStrategies.Tunnel);
         ColumnsConfigProperty.Changed.AddClassHandler<KeeperDataGrid>((x, e) => x.OnColumnsConfigChanged(e));
         Columns.CollectionChanged += Columns_CollectionChanged;
+
+        AttachedToVisualTree += (s, e) =>
+        {
+            if (AdornerLayer.GetAdornerLayer(this) is not AdornerLayer layer) return;
+            var item = settingsButton;
+            if (layer.Children.Contains(item)) return;
+            item.Click += (s, e) => ResetFilters();
+            this.LogicalChildren.Add(item);
+            AdornerLayer.SetAdornedElement(item, this);
+            layer.Children.Add(item);          
+        };
+    }
+
+    public void ResetFilters()
+    {
+        foreach (var col in Columns)
+        {
+            col.ClearSort();
+            if (col is AdvancedFilterDataGrid advCol)
+                advCol.FilterValue = null;         
+        }
+        SelectedItem = null;
     }
 
     //private void OnPointerReleased2(object? sender, PointerPressedEventArgs e)

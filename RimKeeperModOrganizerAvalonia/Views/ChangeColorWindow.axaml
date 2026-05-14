@@ -43,8 +43,8 @@
 
 		<StackPanel Grid.Row="2" Grid.ColumnSpan="2"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    Margin="0,10,0,0">
+					HorizontalAlignment="Right"
+                    Margin="5">
 			<Button Content="OK"
                     Width="80"
                     Margin="0,0,10,0"

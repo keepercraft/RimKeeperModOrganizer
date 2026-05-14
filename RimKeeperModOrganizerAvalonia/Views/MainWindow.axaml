@@ -476,7 +476,7 @@
                     SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModTypeIconsList, Source={StaticResource Proxy}}" >
                 </kdg:AdvancedFilterDataGrid>       
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Label}" x:DataType="ml:ModModel" Header="Name" Width="*" SortMemberPath="Label"  />            
-                <kdg:AdvancedFilterDataGrid Binding="{Binding Position}" x:DataType="ml:ModModel" Header="Position" Width="50" ShowFilter="False"/>            
+                <!--<kdg:AdvancedFilterDataGrid Binding="{Binding Position}" x:DataType="ml:ModModel" Header="Position" Width="50" ShowFilter="False"/>-->            
               </DataGrid.Columns>      
         </kdg:KeeperDataGrid>
 
