@@ -12,19 +12,37 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Reflection;
 namespace KeeperDataGridAvalonia;
 
 public partial class AdvancedFilterDataGridStyles : Styles { }
 public class KeeperDataGrid : DataGrid
 {
+    public static readonly RoutedEvent<PointerPressedEventArgs> PointerPressedSelectionEvent =
+        RoutedEvent.Register<InputElement, PointerPressedEventArgs>(
+            nameof(PointerPressedSelection),
+            RoutingStrategies.Tunnel | RoutingStrategies.Bubble);
+    public event EventHandler<PointerPressedEventArgs>? PointerPressedSelection
+    {
+        add { AddHandler(PointerPressedSelectionEvent, value); }
+        remove { RemoveHandler(PointerPressedSelectionEvent, value); }
+    }
+
     protected override Type StyleKeyOverride => typeof(DataGrid);
     public KeeperDataGrid() : base()
     {
         this.Styles.Add(new AdvancedFilterDataGridStyles());
-        AddHandler(PointerPressedEvent, OnPointerPressed, handledEventsToo: true);
+        AddHandler(PointerPressedEvent, OnPointerPressed, RoutingStrategies.Tunnel);
+        AddHandler(PointerReleasedEvent, OnPointerReleased, RoutingStrategies.Tunnel);
+        //AddHandler(PointerPressedSelectionEvent, OnPointerReleased2, RoutingStrategies.Tunnel);
         ColumnsConfigProperty.Changed.AddClassHandler<KeeperDataGrid>((x, e) => x.OnColumnsConfigChanged(e));
         Columns.CollectionChanged += Columns_CollectionChanged;
     }
+
+    //private void OnPointerReleased2(object? sender, PointerPressedEventArgs e)
+    //{
+    //    Debug.WriteLine("KeeperDataGrid PointerPressedSelectionEvent OK");
+    //}
 
     private void Columns_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -33,9 +51,92 @@ public class KeeperDataGrid : DataGrid
                 col.ColumnBinding(ColumnsConfig);    
     }
 
+    private bool _isHandlingPointerSelection = false;
+    private PointerPressedEventArgs? _flagPinterSelection = null;
+    private void RisePointerPressedSelectionEvent()
+    {
+        if (_flagPinterSelection == null) return;
+        _flagPinterSelection.RoutedEvent = PointerPressedSelectionEvent;
+        RaiseEvent(_flagPinterSelection);
+        _flagPinterSelection = null;
+    }
+
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        var header = (e.Source as Visual)?.FindAncestorOfType<DataGridColumnHeader>();
+        if (sender is not KeeperDataGrid context) return;
+        if (e.Source is not Visual contextSource) return;
+        if (contextSource.FindAncestorOfType<DataGridRow>() is not DataGridRow row) return;
+
+        _flagPinterSelection = e;
+        var contextRow = row?.DataContext;
+        if (contextRow != null && !context.SelectedItems.Contains(contextRow))
+        {
+            e.Handled = false;
+            _isHandlingPointerSelection = false;
+        }
+        else
+        {
+            RisePointerPressedSelectionEvent();
+            e.Handled = true;
+            _isHandlingPointerSelection = true;
+
+        }
+
+        //var header = (e.Source as Visual)?.FindAncestorOfType<DataGridColumnHeader>();
+        //Debug.WriteLine("KeeperDataGrid Pressed");
+    }
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (sender is not KeeperDataGrid context) return;
+        if (e.Source is not Control contextSource) return;
+        if (contextSource.FindAncestorOfType<DataGridRow>() is not DataGridRow row) return;
+
+        bool overGrid = this.IsPointerOver;
+        if (row != null && row.IsPointerOver)
+        {
+        }
+        else
+        {
+            e.Handled = true;
+            return;
+        }
+
+        var contextRow = contextSource.FindAncestorOfType<DataGridRow>()?.DataContext;
+        if (contextRow != null)
+        {
+            var selectedSame = context.SelectedItems.Contains(contextRow);
+
+            context.SelectedItem = contextRow;
+
+            if (!selectedSame)
+            {
+                var properties = new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.Other);
+                _flagPinterSelection = new PointerPressedEventArgs(
+                    this,                          // Source: Twoja kontrolka
+                    null!,                         // IPointer: może być null przy dummy, jeśli logika go nie używa
+                    this,                          // Visual: punkt odniesienia dla współrzędnych
+                    new Point(0, 0),               // Współrzędne (puste)
+                    0,                             // Timestamp
+                    properties,                    // Właściwości przycisku
+                    KeyModifiers.None              // Modyfikatory klawiszy
+                )
+                {
+                    RoutedEvent = PointerPressedSelectionEvent // Przypisujemy ID Twojego zdarzenia
+                };
+                RisePointerPressedSelectionEvent();
+            }
+        }
+        //e.Handled = true;
+        Debug.WriteLine("KeeperDataGrid Released");
+    }
+    protected override void OnSelectionChanged(SelectionChangedEventArgs e)
+    {
+        RaiseEvent(e);
+        if (_flagPinterSelection != null)
+        {
+            Debug.WriteLine("KeeperDataGrid Pinter-Selection");
+            RisePointerPressedSelectionEvent();
+        }
     }
 
     #region ColumnsConfig

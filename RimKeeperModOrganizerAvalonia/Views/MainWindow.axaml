@@ -136,8 +136,8 @@
     </ResourceDictionary>
 </Window.Resources>
 <Window.Styles>
-    
-    <Style Selector="DataGridRow" x:DataType="ml:ModModel">
+
+	<Style Selector="DataGridRow" x:DataType="ml:ModModel">
 		<Setter Property="Foreground" Value="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"/>
 		<Setter Property="ContextMenu" Value="{StaticResource DataGridContextMenu}"/>
         <Setter Property="Classes.has_alert" Value="{Binding Alerts.HasAlert}" />
@@ -198,7 +198,7 @@
 
 </Window.Styles>
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding MainWidowSettings.DetailPanelWidth, Converter={StaticResource GridLengthConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <ColumnDefinition Width="4"/>
@@ -342,6 +342,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
+				<MenuItem Header="Change Theme" Command="{Binding ChangeTheme}">
+					<MenuItem.Icon>
+						<Image Source="{StaticResource PaletteIcon}"/>
+					</MenuItem.Icon>
+			    </MenuItem>
                 <MenuItem Header="Options" Command="{Binding OptionsCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource GearIcon}"/>
@@ -398,13 +403,13 @@
 					</Viewbox>
 				</MenuItem.Header>
 			</MenuItem>-->
-			<MenuItem ToolTip.Tip="Change Theme" Width="30" Click="ToggleThemeClick">
+			<!--<MenuItem ToolTip.Tip="Change Theme" Width="30" Click="ToggleThemeClick">
 				<MenuItem.Header>
 					<Viewbox>
 						<Image Source="{StaticResource PaletteIcon}"/>
 					</Viewbox>
 				</MenuItem.Header>
-			</MenuItem>
+			</MenuItem>-->
             <MenuItem ToolTip.Tip="Refresh" Width="30" Command="{Binding RefreshCommand}">
                 <MenuItem.Header>
                     <Viewbox>
@@ -471,7 +476,7 @@
                     SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModTypeIconsList, Source={StaticResource Proxy}}" >
                 </kdg:AdvancedFilterDataGrid>       
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Label}" x:DataType="ml:ModModel" Header="Name" Width="*" SortMemberPath="Label"  />            
-                <!--<kdg:AdvancedFilterDataGrid Binding="{Binding Position}" x:DataType="ml:ModModel" Header="Position" Width="50" ShowFilter="False"/>-->            
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Position}" x:DataType="ml:ModModel" Header="Position" Width="50" ShowFilter="False"/>            
               </DataGrid.Columns>      
         </kdg:KeeperDataGrid>
 

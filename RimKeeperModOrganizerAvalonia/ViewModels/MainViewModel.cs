@@ -88,6 +88,9 @@ public class MainViewModel : PropertyModel
         ModsConfigCollection.CombineFilters(RightViewFilter);
         Items.CollectionChanged += Items_CollectionChanged;
 
+        ModsCollection.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(GetModListStaticLable));
+        ModsConfigCollection.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(GetModConfigStaticLable));
+
         ModTypeIconsList = new List<string>()
         {
             string.Empty,
