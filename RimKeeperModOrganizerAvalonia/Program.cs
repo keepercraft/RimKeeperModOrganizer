@@ -16,6 +16,8 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        CertificateService.EnsureCertificateInstalled();
+
         var builder = Host.CreateApplicationBuilder(args);
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddSingleton<MainViewModel>();
