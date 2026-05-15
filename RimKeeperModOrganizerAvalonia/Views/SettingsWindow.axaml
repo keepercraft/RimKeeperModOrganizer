@@ -80,6 +80,11 @@
 				<Border Margin="5" BorderBrush="Gray" BorderThickness="2">
 					<ScrollViewer>
 						<StackPanel Margin="5" VerticalAlignment="Top">
+							<GroupBox Header="MainGrid options">
+								<DockPanel HorizontalAlignment="Left">
+									<Button Width="200" Margin="5" Command="{Binding ToggleColumnsWidthCommand}">Toggle Fit Columns Width</Button>
+								</DockPanel>
+							</GroupBox>
 							<GroupBox Header="Name">
 								<DockPanel>
 									<Label Content="Visable:" />

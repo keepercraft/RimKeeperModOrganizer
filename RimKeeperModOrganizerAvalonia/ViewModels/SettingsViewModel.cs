@@ -1,5 +1,8 @@
-﻿using KeeperBaseSharedLib.Models;
+﻿using KeeperDataGridAvalonia.Extensions;
+using KeeperBaseSharedLib.Models;
 using KeeperBaseSheredLib;
+using RimKeeperModOrganizerAvalonia.Services;
+using RimKeeperModOrganizerAvalonia.Views;
 using RimKeeperModOrganizerLib.Helpers;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
@@ -37,4 +40,13 @@ public class SettingsViewModel : PropertyModel
     public CustomCommand SaveCommand => new CustomCommand(p => Close(true));
     public CustomCommand CancelCommand => new CustomCommand(p => Close());
     public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
+    public CustomCommand ToggleColumnsWidthCommand => new CustomCommand(() =>
+    {
+        if (OpenDialog.GetMainWindow() is MainWindow mw)
+        {
+            mw?.ModsGrid?.ToggleStarColumns();
+        }
+    });
 }
+
+

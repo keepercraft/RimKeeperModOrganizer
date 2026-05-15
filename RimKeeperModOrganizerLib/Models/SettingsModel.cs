@@ -70,7 +70,7 @@ public class WidowSettings : PropertyModel
 
 public class MainWidowSettings : WidowSettings
 {
-    public double DetailPanelWidth { get; set; } = 150;
+    public double DetailPanelWidth { get; set; } = 200;
     public double ConfigModPanelWidth { get; set; } = 150;
 }
 
