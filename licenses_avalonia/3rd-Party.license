@@ -18,3 +18,8 @@ Package:PixiEditor.ColorPicker
 project URL:https://github.com/PixiEditor/ColorPicker
 license Type:MIT
 License File:MIT.licence
+
+Package:Xaml.Behaviors.Interactivity
+project URL:https://github.com/wieslawsoltes/Xaml.Behaviors
+license Type:MIT
+License File:MIT.licence
