@@ -16,13 +16,13 @@
 	<Copyright>Copyright © $([System.DateTime]::UtcNow.ToString('yyyy')) $(Authors) Contains third-party components.</Copyright>
 	<Description>Rimkeeper Apache-2.0 license</Description>
 	<RepositoryUrl>https://github.com/keepercraft/RimKeeperModOrganizer</RepositoryUrl>
-
+	  
 	<ProjectName>RimKeeperModOrganizerAvalonia</ProjectName>
 	<AssemblyName>$(ProjectName)</AssemblyName>
 	<NeutralLanguage>pl-PL</NeutralLanguage>
 	<SupportedCultures>pl-PL;en-US</SupportedCultures>
 
-	<Major>0</Major>
+	 <Major>0</Major>
 	<Minor>5</Minor>
 	<Build>1</Build>
 	<RawSeconds>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds)</RawSeconds>
@@ -71,24 +71,42 @@
     <AvaloniaResource Remove="Resources\icon.ico" />
   </ItemGroup>
 
+	<!--<Target Name="RemoveEXEFiles" BeforeTargets="ComputeFilesToPublish">
+		<ItemGroup>
+			--><!--<EXEFiles Include="$(PublishDir)*.exe" />--><!--
+			<FilesToClean Include="$(PublishDir)**\*.*" />
+		</ItemGroup>
+		<Delete Files="@(FilesToClean)" ContinueOnError="true" />
+		<RemoveDir Directories="@(SubDirsToClean)" ContinueOnError="true" />
+		<Message Importance="high" Text="REMOVE EXE FILES COMPLETED" />
+	</Target>-->
+	
 	<Target Name="CustomPostPublishActions" AfterTargets="Publish">
 		<PropertyGroup>
+			<MyExePath>$(PublishDir)$(TargetName)_$(FileVersion).exe</MyExePath>
 			<SignToolPath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe</SignToolPath>
 			<AbsPublishDir>$([System.IO.Path]::GetFullPath('$(ProjectDir)$(PublishDir)'))</AbsPublishDir>
 			<CertThumbprint>b681faf16773ed5d16b6811fceedbbecb5ed85b8</CertThumbprint>
 			<CertFolder>K:\Programing\Certificates</CertFolder>
 			<CerFile>$(CertFolder)\Keepercraft_DEV.cer</CerFile>
-		</PropertyGroup>
-
-		<Message Importance="high" Text="--- PODPISYWANIE PRZY UŻYCIU THUMBPRINT ---" />
-		<Exec Command="powershell -Command &quot;for ($i=1; $i -le 5; $i++) { try { &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com '$(AbsPublishDir)*.exe'; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany, próba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />
-
-		<Copy SourceFiles="$(AbsPublishDir)$(TargetName).exe" DestinationFiles="$(AbsPublishDir)$(TargetName)_$(FileVersion).exe" SkipUnchangedFiles="false" />
-
-		<Message Importance="high" Text="--- PUBLIKACJA ZAKOŃCZONA ---" />
+		</PropertyGroup>	
+		<!--<Delete Files="$(AbsPublishDir)$(TargetName)_$(FileVersion).exe" />
+		<Move SourceFiles="$(AbsPublishDir)$(TargetName).exe" DestinationFiles="$(AbsPublishDir)$(TargetName)_$(FileVersion).exe" />-->
+		<!--<Copy SourceFiles="$(AbsPublishDir)$(TargetName).exe" DestinationFiles="$(AbsPublishDir)$(TargetName)_$(FileVersion).exe" SkipUnchangedFiles="false" />-->
+		<!--<Delete Files="$(AbsPublishDir)$(TargetName).exe" />-->
+		<Message Importance="high" Text="--- COPY COMPLETED ---" />
 	</Target>
 
-    <Target Name="CopyLicenses" AfterTargets="Publish">
+	<Target Name="RemovePdbFiles" AfterTargets="CustomPostPublishActions">
+		<ItemGroup>
+			<FilesToRemove Include="$(PublishDir)*.pdb" />
+			<FilesToRemove Include="$(PublishDir)*.json" />
+		</ItemGroup>
+		<Delete Files="@(FilesToRemove)" />
+		<Message Importance="high" Text="--- REMOVE PDB FILES COMPLETED ---" />
+	</Target>	
+	
+    <Target Name="CopyLicenses" AfterTargets="CustomPostPublishActions">
 	    <Copy SourceFiles="..\LICENSE" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
 	    <ItemGroup>
 		    <LicenseFiles Include="..\licenses_avalonia\**\*.*" />
@@ -96,4 +114,30 @@
 	    <Copy SourceFiles="@(LicenseFiles)" DestinationFolder="$(PublishDir)Licenses\%(RecursiveDir)" SkipUnchangedFiles="true" />
 	    <Message Importance="high" Text="--- LICENSE COPY COMPLETED ---" />
     </Target>
+
+	<PropertyGroup>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<!--<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>-->
+	</PropertyGroup>
+	
+	<Target Name="PublishCopySign" AfterTargets="CustomPostPublishActions">
+		<Message Importance="high" Text="--- SIGNING BY THUMBPRINT ---" />
+		<Exec Command="powershell -Command &quot;Start-Sleep -Seconds 5; $targetFile = '$(AbsPublishDir)$(TargetName).exe'; for ($i=1; $i -le 5; $i++) { try { Write-Host 'Podpisuje: $targetFile'; &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com $targetFile; if ($LASTEXITCODE -ne 0) { throw 'SignTool failed' }; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany lub blad, proba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />
+		<Exec Command="powershell -Command &quot;Start-Sleep -Seconds 5; $targetFile = '$(AbsPublishDir)av_libglesv2.dll'; for ($i=1; $i -le 5; $i++) { try { Write-Host 'Podpisuje: $targetFile'; &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com $targetFile; if ($LASTEXITCODE -ne 0) { throw 'SignTool failed' }; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany lub blad, proba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />
+		<!--<Exec Command="powershell -Command &quot;Start-Sleep -Seconds 5; for ($i=1; $i -le 5; $i++) { try { &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com '$(AbsPublishDir)*.exe'; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany, próba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />-->
+		<Message Importance="high" Text="--- SIGNING BY THUMBPRINT COMPLETED ---" />
+	</Target>
+
+	<Target Name="CreateZipPackage" AfterTargets="PublishCopySign">
+		<PropertyGroup>
+			<ZipOutputFolder>$(ProjectDir)bin\PublishZips\</ZipOutputFolder>
+			<ZipFileName>$(ZipOutputFolder)$(TargetName)_$(FileVersion)_$(RuntimeIdentifier)_Portable.zip</ZipFileName>
+		</PropertyGroup>
+		<Message Text="--- STARTING ZIP COMPRESSION ---" Importance="high" />
+		<MakeDir Directories="$(ZipOutputFolder)" />
+		<ZipDirectory SourceDirectory="$(AbsPublishDir)" DestinationFile="$(ZipFileName)" Overwrite="true" />
+		<Message Text="--- ZIP PACKAGE CREATED: $(ZipFileName) ---" Importance="high" />
+	</Target>
+	
 </Project>

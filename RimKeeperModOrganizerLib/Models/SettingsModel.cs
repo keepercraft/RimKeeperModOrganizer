@@ -62,16 +62,16 @@ public class ColumnSettings : PropertyModel
 
 public class WidowSettings : PropertyModel
 {
-    public double Width { get; set; } = 500;
-    public double Height { get; set; } = 500;
+    public double Width { get; set; } = 1200;
+    public double Height { get; set; } = 800;
     public double Left { get; set; } = 0;
     public double Top { get; set; } = 0;
 }
 
 public class MainWidowSettings : WidowSettings
 {
-    public double DetailPanelWidth { get; set; } = 200;
-    public double ConfigModPanelWidth { get; set; } = 150;
+    public double DetailPanelWidth { get; set; } = 300;
+    public double ConfigModPanelWidth { get; set; } = 300;
 }
 
 public enum ThemeFlag : byte
