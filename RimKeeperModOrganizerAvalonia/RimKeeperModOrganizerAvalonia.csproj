@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -30,16 +31,14 @@
 	<Version>$(Major).$(Minor).$(Build)-alpha.$(Timestamp)</Version>
 	<FileVersion>$(Major).$(Minor).$(Build).$(ComputedRevision)</FileVersion>
 	<AssemblyVersion>$(Major).$(Minor).$(Build).0</AssemblyVersion>
-
   </PropertyGroup>
+	
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.0.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.0.1" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.1" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
     <PackageReference Include="Avalonia.Themes.Simple" Version="12.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
-    <PackageReference Include="Xaml.Behaviors.Interactivity" Version="12.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,4 +70,30 @@
   <ItemGroup>
     <AvaloniaResource Remove="Resources\icon.ico" />
   </ItemGroup>
+
+	<Target Name="CustomPostPublishActions" AfterTargets="Publish">
+		<PropertyGroup>
+			<SignToolPath>C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x64\signtool.exe</SignToolPath>
+			<AbsPublishDir>$([System.IO.Path]::GetFullPath('$(ProjectDir)$(PublishDir)'))</AbsPublishDir>
+			<CertThumbprint>b681faf16773ed5d16b6811fceedbbecb5ed85b8</CertThumbprint>
+			<CertFolder>K:\Programing\Certificates</CertFolder>
+			<CerFile>$(CertFolder)\Keepercraft_DEV.cer</CerFile>
+		</PropertyGroup>
+
+		<Message Importance="high" Text="--- PODPISYWANIE PRZY UŻYCIU THUMBPRINT ---" />
+		<Exec Command="powershell -Command &quot;for ($i=1; $i -le 5; $i++) { try { &amp; '$(SignToolPath)' sign /sha1 $(CertThumbprint) /fd SHA256 /t http://timestamp.digicert.com '$(AbsPublishDir)*.exe'; Write-Host 'Sukces!'; break } catch { Write-Host 'Plik zablokowany, próba $i/5...'; Start-Sleep -Seconds 2 } }&quot;" />
+
+		<Copy SourceFiles="$(AbsPublishDir)$(TargetName).exe" DestinationFiles="$(AbsPublishDir)$(TargetName)_$(FileVersion).exe" SkipUnchangedFiles="false" />
+
+		<Message Importance="high" Text="--- PUBLIKACJA ZAKOŃCZONA ---" />
+	</Target>
+
+    <Target Name="CopyLicenses" AfterTargets="Publish">
+	    <Copy SourceFiles="..\LICENSE" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+	    <ItemGroup>
+		    <LicenseFiles Include="..\licenses_avalonia\**\*.*" />
+	    </ItemGroup>
+	    <Copy SourceFiles="@(LicenseFiles)" DestinationFolder="$(PublishDir)Licenses\%(RecursiveDir)" SkipUnchangedFiles="true" />
+	    <Message Importance="high" Text="--- LICENSE COPY COMPLETED ---" />
+    </Target>
 </Project>

@@ -3,14 +3,11 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
-using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using Microsoft.Extensions.Hosting;
 using RimKeeperModOrganizerAvalonia.Converters;
 using RimKeeperModOrganizerAvalonia.ViewModels;
 using RimKeeperModOrganizerLib.Extensions;
@@ -21,7 +18,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace RimKeeperModOrganizerAvalonia.Views;
 
 public partial class MainWindow : Window
@@ -36,23 +32,6 @@ public partial class MainWindow : Window
         InitializeComponent();
         //AvaloniaXamlLoader.Load(this);
         DataContext = viewModel;
-        /* Drag and Drop OLD FUNCTIONALITY
-        ModsGrid.AddHandler(DragDrop.DragOverEvent, OnDragOver);
-        ModsGrid.AddHandler(DragDrop.DropEvent, OnDrop);
-        ModsGrid.AddHandler(PointerPressedEvent, DataGrid_PointerPressed, RoutingStrategies.Tunnel);
-        ModsGrid.AddHandler(PointerMovedEvent, DataGrid_PointerMoved, RoutingStrategies.Tunnel);
-        ModsGrid.AddHandler(PointerReleasedEvent, DataGrid_PointerReleased, RoutingStrategies.Tunnel);
-        ModsGridConfig.AddHandler(DragDrop.DragOverEvent, OnDragOver);
-        ModsGridConfig.AddHandler(DragDrop.DropEvent, OnDrop);
-        ModsGridConfig.AddHandler(PointerPressedEvent, DataGrid_PointerPressed, RoutingStrategies.Tunnel);
-        ModsGridConfig.AddHandler(PointerMovedEvent, DataGrid_PointerMoved, RoutingStrategies.Tunnel);
-        ModsGridConfig.AddHandler(PointerReleasedEvent, DataGrid_PointerReleased, RoutingStrategies.Tunnel);
-        this.PointerMoved += MainWindow_PointerMoved;
-        */
-
-        //ModsGrid.SelectionChanged += DataGrid_OnSelectionChanged;
-        //ModsGrid.PointerPressed += DataGrid_OnPointerPressed;
-        //AddHandler(PointerPressedSelectionEvent, OnPointerReleased2, RoutingStrategies.Tunnel);
 
         ModsGrid.AddHandler(KeeperDataGridAvalonia.KeeperDataGrid.PointerPressedSelectionEvent, DataGrid_PointerPressedSelection, RoutingStrategies.Tunnel);
         ModsGridConfig.AddHandler(KeeperDataGridAvalonia.KeeperDataGrid.PointerPressedSelectionEvent, DataGrid_PointerPressedSelection, RoutingStrategies.Tunnel);
@@ -108,17 +87,17 @@ public partial class MainWindow : Window
     #endregion
 
     #region Drag and Drop 
+    private DataGridRow _drag_Popup_Row;
+    private bool _drag_Popup_Row_Offset;
+    private IList? _drag_Popup_list;
+    private double _drag_Popup_Height;
+    private Popup? _drag_Popup;
+    private double _drag_Popup_Start_Position_Delta = 10;
+    private Point? _drag_Popup_Start_Position;
     private async void DataGrid_PointerPressedSelection(object? sender, PointerPressedEventArgs e)
     {
         if (sender is not DataGrid context) return;
-        //if (e.Source is not Control contextSource) return;
-        //_drag_Popup_Start_Source = context;
         _drag_Popup_Start_Position = e.GetPosition(this);
-        //var items = _drag_Popup_list = context.SelectedItems;
-        //Drag_Popup(this, items);
-        //var dragData = new DataTransfer();
-        //dragData.Add(DataTransferItem.CreateText("Hello from drag!"));
-        //await DragDrop.DoDragDropAsync(e, dragData, DragDropEffects.None);
         Debug.WriteLine("DataGrid_OnPointerPressed> items:" + context.SelectedItems.Count);
     }
     public async void DataGrid_Popup_PointerMoved(object? sender, PointerEventArgs e)
@@ -283,14 +262,6 @@ public partial class MainWindow : Window
         }
         return false;
     }
-
-    private DataGridRow _drag_Popup_Row;
-    private bool _drag_Popup_Row_Offset;
-    private IList? _drag_Popup_list;
-    private double _drag_Popup_Height;
-    private Popup? _drag_Popup;
-    private double _drag_Popup_Start_Position_Delta = 10;
-    private Point? _drag_Popup_Start_Position;
     public void Drag_Popup_Close()
     {
         if (_drag_Popup != null)
@@ -351,388 +322,5 @@ public partial class MainWindow : Window
         _drag_Popup_Height = sp.DesiredSize.Height;
         return _drag_Popup = popup;
     }
-
-    #endregion
-
-    #region Drag and Drop OLD
-    private Popup? _dragPopup;
-    private void MainWindow_PointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (_dragPopup?.IsOpen == true)
-        {
-            var currentPoint = e.GetPosition(this);
-            //_dragPopup.PlacementTarget = this;
-            //_dragPopup.Placement = PlacementMode.LeftEdgeAlignedTop;
-            _dragPopup.HorizontalOffset = currentPoint.X + 10;
-            _dragPopup.VerticalOffset = currentPoint.Y + 10;
-        }
-    }
-    private Point _dragStartPoint;
-    private bool _isReadyToDrag;
-    private PointerPressedEventArgs? _lastPressedArgs;
-    private IList _lastSelectedItmes;
-    private Visual _lastSelectedsource;
-    private static readonly DataFormat<object> RowDragFormat = DataFormat.CreateInProcessFormat<object>("app/row-index");
-    public async void DataGrid_PointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        var pointerProps = e.GetCurrentPoint(this).Properties;
-        if (pointerProps.IsLeftButtonPressed)
-        {
-            if(_lastPressedArgs == null)
-            {
-                List<object> list = new List<object>();
-                foreach (var item in (sender as DataGrid)?.SelectedItems)
-                {
-                    list.Add(item);
-                }
-                _lastSelectedItmes = list;
-                _lastSelectedsource = e.Source as Visual;
-
-                if (_dragPopup != null)
-                {
-                    _dragPopup?.Close();
-                    _dragPopup = null;
-                }
-                var sp = new StackPanel();
-                foreach (var item in list.Cast<ModModel>().Select(s => s.Label))
-                {
-                    sp.Children.Add(new TextBlock
-                    {
-                        Text = item,
-                        Foreground = Brushes.White,
-                        Margin = new Thickness(2)
-                    });
-                }
-                //var popup = new Canvas
-                //{
-                //    Height = 200,
-                //    Width = 200,
-                //    IsHitTestVisible = false, // Cały canvas nie reaguje na mysz
-                //    ZIndex = 1000, // Zawsze nad resztą kontrolek
-                //    Children = { new Border
-                //        {
-                //            Background = Brushes.Black,
-                //            Child = sp,
-                //        }
-                //    }
-                //};
-                var popup = new Popup
-                {
-                    IsEnabled = false,
-                    IsHitTestVisible = false,
-                    PlacementTarget = this,
-                    Placement = PlacementMode.LeftEdgeAlignedTop,
-                    Child = new Border
-                    {
-
-                        Background = Brushes.Black,
-                        Child = sp,
-                    }
-                };
-                popup.IsOpen = true;
-                _dragPopup = popup;
-                MainGrid.Children.Add(popup);
-                /*
-                                //_lastSelectedItmes = (sender as DataGrid)?.SelectedItems.;
-                                _dragPreview = new Border
-                                {
-                                    Background = Brushes.Black,
-                                    CornerRadius = new CornerRadius(4),
-                                    Padding = new Thickness(6),
-                                    Child = new ItemsControl
-                                    {
-                                        Foreground = Brushes.White,
-                                        ItemsSource = list.Cast<ModModel>().Select(s => s.Label).ToList()
-                                    }
-                                };
-                                _dragPopup = new Popup
-                                {
-                                    PlacementTarget = sender as DataGrid,
-                                    Placement = PlacementMode.Pointer,
-                                    IsHitTestVisible = false,
-                                    IsOpen = true,
-                                    Child = _dragPreview
-                                };
-
-                                var currentPoint = e.GetPosition(this);
-                                _dragPopup?.HorizontalOffset = currentPoint.X + 10;
-                                _dragPopup?.VerticalOffset = currentPoint.Y + 10;
-                 */
-            }
-
-            // ZAPISUJEMY CAŁE ARGUMENTY
-            _lastPressedArgs = e;
-            _dragStartPoint = e.GetPosition(this);
-        }
-        /*
-        try
-        {
-            if (sender is not DataGrid dataGrid) return;
-            var visual = e.Source as Visual;
-            var row = visual?.FindAncestorOfType<DataGridRow>();
-            if (row == null) return;
-
-            var pointerProperties = e.GetCurrentPoint(row).Properties;
-            if (!pointerProperties.IsLeftButtonPressed) return;
-
-            object dragData;
-            if (dataGrid.SelectedItems.Count > 1 && dataGrid.SelectedItems.Contains(row.DataContext))
-            {
-                dragData = dataGrid.SelectedItems.Cast<object>().ToList();
-            }
-            else
-            {
-                dragData = row.DataContext!;
-            }
-
-            var item = new DataTransferItem();
-            item.Set(RowDragFormat, dragData);
-            var data = new DataTransfer();
-            data.Add(item);
-            await DragDrop.DoDragDropAsync(e, data, DragDropEffects.Move);
-        }
-        catch (Exception ex)
-        { 
-        }
-        */
-    }
-    public async void DataGrid_PointerMoved(object? sender, PointerEventArgs e)
-    {
-        var currentPoint = e.GetPosition(this);
-
-        //Debug.WriteLine("DragPopup:" + ((_dragPopup?.IsOpen??false)?"open":"null"));
-        //_dragPopup?.HorizontalOffset = currentPoint.X + 10;
-        //_dragPopup?.VerticalOffset = currentPoint.Y + 10;
-
-        if (_lastPressedArgs == null) return;        
-        var delta = _dragStartPoint - currentPoint;
-        if (Math.Abs(delta.X) > 5 || Math.Abs(delta.Y) > 5)
-        {
-            try
-            {
-
-
-                // Pobieramy dane do przeciągnięcia
-                //var visual = e.Source as Visual;
-                // var datagrid = visual?.FindAncestorOfType<DataGrid>();
-                var items2 = _lastSelectedItmes;
-                //var items = datagrid.SelectedItems;
-                //var row = visual?.FindAncestorOfType<DataGridRow>();
-                //var draggedData = row?.DataContext;
-                if (items2.Count == 0)
-                {
-                    List<object> list = new List<object>();
-                    foreach (var item in (sender as DataGrid)?.SelectedItems)
-                    {
-                        items2.Add(item);
-                    }
-                }
-                //if (draggedData != null)
-                if (items2.Count > 0)
-                {
-                    var item = new DataTransferItem();
-                    item.Set(RowDragFormat, items2);
-
-                    var data = new DataTransfer();
-                    data.Add(item);
-
-                    // UŻYWAMY ZAPISANYCH ARGUMENTÓW Z POINTERPRESSED
-                    var triggerArgs = _lastPressedArgs;
-                    _lastPressedArgs = null; // Czyścimy, aby nie odpalić dwa razy
-
-                    await DragDrop.DoDragDropAsync(triggerArgs, data, DragDropEffects.Move);
-                }
-            }
-            catch
-            {
-            }
-        }
-    }
-    public void DataGrid_PointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        _dragPopup?.Close();
-        //_dragPopup.Children.Clear();
-        _dragPopup = null;
-
-        _lastSelectedItmes?.Clear();
-        _lastPressedArgs = null;
-        //_isReadyToDrag = false;
-        ClearDragHighlight();
-    }
-    private void OnDragOver(object? sender, DragEventArgs e)
-    {
-        if (_dragPopup != null)
-        {
-            var currentPoint = e.GetPosition(this);
-            //_dragPopup.PlacementTarget = this;
-            //_dragPopup.Placement = PlacementMode.LeftEdgeAlignedTop;
-            _dragPopup.HorizontalOffset = currentPoint.X + 0;
-            _dragPopup.VerticalOffset = currentPoint.Y + 0;
-            //Canvas.SetLeft(_dragPopup, currentPoint.X + 0);
-            //Canvas.SetTop(_dragPopup, currentPoint.Y + 0);
-            //_dragPopup.InvalidateArrange();
-        }
-        //if (e.DataTransfer.Contains(RowDragFormat))
-        //{
-        //    e.DragEffects = DragDropEffects.Move;
-        //}
-        //else
-        //{
-        //    e.DragEffects = DragDropEffects.None;
-        //}
-        //e.Handled = true;
-        if (!e.DataTransfer.Items.Any(i => i.Formats.Contains(RowDragFormat)))
-        {
-            e.DragEffects = DragDropEffects.None;
-            return;
-        }
-
-        e.DragEffects = DragDropEffects.Move;
-
-        var visual = e.Source as Visual;
-        var row = visual?.FindAncestorOfType<DataGridRow>();
-
-        // Jeśli zmieniliśmy wiersz, czyścimy stary
-        if (_highlightedRow != null && _highlightedRow != row)
-        {
-            ClearDragHighlight();
-        }
-
-        if (row != null)
-        {
-            _highlightedRow = row;
-
-            // Obliczamy, czy mysz jest w górnej, czy dolnej połowie wiersza
-            var position = e.GetPosition(row);
-            bool isTopHalf = position.Y < (row.Bounds.Height / 2);
-
-            if (isTopHalf)
-            {
-                row.Classes.Add("insert-top");
-                row.Classes.Remove("insert-bottom");
-            }
-            else
-            {
-                row.Classes.Add("insert-bottom");
-                row.Classes.Remove("insert-top");
-            }
-        }
-    }
-    public void OnDrop(object? sender, DragEventArgs e)
-    {
-        _dragPopup?.Close();
-        //_dragPopup.Children.Clear();
-        _dragPopup = null;
-        if (sender is not DataGrid dataGrid) return;
-        var item = e.DataTransfer.Items.FirstOrDefault(i => i.Formats.Contains(RowDragFormat));
-        var droppedData = item?.TryGetRaw(RowDragFormat);
-        if (droppedData == null) return;
-
-        // 2. Wyznaczenie miejsca docelowego
-        var visual = e.Source as Visual;
-        var targetDataGrid = visual?.FindAncestorOfType<DataGrid>();
-        var targetRowTarget = visual?.FindAncestorOfType<DataGridRow>();
-        if (targetRowTarget == null) return;
-        var position = e.GetPosition(targetRowTarget);
-        bool isTopHalf = position.Y < (targetRowTarget.Bounds.Height / 2);
-
-        // Jeśli nie upuszczono na konkretny wiersz, wstawiamy na koniec
-        int targetIndex = targetRowTarget != null
-            ? targetRowTarget.GetIndex()
-            : dataGrid.ItemsSource.Cast<object>().Count();
-
-
-
-        // 3. Sprawdzenie, czy źródło danych pozwala na modyfikację
-        if (dataGrid.ItemsSource is not IList itemsSource) return;
-
-        bool isDroppingToAssigned = targetDataGrid.Name == "ModsGridConfig";
-        // 4. Normalizacja danych (obsługa pojedynczego elementu i listy zaznaczenia)
-        var itemsToMove = droppedData is IList list
-            ? list.Cast<ModModel>().ToList()
-            : new List<ModModel>();
-
-        if(this.DataContext is not MainViewModel vm) return;
-
-        if (targetRowTarget.DataContext is ModModel targetItem)
-             targetIndex = vm.Items.IndexOf(targetItem);
-
-        // 5. Proces przenoszenia
-        if (!itemsToMove.Any()) return;
-        var item_first_index = vm.Items.IndexOf(itemsToMove.First());
-        if (item_first_index <= targetIndex && item_first_index + itemsToMove.Count >= targetIndex)
-        {
-            return;
-        }
-        foreach (var toMove in itemsToMove)
-        {
-
-            if (!isDroppingToAssigned) toMove.Position = null; else toMove.Position = 0;
-            int currentIndex = vm.Items.IndexOf(toMove);
-            if (currentIndex == -1) continue;
-            int actualTarget = currentIndex < targetIndex ? targetIndex - 1 : targetIndex;
-            if (!isTopHalf)
-            {
-                actualTarget++;
-            }
-            actualTarget = Math.Max(0, Math.Min(actualTarget, vm.Items.Count() - 1));
-            //itemsSourceModels.Move(currentIndex, actualTarget);
-            vm.Items.Move(currentIndex, actualTarget);
-            //if (currentIndex == targetRowIndex) return;
-
-            int i = 0;
-            var ttt = vm.ModsConfigCollection.Cast<ModModel>().Where(w => w.Position != null);
-            foreach (var item22 in ttt)
-            {
-                item22.Position = vm.Items.IndexOf(item22);
-            }
-
-
-
-            //if (oldIndex != -1)
-            //{
-            //    // Jeśli element już jest w kolekcji, usuwamy go z poprzedniej pozycji
-            //    itemsSource.RemoveAt(oldIndex);
-
-            //    // Jeśli usuwany element był przed miejscem docelowym, musimy cofnąć targetIndex
-            //    if (oldIndex < targetIndex)
-            //    {
-            //        targetIndex--;
-            //    }
-            //}
-
-            // Zabezpieczenie przed wyjściem poza zakres i wstawienie
-            //targetIndex = Math.Clamp(targetIndex, 0, itemsSource.Count);
-            //itemsSource.Insert(targetIndex, toMove);
-
-            //// Inkrementacja, aby kolejne elementy z paczki wskakiwały jeden pod drugim
-            //targetIndex++;
-        }
-
-        _lastSelectedItmes.Clear();
-        _lastPressedArgs = null;
-        //_isReadyToDrag = false;
-        ClearDragHighlight();
-
-        vm.ModsConfigCollection.Refresh();
-        vm.ModsCollection.Refresh();
-
-        vm.Items.ModListAlertClean();
-        vm.ModsConfigCollection.Cast<ModModel>().ModListValidation(vm.GameVersion);
-
-        vm.AlertPropertyChanged();
-    }
-    private DataGridRow? _highlightedRow;
-
-    private void ClearDragHighlight()
-    {
-        if (_highlightedRow != null)
-        {
-            _highlightedRow.Classes.Remove("insert-top");
-            _highlightedRow.Classes.Remove("insert-bottom");
-            _highlightedRow = null;
-        }
-    }
-
     #endregion
 }

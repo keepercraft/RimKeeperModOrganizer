@@ -1,0 +1,20 @@
+Community Server uses code from the following 3rd party projects:
+
+====================================================================================================
+nuget packages
+====================================================================================================
+
+Package:Avalonia
+project URL:https://github.com/AvaloniaUI
+license Type:MIT
+License File:MIT.licence
+
+Package:Microsoft.Extensions.Hosting
+project URL:https://dot.net/
+license Type:MIT
+License File:MIT.licence
+
+Package:PixiEditor.ColorPicker
+project URL:https://github.com/PixiEditor/ColorPicker
+license Type:MIT
+License File:MIT.licence
