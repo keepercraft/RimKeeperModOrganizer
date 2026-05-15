@@ -10,6 +10,7 @@ using System;
 namespace RimKeeperModOrganizerAvalonia;
 internal class Program
 {
+    public static IHost AppHost { get; private set; } = null!;
     public static IServiceProvider Services { get; private set; } = null!;
 
     [STAThread]
@@ -30,6 +31,7 @@ internal class Program
         //    DataContext = sp.GetRequiredService<MainViewModel>()
         //});
         using IHost host = builder.Build();
+        AppHost = host;
         Services = host.Services;
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 

@@ -191,19 +191,19 @@ public class MainViewModel : PropertyModel
     }
     #endregion
 
-    public void ModCollectionUpdate(Action action)
+    public void ModCollectionUpdate(Func<Task> action)
     {
-        Task.Run(() =>
+        Task.Run(async () =>
         {
             App.Current.Dispatcher.Invoke(() => LoadingUI = true);
 
-            action();
+            await action();
 
             App.Current.Dispatcher.Invoke(() =>
             {
                 ModsConfigCollection.Refresh();
                 ModsCollection.Refresh();
-                AlertPropertyChanged();
+                //AlertPropertyChanged();
             });
             //ModsCollection.Cast<ModModel>().ModListAlertClean();          
             App.Current.Dispatcher.Invoke(() =>
@@ -215,7 +215,7 @@ public class MainViewModel : PropertyModel
             });
         });
     }
-    public void LoadMods(string? path = null) => ModCollectionUpdate(() =>
+    public void LoadMods(string? path = null) => ModCollectionUpdate(async () =>
     {
         App.Current.Dispatcher.Invoke(() => Items.ClearSyncProperties(Data_PropertyChanged, c => c?.Data));
 
@@ -237,7 +237,7 @@ public class MainViewModel : PropertyModel
             });
         }
     });
-    public void ReloadModsConfig(string? path = null) => ModCollectionUpdate(() =>
+    public void ReloadModsConfig(string? path = null) => ModCollectionUpdate(async () =>
     {
         var config = _modsServices.LoadModsConfig(path);
         App.Current.Dispatcher.Invoke(() =>
@@ -254,7 +254,7 @@ public class MainViewModel : PropertyModel
         }
         LoadModsData(path);
     }
-    public void LoadModsData(string? path = null) => ModCollectionUpdate(() =>
+    public void LoadModsData(string? path = null) => ModCollectionUpdate(async () =>
     {
         App.Current.Dispatcher.Invoke(() =>
         {
