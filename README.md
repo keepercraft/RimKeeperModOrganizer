@@ -4,11 +4,14 @@ New AvaloniaUI version:
 ![](docs/Screenshoot03.png?raw=true)  
 ![](docs/Screenshoot02.png?raw=true)  
 
-Old WPF vesrion:
+Old WPF version:
 ![](docs/Screenshoot01.png?raw=true)  
 
 Application for work required [.NET 8.0+ Framework](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-But SelfContened releases don't required .NET8.
+
+But SelfContened releases version don't required .NET8.
+
+[Download RimKeeper Mod Organizer on AvaloniaUI v0.5.2](https://github.com/keepercraft/RimKeeperModOrganizer/releases/tag/v0.5.2) new version.
 
 Free to use Rimworld mod organizer.
 ---
