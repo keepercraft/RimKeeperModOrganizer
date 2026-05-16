@@ -87,8 +87,9 @@ public partial class MainWindow : Window
     #endregion
 
     #region Drag and Drop 
-    private DataGridRow _drag_Popup_Row;
-    private bool _drag_Popup_Row_Offset;
+    private DataGridRow? _drag_Popup_Row;
+    private DataGrid? _drag_Popup_DataGrid;
+    private bool? _drag_Popup_Row_Offset;
     private IList? _drag_Popup_list;
     private double _drag_Popup_Height;
     private Popup? _drag_Popup;
@@ -138,7 +139,7 @@ public partial class MainWindow : Window
         if (sender is not DataGrid drag_source) return;
         if (_drag_Popup != null)
         {
-            DataGrid? drag_target = _drag_Popup_Row?.FindAncestorOfType<DataGrid>();
+            DataGrid? drag_target = _drag_Popup_DataGrid ?? _drag_Popup_Row?.FindAncestorOfType<DataGrid>();
             if (drag_target == null) return;
 
           //  var itemsSource = _drag_Popup_Start_Source.ItemsSource;
@@ -146,13 +147,16 @@ public partial class MainWindow : Window
             var itemsSourceObservable = GetObservableSorce<ModModel>(drag_source);
             var itemsTargetObservable = GetObservableSorce<ModModel>(drag_target);
             //if (itemsSourceObservable != itemsTargetObservable) return;
+            if (itemsSourceObservable == null || itemsTargetObservable == null || _drag_Popup_list == null) return;
 
-            var offset = _drag_Popup_Row_Offset;
-            if (_drag_Popup_Row.DataContext is not ModModel itemTarget) return;
+            ModModel? itemTarget = _drag_Popup_Row?.DataContext as ModModel;
+            bool offset = _drag_Popup_Row_Offset ?? false;
             foreach (var item in _drag_Popup_list.Cast<ModModel>())
             {
-                var itemIndexSource = itemsSourceObservable.IndexOf(item);
-                var itemIndexTarget = itemsTargetObservable.IndexOf(itemTarget);
+                int itemIndexSource = itemsSourceObservable?.IndexOf(item) ?? 0;
+                int itemIndexTarget = itemTarget == null
+                    ? (drag_target.ItemsSource as IList)?.Count ?? 0
+                    : itemsTargetObservable.IndexOf(itemTarget);
                 int index = itemIndexSource < itemIndexTarget ? itemIndexTarget - 1 : itemIndexTarget;
                 if (!offset && itemIndexSource != itemIndexTarget) index++;
                 item.Position = drag_target == ModsGridConfig ? index : null;
@@ -181,6 +185,9 @@ public partial class MainWindow : Window
         Drag_Row_Highlight_Remove(drag_source);
         Drag_Popup_Close();
         _drag_Popup_Start_Position = null;
+        _drag_Popup_DataGrid = null;
+        _drag_Popup_Row = null;
+        _drag_Popup_Row_Offset = null;
     }
 
     public ObservableCollection<T>? GetObservableSorce<T>(DataGrid grid)
@@ -219,6 +226,7 @@ public partial class MainWindow : Window
         if (visualUnderCursor is Control contextSource)
         {
             var row = contextSource.FindAncestorOfType<DataGridRow>();
+            _drag_Popup_DataGrid = contextSource.FindAncestorOfType<DataGrid>();
             var adornerLayer = AdornerLayer.GetAdornerLayer(context);
             if (row != null && adornerLayer != null)
             {
@@ -254,6 +262,11 @@ public partial class MainWindow : Window
                     _drag_Popup_Row_Offset = offset;
                     return true;
                 }
+            }
+            else
+            {
+                _drag_Popup_Row = null;
+                _drag_Popup_Row_Offset = null;
             }
         }
         else
