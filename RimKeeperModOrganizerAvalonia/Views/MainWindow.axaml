@@ -147,7 +147,7 @@
 			<!--<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>-->
 		</Style>
         <Style Selector="^.has_alert">
-            <Setter Property="Background" Value="{Binding Alerts.Color}"/>
+            <Setter Property="Foreground" Value="{Binding Alerts.Color}"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="ToolTip.Tip">
                 <Template>
