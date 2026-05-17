@@ -340,6 +340,11 @@ public partial class MainWindow : Window
             }
             i++;
         }
+
+        var color = Application.Current!.RequestedThemeVariant == ThemeVariant.Light
+            ? "#EEEEEE"
+            : "#111111";
+        var background = new SolidColorBrush(Avalonia.Media.Color.Parse(color));
         var popup = new Popup
         {
             IsHitTestVisible = false,
@@ -352,7 +357,7 @@ public partial class MainWindow : Window
                 CornerRadius = new CornerRadius(3),
                 BorderBrush = Brushes.Gray,
                 BorderThickness = new Thickness(1),
-                Background = Brushes.Black,
+                Background = background,
                 Opacity = 0.9,
                 Child = sp,
             }
