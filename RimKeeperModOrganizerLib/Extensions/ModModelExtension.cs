@@ -1,5 +1,6 @@
 ﻿using RimKeeperModOrganizerLib.Models;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace RimKeeperModOrganizerLib.Extensions;
 
 public static class ModModelExtension
@@ -82,11 +83,38 @@ public static class ModModelExtension
     {
         if (modsConfig == null) return;
         if (modsConfig?.ActiveMods == null) return;
-        foreach (var mod in modlist)
-            mod.Update(modsConfig);
+        //foreach (var mod in modlist)
+        //    mod.Update(modsConfig);
         foreach (var packageId in modsConfig.ActiveMods)
-            if (!modlist.Any(x => x.About?.PackageId == packageId))
-                modlist.Add(modsConfig.Make(packageId));
+        {
+            if (packageId.HasSteamSuffix())
+            {
+                string basePackageId = packageId.RemoveSteamSuffix();
+                var mod = modlist
+                    .Where(x => x.About?.PackageId == basePackageId)
+                    .OrderByDescending(x => x.Location == ModLocation.Steam)
+                    .FirstOrDefault();
+                if (mod != null)
+                {
+                    mod.Position = modsConfig.Position(packageId);
+                    continue;
+                }
+            }
+            else
+            {
+                var mod = modlist
+                    .Where(x => x.About?.PackageId == packageId)
+                    .OrderByDescending(x => x.Location == ModLocation.Local)
+                    .FirstOrDefault();
+                if (mod != null)
+                {
+                    mod.Position = modsConfig.Position(packageId);
+                    continue;
+                }
+            }
+            //if (!modlist.Any(x => x.About?.PackageId == packageId))
+            modlist.Add(modsConfig.Make(packageId));
+        }
     }
 
     public static ModModel MakeData(this ModModel data)
@@ -132,12 +160,17 @@ public static class ModModelExtension
     //        Key = key,
     //    };
     //}
-    public static ModModel Make(this ModsConfigModel modsConfig, string packageId) => new ModModel
+    public static ModModel Make(this ModsConfigModel modsConfig, string packageId)
     {
-        About = new AboutModel { PackageId = packageId },
-        Position = modsConfig.Position(packageId),
-        ModId = packageId,
-    };
+        var model = new ModModel
+        {
+            About = new AboutModel { PackageId = packageId },
+            Position = modsConfig.Position(packageId),
+            ModId = packageId,
+        };
+        model.About.DetectPackageIdSteamSuffix();
+        return model;
+    }
     public static ModModel Make(this string packageId) => new ModModel
     {
         About = new AboutModel { PackageId = packageId },
@@ -229,6 +262,12 @@ public static class ModModelExtension
     //        yield return model;
     //    }
     //}
+
+    public static void ResetPosition(this IList<ModModel> modlist)
+    {
+        foreach (var mod in modlist)
+            mod.Position = null;
+    }
 
 
     public static bool IsNotNull(this ModDataModel? model) 

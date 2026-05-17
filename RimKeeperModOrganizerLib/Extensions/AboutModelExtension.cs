@@ -1,4 +1,5 @@
 ﻿using RimKeeperModOrganizerLib.Models;
+using System.Reflection;
 using System.Text;
 namespace RimKeeperModOrganizerLib.Extensions;
 
@@ -19,6 +20,27 @@ public static class AboutModelExtension
             model.PackageIdAutogen = true;
         }
     }
+
+    public static void DetectPackageIdSteamSuffix(this IEnumerable<ModModel> list)
+    {
+        foreach (ModModel mod in list)
+            if (mod.About != null)
+                mod.About.DetectPackageIdSteamSuffix();
+    }
+    public static void DetectPackageIdSteamSuffix(this AboutModel model)
+    {
+        if (string.IsNullOrWhiteSpace(model.PackageId)) return;      
+        if (model.PackageId.HasSteamSuffix())
+        {
+            model.PackageIdSteamSuffix = true;
+            model.PackageId = model.PackageId.RemoveSteamSuffix();
+        }
+    }
+    private const string _suffix = "_steam";
+    public static bool HasSteamSuffix(this string packageId) => packageId.EndsWith(_suffix, StringComparison.OrdinalIgnoreCase);
+    public static string RemoveSteamSuffix(this string packageId) => packageId[..^_suffix.Length];
+    public static string ToSteamSuffix(this string packageId) => packageId+_suffix;
+
     public static int StableStringHash(string str)
     {
         if (str == null)

@@ -59,6 +59,8 @@ public static class XMLHelper
                         SteamWorkshopUrl = e.Element("steamWorkshopUrl")?.Value,
                     }).ToList() ?? new List<ModDependency>()
             };
+
+            meta.DetectPackageIdSteamSuffix();
             meta.TryParsePackageId();
 
             return meta;

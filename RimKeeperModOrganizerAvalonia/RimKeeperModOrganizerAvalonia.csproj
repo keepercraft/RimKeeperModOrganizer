@@ -22,9 +22,9 @@
 	<NeutralLanguage>pl-PL</NeutralLanguage>
 	<SupportedCultures>pl-PL;en-US</SupportedCultures>
 
-	 <Major>0</Major>
+	<Major>0</Major>
 	<Minor>5</Minor>
-	<Build>2</Build>
+	<Build>3</Build>
 	<RawSeconds>$([System.DateTime]::UtcNow.TimeOfDay.TotalSeconds)</RawSeconds>
 	<ComputedRevision>$([System.Convert]::ToInt32($([MSBuild]::Divide($(RawSeconds), 2))))</ComputedRevision>
 	<Timestamp>$([System.DateTime]::UtcNow.ToString("yyyyMMdd-HHmm"))</Timestamp>

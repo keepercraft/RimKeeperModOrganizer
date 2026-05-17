@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -150,7 +151,10 @@ public class MainViewModel : PropertyModel
             LoadingUI = true;
             action();
         }
-        catch { }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"UILock ERROR {ex.Message}");
+        }
         finally { LoadingUI = false; }
     }
     #endregion
@@ -191,13 +195,13 @@ public class MainViewModel : PropertyModel
     }
     #endregion
 
-    public void ModCollectionUpdate(Func<Task> action)
+    public void ModCollectionUpdate(Action action)
     {
-        Task.Run(async () =>
+        Task.Run(() =>
         {
             App.Current.Dispatcher.Invoke(() => LoadingUI = true);
 
-            await action();
+            action();
 
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -213,19 +217,27 @@ public class MainViewModel : PropertyModel
                 AlertPropertyChanged();
                 LoadingUI = false;
             });
+            Debug.WriteLine($"ModCollectionUpdate TASK FINISH");
         });
     }
     public void LoadMods(string? path = null) => ModCollectionUpdate(async () =>
     {
         App.Current.Dispatcher.Invoke(() => Items.ClearSyncProperties(Data_PropertyChanged, c => c?.Data));
 
-        var metaData = _modsServices.LoadModMetaData(path).ToList();
+        //var metaData = _modsServices.LoadModMetaData(path).ToList();
+        //App.Current.Dispatcher.Invoke(() =>
+        //{
+        //    foreach (var item in metaData)
+        //        Items.InsertInOrder(item, c => c.Position);
+        //    AlertPropertyChanged();
+        //    LoadData(metaData);
+        //});
+
+        var metaData = _modsServices.LoadModData2(path);
         App.Current.Dispatcher.Invoke(() =>
-        {
-            foreach (var item in metaData)
-                Items.InsertInOrder(item, c => c.Position);
-            AlertPropertyChanged();
-            LoadData(metaData);
+        {      
+            Items.AddOrUpdate(metaData);
+            LoadData(Items);
         });
 
         foreach (var item in _modsServices.LoadModLazy())
@@ -236,15 +248,25 @@ public class MainViewModel : PropertyModel
                 AlertPropertyChanged();
             });
         }
-    });
-    public void ReloadModsConfig(string? path = null) => ModCollectionUpdate(async () =>
-    {
+
         var config = _modsServices.LoadModsConfig(path);
         App.Current.Dispatcher.Invoke(() =>
         {
             Items.AddOrUpdate(config);
             Items.SortBy(c => c.Position);
         });
+    });
+    public void ReloadModsConfig(string? path = null) => ModCollectionUpdate(() =>
+    {
+
+        var config = _modsServices.LoadModsConfig(path);
+        App.Current.Dispatcher.Invoke(() =>
+        {
+            Items.ResetPosition();
+            Items.AddOrUpdate(config);
+            Items.SortBy(c => c.Position);
+        });
+        Debug.WriteLine($"ReloadModsConfig for {config.ActiveMods.Count}");
     });
     public void ReloadModsData(string? path = null)
     {
@@ -256,9 +278,9 @@ public class MainViewModel : PropertyModel
     }
     public void LoadModsData(string? path = null) => ModCollectionUpdate(async () =>
     {
+        var metaData = _modsServices.LoadModData2(path);
         App.Current.Dispatcher.Invoke(() =>
         {
-            var metaData = _modsServices.LoadModData2(path);
             Items.AddOrUpdate(metaData);
             LoadData(Items);
         });
@@ -317,7 +339,7 @@ public class MainViewModel : PropertyModel
     {
         if (Items.Any())
         {
-            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>());
+            _modsServices.SaveConfig(Items);
             _modsServices.SaveLocalData(Items);
         }
     }));
@@ -355,7 +377,7 @@ public class MainViewModel : PropertyModel
         {
             if (!ok) return;
             if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
-            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>(), filename);
+            _modsServices.SaveConfig(Items, filename);
         });
     }));
 

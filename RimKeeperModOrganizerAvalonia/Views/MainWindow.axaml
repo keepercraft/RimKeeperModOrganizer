@@ -147,11 +147,15 @@
 			<!--<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>-->
 		</Style>
         <Style Selector="^.has_alert">
-            <Setter Property="Foreground" Value="{Binding Alerts.Color}"/>
+			<Setter Property="Background" Value="{Binding Data.Color}"/>
+			<Setter Property="Foreground" Value="{Binding Alerts.Color}"/>
             <Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="ToolTip.ShowDelay" Value="0"/>
+			<Setter Property="ToolTip.BetweenShowDelay" Value="0"/>
+
             <Setter Property="ToolTip.Tip">
                 <Template>
-                    <Border Padding="5" Background="{Binding Alerts.Color}" BorderBrush="{DynamicResource ThemeBorderMidColor}" BorderThickness="1">
+                    <Border IsHitTestVisible="False" Padding="5" Background="{Binding Alerts.Color}" BorderBrush="{DynamicResource ThemeBorderMidColor}" BorderThickness="1">
                         <ItemsControl ItemsSource="{Binding Alerts.Items}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>

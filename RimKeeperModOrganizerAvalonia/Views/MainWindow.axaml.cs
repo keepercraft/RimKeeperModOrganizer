@@ -111,7 +111,7 @@ public partial class MainWindow : Window
             var currentPoint = e.GetPosition(this);
             _drag_Popup.HorizontalOffset = currentPoint.X + 5;
             _drag_Popup.VerticalOffset = currentPoint.Y + 15 + _drag_Popup_Height;
-            Debug.WriteLine("GetPosition X:" + _drag_Popup.HorizontalOffset + " Y:" + _drag_Popup.VerticalOffset + " - "+ tt?.Name??"?");
+            //Debug.WriteLine("GetPosition X:" + _drag_Popup.HorizontalOffset + " Y:" + _drag_Popup.VerticalOffset + " - "+ tt?.Name??"?");
             //if (e.Source is not Control contextSource) return;
             if (Drag_Row_Highlight(sender, e, ModsGrid)) return;
             if (Drag_Row_Highlight(sender, e, ModsGridConfig)) return;
@@ -139,48 +139,7 @@ public partial class MainWindow : Window
         if (sender is not DataGrid drag_source) return;
         if (_drag_Popup != null)
         {
-            DataGrid? drag_target = _drag_Popup_DataGrid ?? _drag_Popup_Row?.FindAncestorOfType<DataGrid>();
-            if (drag_target == null) return;
-
-          //  var itemsSource = _drag_Popup_Start_Source.ItemsSource;
-          //  var itemsTarget = drag_target.ItemsSource;
-            var itemsSourceObservable = GetObservableSorce<ModModel>(drag_source);
-            var itemsTargetObservable = GetObservableSorce<ModModel>(drag_target);
-            //if (itemsSourceObservable != itemsTargetObservable) return;
-            if (itemsSourceObservable == null || itemsTargetObservable == null || _drag_Popup_list == null) return;
-
-            ModModel? itemTarget = _drag_Popup_Row?.DataContext as ModModel;
-            bool offset = _drag_Popup_Row_Offset ?? false;
-            foreach (var item in _drag_Popup_list.Cast<ModModel>())
-            {
-                int itemIndexSource = itemsSourceObservable?.IndexOf(item) ?? 0;
-                int itemIndexTarget = itemTarget == null
-                    ? (drag_target.ItemsSource as IList)?.Count ?? 0
-                    : itemsTargetObservable.IndexOf(itemTarget);
-                int index = itemIndexSource < itemIndexTarget ? itemIndexTarget - 1 : itemIndexTarget;
-                if (!offset && itemIndexSource != itemIndexTarget) index++;
-                item.Position = drag_target == ModsGridConfig ? index : null;
-                itemsTargetObservable.Move(itemIndexSource, index);
-                //Debug.WriteLine($"MOVE:{itemIndexSource}->{itemIndexTarget}+{offset}");
-            }
-            if(drag_target == ModsGridConfig || drag_source == ModsGridConfig)
-            {
-                var list = GetObservableSorce<ModModel>(ModsGridConfig);
-                foreach (var item in list.Where(w => w.Position != null))
-                {
-                    item.Position = list.IndexOf(item);
-                }
-            }
-            (drag_target.ItemsSource as IDataGridCollectionView)?.Refresh();
-            (drag_source.ItemsSource as IDataGridCollectionView)?.Refresh();
-
-            if (this.DataContext is MainViewModel vm)
-            {
-                vm.ModsCollection.Cast<ModModel>().ModListAlertClean();
-                vm.Items.ModListDuplicateValidation();
-                vm.ModsConfigCollection.Cast<ModModel>().ModListValidation(vm.GameVersion);
-                vm.AlertPropertyChanged();
-            }
+            Drag_Row_Finish(sender, e, drag_source);
         }
         Drag_Row_Highlight_Remove(drag_source);
         Drag_Popup_Close();
@@ -218,6 +177,75 @@ public partial class MainWindow : Window
     {
         var layer = AdornerLayer.GetAdornerLayer(visual);
         layer?.Children.Remove(_rowSeparator);
+    }
+
+    public void Drag_Row_Finish(object? sender, PointerEventArgs e, DataGrid drag_source)
+    {
+        DataGrid? drag_target = _drag_Popup_DataGrid ?? _drag_Popup_Row?.FindAncestorOfType<DataGrid>();
+        if (drag_target == null) return;
+
+        //  var itemsSource = _drag_Popup_Start_Source.ItemsSource;
+        //  var itemsTarget = drag_target.ItemsSource;
+        var itemsSourceObservable = GetObservableSorce<ModModel>(drag_source);
+        var itemsTargetObservable = GetObservableSorce<ModModel>(drag_target);
+        //if (itemsSourceObservable != itemsTargetObservable) return;
+        if (itemsSourceObservable == null || itemsTargetObservable == null || _drag_Popup_list == null) return;
+
+        ModModel? itemTarget = _drag_Popup_Row?.DataContext as ModModel ?? itemsTargetObservable?.LastOrDefault();
+        if (itemTarget == null) return;
+
+        int p_index_target = itemsTargetObservable.IndexOf(itemTarget);
+        var p_index_source = _drag_Popup_list.Cast<ModModel>().Select(s => itemsSourceObservable.IndexOf(s));
+        if (itemTarget != itemsTargetObservable?.LastOrDefault() && p_index_source.Contains(p_index_target)) return;
+        bool reverse = p_index_source.Last() > p_index_target;
+        var data_list = reverse
+            ? _drag_Popup_list.Cast<ModModel>().Reverse()
+            : _drag_Popup_list.Cast<ModModel>();
+
+        Debug.WriteLine($"REVERSE:{reverse} = {p_index_source.Last()}>{p_index_target}");
+
+        bool offset = _drag_Popup_Row_Offset ?? false;
+
+        int? imove = null;
+        ModModel? itemTarget_next = itemTarget;
+        int ii = 0;
+        foreach (var item in _drag_Popup_list.Cast<ModModel>())
+        {
+
+            int itemIndexSource = itemsSourceObservable?.IndexOf(item) ?? 0;
+            int itemIndexTarget = itemsTargetObservable.IndexOf(itemTarget_next);
+            int index = itemIndexSource < itemIndexTarget ? itemIndexTarget - 1 : itemIndexTarget;
+            //if (imove == 0) 
+            //if (!offset) index++;
+            index++;
+            if (index > itemsTargetObservable.Count) index = itemsTargetObservable.Count;
+            item.Position = drag_target == ModsGridConfig ? index : null;
+            itemsTargetObservable.Move(itemIndexSource, index);
+            Debug.WriteLine($"MOVE:{itemIndexSource}->{itemIndexTarget}+{offset} {item.Label}->{itemTarget_next.Label}");
+            imove = index;
+            itemTarget_next = item;
+
+
+        }
+        if (drag_target == ModsGridConfig || drag_source == ModsGridConfig)
+        {
+            var list = GetObservableSorce<ModModel>(ModsGridConfig);
+            int i = 0;
+            foreach (var item in list.Where(w => w.Position != null))
+            {
+                item.Position = i++;
+            }
+        }
+            (drag_target.ItemsSource as IDataGridCollectionView)?.Refresh();
+        (drag_source.ItemsSource as IDataGridCollectionView)?.Refresh();
+
+        if (this.DataContext is MainViewModel vm)
+        {
+            vm.ModsCollection.Cast<ModModel>().ModListAlertClean();
+            vm.Items.ModListDuplicateValidation();
+            vm.ModsConfigCollection.Cast<ModModel>().ModListValidation(vm.GameVersion);
+            vm.AlertPropertyChanged();
+        }
     }
     public bool Drag_Row_Highlight(object? sender, PointerEventArgs e, DataGrid context)
     {

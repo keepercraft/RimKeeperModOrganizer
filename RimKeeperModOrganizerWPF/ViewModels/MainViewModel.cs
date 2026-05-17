@@ -273,7 +273,7 @@ public class MainViewModel : PropertyModel, IDropTarget
     {
         if (Items.Any())
         {
-            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>());
+            _modsServices.SaveConfig(Items);
             _modsServices.SaveLocalData(Items);
         }
     }));
@@ -311,7 +311,7 @@ public class MainViewModel : PropertyModel, IDropTarget
         if (dialog.ShowDialog() ?? false)
         {
             if (Path.GetDirectoryName(dialog.FileName) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
-            _modsServices.SaveConfig(ModsConfigCollection.Cast<ModModel>(), dialog.FileName);
+            _modsServices.SaveConfig(Items, dialog.FileName);
         }
     }));
 

@@ -14,6 +14,7 @@ public record AboutModel
     public string? Description { get; set; }
     public string? Url { get; set; }
     public bool PackageIdAutogen { get; set; }
+    public bool PackageIdSteamSuffix { get; set; }
 }
 
 public record ModDependency

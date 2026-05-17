@@ -40,7 +40,6 @@ public class ModsServices
         foreach (var item in modsData.ModDataList.Where(w => !modsConfig.ActiveMods.Contains(w.GetKeyID())))
         {
             yield return item.Make();
-            // yield return item.Make();
         }
         LoadModsActive?.Invoke(LoadModsFromLocalRunning = false);
     }
@@ -114,7 +113,20 @@ public class ModsServices
         ModsConfigModel? mods = XMLHelper.LoadModsConfig(aboutPath);
         if (mods == null) return;
         mods.Version = _settingsService.Settings.GameVersion;
-        mods.ActiveMods = modlist.OrderBy(x => x.Position).Select(x => x.About.PackageId).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+        mods.ActiveMods = modlist
+            .Where(x => x.Position != null)
+            .OrderBy(x => x.Position)
+            //.Select(x => x.About.PackageId)
+            .Select(x => 
+            {
+                if(x.Location == ModLocation.Steam && modlist.Any(w => w.About.PackageId == x.About.PackageId && w.Location == ModLocation.Local))
+                {
+                    return x.About.PackageId.ToSteamSuffix();
+                }
+                return x.About.PackageId;
+            })
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Distinct().ToList();
         XMLHelper.SaveModsConfig(path??aboutPath, mods);
         
     }

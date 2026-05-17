@@ -70,15 +70,11 @@ public static class AlertExtension
                 mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPackageID, mod.Label);
                 continue;
             }
-            else
-            {
 
+            if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
+            {
+                mod.Alerts.Add(AlertLevel.Critical, AlertType.DuplicatePackageID, mod.Label);
             }
-
-            if (!modlist.Any(a => a.About?.PackageId == mod.About?.PackageId))
-            {
-                mod.Alerts.Add(AlertLevel.Warning, AlertType.DuplicatePackageID, mod.Label);
-            }      
 
             if (mod.About?.ModDependencies is { } mod_deps)
                 foreach (var mod_dep in mod_deps)
