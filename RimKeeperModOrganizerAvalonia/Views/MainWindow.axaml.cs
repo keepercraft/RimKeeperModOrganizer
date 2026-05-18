@@ -29,9 +29,10 @@ public partial class MainWindow : Window
     }
     public MainWindow(MainViewModel viewModel)
     {
+        DataContext = viewModel;
+
         InitializeComponent();
         //AvaloniaXamlLoader.Load(this);
-        DataContext = viewModel;
 
         ModsGrid.AddHandler(KeeperDataGridAvalonia.KeeperDataGrid.PointerPressedSelectionEvent, DataGrid_PointerPressedSelection, RoutingStrategies.Tunnel);
         ModsGridConfig.AddHandler(KeeperDataGridAvalonia.KeeperDataGrid.PointerPressedSelectionEvent, DataGrid_PointerPressedSelection, RoutingStrategies.Tunnel);

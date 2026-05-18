@@ -46,7 +46,7 @@ public class MainViewModel : PropertyModel
     public bool IsSelectedMod => SelectedMod != null;
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
-    public IEnumerable<string> ModTypeIconsList { get; set; }
+    public List<string> ModTypeIconsList { get; set; } = new();
     public bool SteamServiceReady => _steamService?.IsLibraryLoaded ?? false;
 
     private readonly JsonAutoSaver _autoSaver;
@@ -83,6 +83,7 @@ public class MainViewModel : PropertyModel
         }
     }
 
+    public ObservableCollection<string> DummyGroups { get; set; } = new();
     public string SteamIconKey { get; set; } = "Steam";
 
     public MainViewModel(SettingsService SettingsService, ModsServices modsServices, SteamService steamService, ThemeService themeService)
@@ -108,14 +109,14 @@ public class MainViewModel : PropertyModel
         ModsCollection.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(GetModListStaticLable));
         ModsConfigCollection.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(GetModConfigStaticLable));
 
-        ModTypeIconsList = new List<string>()
+        ModTypeIconsList.AddRange(new[]
         {
             string.Empty,
             ModLocation.DLC.ToString(),
             ModLocation.Local.ToString(),
             ModLocation.Steam.ToString(),
             ModLocation.MetaData.ToString(),
-        };
+        });
     }
 
     private bool LeftViewFilter(object obj) => ((ModModel)obj)?.Position == null;

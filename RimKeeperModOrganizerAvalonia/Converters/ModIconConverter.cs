@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using RimKeeperModOrganizerAvalonia.Extensions;
 using RimKeeperModOrganizerLib.Models;
 using System;
 using System.Globalization;
@@ -11,12 +12,12 @@ namespace RimKeeperModOrganizerAvalonia.Converters;
 
 public class ModIconConverter : IValueConverter
 {
-    public static DrawingImage? Get(string key)
+    public static DrawingImage? Get(string key, Color? color = null)
     {
         foreach (var d in Application.Current!.Resources.MergedDictionaries)
             if (d.TryGetResource(key, null, out var value))
                 if (value is DrawingImage img)
-                    return img;
+                    return color.HasValue ? img.Recolor(color.Value) : img;
         return null;
     }
 

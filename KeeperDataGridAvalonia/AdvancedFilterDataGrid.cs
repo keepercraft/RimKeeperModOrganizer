@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.Templates;
@@ -134,8 +135,9 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
 
     #region FILTER / SELECTBOX
 
+    public static readonly DataTemplate EmptyTemplate = new DataTemplate();
     public static readonly StyledProperty<DataTemplate> SelectBoxItemTemplateProperty =
-        AvaloniaProperty.Register<AdvancedFilterDataGrid, DataTemplate>(nameof(SelectBoxItemTemplate), null);
+        AvaloniaProperty.Register<AdvancedFilterDataGrid, DataTemplate>(nameof(SelectBoxItemTemplate), EmptyTemplate);
     public DataTemplate SelectBoxItemTemplate
     {
         get => GetValue(SelectBoxItemTemplateProperty);

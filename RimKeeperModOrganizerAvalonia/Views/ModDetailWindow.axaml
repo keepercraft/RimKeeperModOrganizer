@@ -39,7 +39,9 @@
 			<StackPanel>
 
 				<StackPanel Margin="0,0,0,10">				
-					<Image Source="{Binding SelectedModPreviewsSelection, Converter={StaticResource PathToBitmapConverter}}"
+					<Image Source="{Binding SelectedModPreviewsSelection,
+						   Converter={StaticResource PathToBitmapConverter},
+						   TargetNullValue={StaticResource ImageIcon}}"
 						DoubleTapped="OpenSelectedImageCommand"
 						HorizontalAlignment="Left"
 						Stretch="Uniform"
@@ -65,19 +67,21 @@
 					</ScrollViewer>
 				</StackPanel>
 
-				<SelectableTextBlock Text="{Binding SelectedMod.Label,Mode=OneWay}" FontWeight="Bold" FontSize="18"
-                     Cursor="Hand"
-                     DoubleTapped="ModDetailCommand"
-                     SelectionBrush="LightBlue">
+				<SelectableTextBlock Text="{Binding SelectedMod?.Label,TargetNullValue='',Mode=OneWay}"
+					 FontWeight="Bold"
+					 FontSize="18"
+					 Cursor="Hand"
+					 DoubleTapped="ModDetailCommand"
+					 SelectionBrush="LightBlue">
 				</SelectableTextBlock>
 
 				<TextBlock Text="Groups:" FontWeight="Bold"/>
 				<controls:TagAutoCompleteBox
 					AvailableTags="{Binding ModGroups, Mode=TwoWay}"
-					SelectedTags="{Binding SelectedMod.Data.Groups, Mode=TwoWay}" />
+					SelectedTags="{Binding SelectedMod?.Data?.Groups,TargetNullValue={x:Null},Mode=TwoWay}" />
 
 				<TextBlock Text="Comment:" FontWeight="Bold"/>
-				<TextBox Text="{Binding SelectedMod.Data.Comment, Mode=TwoWay}"
+				<TextBox Text="{Binding SelectedMod?.Data?.Comment,TargetNullValue='',Mode=TwoWay}"
 					IsReadOnly="False"
 					TextWrapping="Wrap"
 					AcceptsReturn="True"
@@ -88,13 +92,13 @@
 					Padding="5"/>
 
 				<TextBlock Text="ModID Key:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.ModId ,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod?.ModId,TargetNullValue='',Mode=OneWay}"/>
 
 				<TextBlock Text="Author:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.Authors,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod?.About?.Authors,TargetNullValue='',Mode=OneWay}"/>
 
 				<TextBlock Text="PackageId:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.PackageId,Mode=OneWay}">
+				<SelectableTextBlock Text="{Binding SelectedMod?.About?.PackageId,TargetNullValue='',Mode=OneWay}">
 					<SelectableTextBlock.Styles>
 						<Style Selector="SelectableTextBlock.autogen">
 							<Setter Property="Foreground" Value="Red"/>
@@ -104,80 +108,80 @@
 				</SelectableTextBlock>
 
 				<TextBlock Text="SteamId:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.SteamId,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod?.About?.SteamId,TargetNullValue='',Mode=OneWay}"/>
 
 				<TextBlock Text="SupportedVersions:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.Versions,Mode=OneWay}"/>
+				<SelectableTextBlock Text="{Binding SelectedMod?.Versions,TargetNullValue='',Mode=OneWay}"/>
 
 				<TextBlock Text="Path:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.Path}"
+				<SelectableTextBlock Text="{Binding SelectedMod?.Path,TargetNullValue='',Mode=OneWay}"
 					 Cursor="Hand"
 					 DoubleTapped="OpenLinkCommand"
 					 SelectionBrush="LightBlue">
 				</SelectableTextBlock>
 
 				<TextBlock Text="Url:" FontWeight="Bold"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.Url}"
+				<SelectableTextBlock Text="{Binding SelectedMod?.About?.Url,TargetNullValue='',Mode=OneWay}"
 					 Cursor="Hand"
 					 DoubleTapped="OpenLinkCommand"
 					 SelectionBrush="LightBlue">
 				</SelectableTextBlock>
 
 				<TextBlock Text="ModDependencies:" FontWeight="Bold" Margin="0,5,0,0"/>
-				<ItemsControl ItemsSource="{Binding SelectedMod.About.ModDependencies}" >
+				<ItemsControl ItemsSource="{Binding SelectedMod?.About?.ModDependencies,TargetNullValue={x:Null},Mode=OneWay}" >
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<SelectableTextBlock Text="{Binding PackageId, 
-                                StringFormat='• {0}', 
-                                Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}" />
+                                    StringFormat='• {0}', 
+                                    Mode=OneWay,
+                                    TargetNullValue='•', 
+                                    FallbackValue='•'}" />
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 
 				<TextBlock Text="LoadAfter:" FontWeight="Bold" Margin="0,5,0,0"/>
-				<ItemsControl ItemsSource="{Binding SelectedMod.About.LoadAfter}">
+				<ItemsControl ItemsSource="{Binding SelectedMod?.About?.LoadAfter,TargetNullValue={x:Null},Mode=OneWay}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<SelectableTextBlock Text="{Binding Path=., 
-                                StringFormat='• {0}', 
-                                Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}" />
+                                    StringFormat='• {0}', 
+                                    Mode=OneWay,
+                                    TargetNullValue='•', 
+                                    FallbackValue='•'}" />
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 
 				<TextBlock Text="LoadBefore:" FontWeight="Bold" Margin="0,5,0,0"/>
-				<ItemsControl ItemsSource="{Binding SelectedMod.About.LoadBefore}">
+				<ItemsControl ItemsSource="{Binding SelectedMod?.About?.LoadBefore,TargetNullValue={x:Null},Mode=OneWay}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<SelectableTextBlock Text="{Binding Path=., 
-                                StringFormat='• {0}', 
-                                Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}"  />
+                                    StringFormat='• {0}', 
+                                    Mode=OneWay,
+                                    TargetNullValue='•', 
+                                    FallbackValue='•'}"  />
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 
 				<TextBlock Text="IncompatibleWith:" FontWeight="Bold" Margin="0,5,0,0"/>
-				<ItemsControl ItemsSource="{Binding SelectedMod.About.IncompatibleWith}">
+				<ItemsControl ItemsSource="{Binding SelectedMod?.About?.IncompatibleWith,TargetNullValue={x:Null},Mode=OneWay}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<SelectableTextBlock Text="{Binding Path=., 
-                                StringFormat='• {0}', 
-                                Mode=OneWay,
-                                TargetNullValue='•', 
-                                FallbackValue='•'}"
+                                    StringFormat='• {0}', 
+                                    Mode=OneWay,
+                                    TargetNullValue='•', 
+                                    FallbackValue='•'}"
 								Foreground="Red"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 
 				<TextBlock Text="Description:" FontWeight="Bold" Margin="0,5,0,0"/>
-				<SelectableTextBlock Text="{Binding SelectedMod.About.Description}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+				<SelectableTextBlock Text="{Binding SelectedMod?.About?.Description,TargetNullValue='',Mode=OneWay}" TextWrapping="Wrap" Margin="0,0,0,10"/>
 
 			</StackPanel>
 		</ScrollViewer>

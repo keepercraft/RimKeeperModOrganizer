@@ -72,15 +72,15 @@
 
                         <TextBox x:Name="FilterTextBox" Margin="0,0,0,0"
                                 Watermark="Filter..." 
-                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowFilter, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
-                                Text="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay}"/>
+                                IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowFilter,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"
+                                Text="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.FilterValue,TargetNullValue='',Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
 
                         <ComboBox x:Name="FilterSelectBox"
 								bahaviors:DragAndDropBehavior.BlockGridDrag="True"
-                                IsVisible="{Binding $parent[DataGridColumnHeader].OwningColumn.ShowSelectBoxFilter, UpdateSourceTrigger=PropertyChanged, FallbackValue=False}"
-                                ItemsSource="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxFilterList, UpdateSourceTrigger=PropertyChanged}"
-                                ItemTemplate="{Binding $parent[DataGridColumnHeader].OwningColumn.SelectBoxItemTemplate, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedItem="{Binding $parent[DataGridColumnHeader].OwningColumn.FilterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowSelectBoxFilter,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.SelectBoxFilterList,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"
+                                ItemTemplate="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.SelectBoxItemTemplate,UpdateSourceTrigger=PropertyChanged}"
+                                SelectedItem="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.FilterValue, Mode=TwoWay,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"/>
 
                       </StackPanel>
 
