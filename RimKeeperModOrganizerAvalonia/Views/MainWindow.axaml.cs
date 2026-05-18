@@ -212,21 +212,19 @@ public partial class MainWindow : Window
         int ii = 0;
         foreach (var item in _drag_Popup_list.Cast<ModModel>())
         {
-
             int itemIndexSource = itemsSourceObservable?.IndexOf(item) ?? 0;
             int itemIndexTarget = itemsTargetObservable.IndexOf(itemTarget_next);
             int index = itemIndexSource < itemIndexTarget ? itemIndexTarget - 1 : itemIndexTarget;
             //if (imove == 0) 
-            //if (!offset) index++;
-            index++;
+            if (!offset || ii>0) index++;
+            //index++;
             if (index > itemsTargetObservable.Count) index = itemsTargetObservable.Count;
             item.Position = drag_target == ModsGridConfig ? index : null;
             itemsTargetObservable.Move(itemIndexSource, index);
             Debug.WriteLine($"MOVE:{itemIndexSource}->{itemIndexTarget}+{offset} {item.Label}->{itemTarget_next.Label}");
             imove = index;
             itemTarget_next = item;
-
-
+            ii++;
         }
         if (drag_target == ModsGridConfig || drag_source == ModsGridConfig)
         {

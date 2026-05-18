@@ -366,37 +366,29 @@
         <Menu Grid.Row="0" Grid.Column="5">
             <MenuItem Header="{Binding GetModConfigStaticLable}" 
                       Background="{Binding GetModConfigStaticColor}"
-                      ToolTip.ShowDelay="100">      
-                <MenuItem.Styles>
-                    <Style Selector="MenuItem" >
-                        <Setter Property="ToolTip.Tip">
-                            <Template>
-                                <Border Padding="5" BorderThickness="1" CornerRadius="0"
-										BorderBrush="{DynamicResource ThemeForegroundColor}"
-										Background="{DynamicResource ThemeBackgroundColor}">
-                                    <ScrollViewer MaxHeight="{Binding MainWidowSettings.Height}" VerticalScrollBarVisibility="Auto">
-                                        <ItemsControl ItemsSource="{Binding ListModsConfigAlerts}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding Message}"
-                                                               Padding="10,4,20,4" Margin="1"
-                                                               Foreground="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"
-                                                               Background="{Binding Color}"
-                                                               FontWeight="Bold"
-                                                               TextWrapping="Wrap"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
-                                </Border>
-                            </Template>
-                        </Setter>
-                    </Style>
-
-                    <Style Selector="MenuItem[Tag=False]">
-                        <Setter Property="ToolTip.Tip" Value="{x:Null}" />
-                    </Style>
-                </MenuItem.Styles>
+                      ToolTip.ShowDelay="100">
+				<ToolTip.Tip>
+					<ToolTip IsVisible="{Binding IsModsConfigAlert}">
+						<Border Padding="5" BorderThickness="1" CornerRadius="0"
+								BorderBrush="{DynamicResource ThemeForegroundColor}"
+								Background="{DynamicResource ThemeBackgroundColor}">
+							<ScrollViewer MaxHeight="{Binding MainWidowSettings.Height}" VerticalScrollBarVisibility="Auto">
+								<ItemsControl ItemsSource="{Binding ListModsConfigAlerts}">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Message}"
+													   Padding="10,4,20,4" Margin="1"
+													   Foreground="{Binding Background, RelativeSource={RelativeSource Self}, Converter={StaticResource ContrastTextColorConverter}}"
+													   Background="{Binding Color}"
+													   FontWeight="Bold"
+													   TextWrapping="Wrap"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</ScrollViewer>
+						</Border>
+					</ToolTip>
+				</ToolTip.Tip>
             </MenuItem>
         </Menu>
         <Menu Grid.Row="0" Grid.Column="5" Background="Transparent" HorizontalAlignment="Right">

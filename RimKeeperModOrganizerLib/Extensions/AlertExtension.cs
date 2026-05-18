@@ -36,7 +36,7 @@ public static class AlertExtension
                 {
                     mod.Alerts.Add(AlertLevel.Warning, AlertType.MissingPackageID, mod.Label);
                 }
-                if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
+                if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId && a.Location == mod.Location))
                 {
                     mod.Alerts.Add(AlertLevel.Warning, AlertType.DuplicatePackageID, mod.Label);
                 }
@@ -71,7 +71,7 @@ public static class AlertExtension
                 continue;
             }
 
-            if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId))
+            if (modlist.Any(a => a != mod && a.About?.PackageId == mod.About?.PackageId && a.Location == mod.Location))
             {
                 mod.Alerts.Add(AlertLevel.Critical, AlertType.DuplicatePackageID, mod.Label);
             }
