@@ -221,9 +221,11 @@ public partial class MainWindow : Window
             //if (imove == 0) 
             if (!offset || ii>0) index++;
             //index++;
-            if (index > itemsTargetObservable.Count) index = itemsTargetObservable.Count;
+            if (index > itemsTargetObservable.Count-1) 
+                index = itemsTargetObservable.Count-1;
             item.Position = drag_target == ModsGridConfig ? index : null;
-            itemsTargetObservable.Move(itemIndexSource, index);
+            if (itemIndexSource != index)
+                itemsTargetObservable.Move(itemIndexSource, index);
             Debug.WriteLine($"MOVE:{itemIndexSource}->{itemIndexTarget}+{offset} {item.Label}->{itemTarget_next.Label}");
             imove = index;
             itemTarget_next = item;

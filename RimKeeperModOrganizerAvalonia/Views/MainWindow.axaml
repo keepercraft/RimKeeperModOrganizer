@@ -53,7 +53,14 @@
                    HorizontalAlignment="Left"
                    ToolTip.Tip="{Binding}"
                    Source="{Binding Converter={StaticResource ModIconConverter}}" />
-
+		</DataTemplate>
+		
+		<DataTemplate x:Key="ModColorSelectBoxItemTemplate" x:DataType="x:String">
+			<Border Height="16"
+					Width="16"
+					HorizontalAlignment="Left"
+					ToolTip.Tip="{Binding}"
+					Background="{Binding}" />
         </DataTemplate>
 
         <ContextMenu x:Key="DataGridContextMenu" x:DataType="vm:MainViewModel"
@@ -151,12 +158,14 @@
 			<Setter Property="Background" Value="{Binding Data.Color}"/>
 			<Setter Property="Foreground" Value="{Binding Alerts.Color}"/>
             <Setter Property="FontWeight" Value="Bold"/>
-			<Setter Property="ToolTip.ShowDelay" Value="0"/>
-			<Setter Property="ToolTip.BetweenShowDelay" Value="0"/>
-			
+			<Setter Property="ToolTip.ShowDelay" Value="100"/>
+			<Setter Property="ToolTip.BetweenShowDelay" Value="100"/>		
             <Setter Property="ToolTip.Tip">
                 <Template>
-                    <Border IsHitTestVisible="False" Padding="5" Background="{Binding Alerts.Color}" BorderBrush="{DynamicResource ThemeBorderMidColor}" BorderThickness="1">
+                    <Border Padding="5" BorderThickness="1" CornerRadius="0"
+							IsHitTestVisible="False"
+							Background="{Binding Alerts.Color}"
+							BorderBrush="{DynamicResource ThemeBorderMidColor}">
                         <ItemsControl ItemsSource="{Binding Alerts.Items}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -187,6 +196,15 @@
             </ControlTemplate>
         </Setter>
     </Style>
+
+	<Style Selector="DataGridCell.modColorStyle" x:DataType="ml:ModModel">
+		<Setter Property="Margin" Value="2" />
+		<Setter Property="Background" Value="{Binding Data.Color}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+			</ControlTemplate>
+		</Setter>
+	</Style>
 
     <Style Selector="DataGridRow">
         <Setter Property="BorderThickness" Value="0,2,0,2" />
@@ -447,9 +465,18 @@
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Label}" x:DataType="ml:ModModel" Key="label" SortMemberPath="Label" />                   
                 <kdg:AdvancedFilterDataGrid Binding="{Binding About.Authors}" x:DataType="ml:ModModel" Key="author" SortMemberPath="About.Authors"/>            
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Data.Group}" x:DataType="ml:ModModel" Key="group" SortMemberPath="Data.Group"/>            
-                <kdg:AdvancedFilterDataGrid Binding="{Binding About.PackageId}" x:DataType="ml:ModModel" Key="packageid" SortMemberPath="About.PackageId"/>            
-                <kdg:AdvancedFilterDataGrid Binding="{Binding Versions}" x:DataType="ml:ModModel" Key="versions"  SortMemberPath="Versions"  />            
-              </DataGrid.Columns>   
+                <kdg:AdvancedFilterDataGrid Binding="{Binding About.PackageId}" x:DataType="ml:ModModel" Key="packageid" SortMemberPath="About.PackageId"/>
+                <kdg:AdvancedFilterDataGrid Binding="{Binding Versions}" x:DataType="ml:ModModel" Key="versions"  SortMemberPath="Versions"  />
+                <!--<kdg:AdvancedFilterDataGrid Binding="{Binding Data.Color}" x:DataType="ml:ModModel" Key="color"  SortMemberPath="Data.Color"  />-->
+				  <kdg:AdvancedFilterDataGrid Binding="{Binding Data.Color}" x:DataType="ml:ModModel" Key="color"
+	                    Width="20" Header="" MaxWidth="20" MinWidth="20"
+	                    ShowFilter="False" ShowSelectBoxFilter="True"
+	                    SortMemberPath="Data.Color"
+	                    CellStyleClasses="modColorStyle"
+	                    SelectBoxItemTemplate="{StaticResource ModColorSelectBoxItemTemplate}"
+	                    SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModColors, Source={StaticResource Proxy}}" >
+				  </kdg:AdvancedFilterDataGrid>
+			  </DataGrid.Columns>   
         </kdg:KeeperDataGrid>
 
         <kdg:KeeperDataGrid Grid.Column="4" Grid.Row="1" x:Name="ModsGridConfig"
@@ -471,7 +498,15 @@
                     CellStyleClasses="modIconStyle" 
                     SelectBoxItemTemplate="{StaticResource ModIconSelectBoxItemTemplate}"
                     SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModTypeIconsList, Source={StaticResource Proxy}}" >
-                </kdg:AdvancedFilterDataGrid>       
+                </kdg:AdvancedFilterDataGrid>
+				<kdg:AdvancedFilterDataGrid Binding="{Binding Data.Color}" x:DataType="ml:ModModel" Key="color"
+		            Width="20" Header="" MaxWidth="20" MinWidth="20"
+		            ShowFilter="False" ShowSelectBoxFilter="True"
+		            SortMemberPath="Data.Color"
+		            CellStyleClasses="modColorStyle"
+		            SelectBoxItemTemplate="{StaticResource ModColorSelectBoxItemTemplate}"
+		            SelectBoxFilterList="{Binding ((vm:MainViewModel)Data).ModColors, Source={StaticResource Proxy}}" >
+				</kdg:AdvancedFilterDataGrid>
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Label}" x:DataType="ml:ModModel" Header="Name" Width="*" SortMemberPath="Label"  />            
                 <!--<kdg:AdvancedFilterDataGrid Binding="{Binding Position}" x:DataType="ml:ModModel" Header="Position" Width="50" ShowFilter="False"/>-->            
               </DataGrid.Columns>      

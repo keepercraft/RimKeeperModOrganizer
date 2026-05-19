@@ -9,7 +9,7 @@
         mc:Ignorable="d" 
 		Width="400"
         Height="500"
-        Title="Wybierz kolor">       
+        Title="Select Color">       
     <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
 
 		<DockPanel x:Name="BtnList" Grid.Row="0" Grid.Column="0">
@@ -52,7 +52,7 @@
                     Margin="0,0,10,0"
                     IsDefault="True"
                     Click="Ok_Click"/>
-			<Button Content="Anuluj"
+			<Button Content="Cancel"
                     Width="80"
                     Margin="0,0,10,0"
                     IsCancel="True"
