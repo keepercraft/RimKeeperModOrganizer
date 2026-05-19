@@ -40,7 +40,7 @@ public partial class MainWindow : Window
         ModsGridConfig.AddHandler(PointerReleasedEvent, DataGrid_PointerReleasedSelection, RoutingStrategies.Tunnel);
         ModsGrid.AddHandler(PointerMovedEvent, DataGrid_Popup_PointerMoved, RoutingStrategies.Tunnel);
         ModsGridConfig.AddHandler(PointerMovedEvent, DataGrid_Popup_PointerMoved, RoutingStrategies.Tunnel);
-        //this.PointerMoved += DataGrid_Popup_PointerMoved;
+        //this.PointerMoved += DataGrid_Popup_PointerMoved; 
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -52,6 +52,9 @@ public partial class MainWindow : Window
             var ico = ModIconConverter.Get("RimworldLogoIcon");
             if (ico != null)
                 this.Icon = ModIconConverter.CreateIconFromDrawingImage(ico);
+
+            ModsGrid?.LockColumnsWidth = (Content == null);
+            ModsGridConfig?.LockColumnsWidth = (Content == null);
         }
 
         var property = change.Property.Name;

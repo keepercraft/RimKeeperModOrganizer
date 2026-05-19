@@ -7,14 +7,13 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+using KeeperBaseSheredLib.Reflection;
 using KeeperDataGridAvalonia.Extensions;
 using KeeperDataGridAvalonia.Models;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Reflection;
-using System.Reflection.Emit;
 namespace KeeperDataGridAvalonia;
 
 public partial class AdvancedFilterDataGridStyles : Styles { }
@@ -29,6 +28,8 @@ public class KeeperDataGrid : DataGrid
         add { AddHandler(PointerPressedSelectionEvent, value); }
         remove { RemoveHandler(PointerPressedSelectionEvent, value); }
     }
+
+    public bool LockColumnsWidth { get; set; } = false;
 
     public Button settingsButton = new Button
     {
@@ -79,11 +80,6 @@ public class KeeperDataGrid : DataGrid
         SelectedItem = null;
     }
 
-    //private void OnPointerReleased2(object? sender, PointerPressedEventArgs e)
-    //{
-    //    Debug.WriteLine("KeeperDataGrid PointerPressedSelectionEvent OK");
-    //}
-
     private void Columns_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         foreach (var item in e.NewItems)
@@ -123,12 +119,32 @@ public class KeeperDataGrid : DataGrid
         }
 
         //var header = (e.Source as Visual)?.FindAncestorOfType<DataGridColumnHeader>();
-        //Debug.WriteLine("KeeperDataGrid Pressed");
+        Debug.WriteLine($"DataGrid:Pressed Handled:{e.Handled}");
+    }
+    public static bool AreClose(double value1, double value2)
+    {
+        //in case they are Infinities (then epsilon check does not work)
+        if (value1 == value2) return true;
+        double eps = (Math.Abs(value1) + Math.Abs(value2) + 10.0) * 2.2204460492503131e-016;
+        double delta = value1 - value2;
+        return (-eps < delta) && (eps > delta);
     }
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         if (sender is not KeeperDataGrid context) return;
         if (e.Source is not Control contextSource) return;
+        if (contextSource.FindAncestorOfType<DataGridColumnHeader>() is DataGridColumnHeader header)
+        {
+            if (this.GetPrivateProperty("ColumnsInternal") is object columnsInternal)             //DataGridColumnCollection columnsInternal
+            {
+                double cellsWidth = this.GetPrivateProperty<double>("CellsWidth");
+                double cellsWidthVisable = columnsInternal.GetPrivateProperty<double>("VisibleEdgedColumnsWidth");           
+                if (!AreClose(cellsWidth, cellsWidthVisable))
+                {
+                    columnsInternal.SetPrivateProperty("VisibleEdgedColumnsWidth", cellsWidth);
+                }
+            }
+        }
         if (contextSource.FindAncestorOfType<DataGridRow>() is not DataGridRow row) return;
 
         bool overGrid = this.IsPointerOver;
@@ -138,6 +154,7 @@ public class KeeperDataGrid : DataGrid
         else
         {
             e.Handled = true;
+            Debug.WriteLine($"DataGrid:Released Handled:{e.Handled} IsPointerOver");
             return;
         }
 
@@ -167,7 +184,8 @@ public class KeeperDataGrid : DataGrid
             }
         }
         //e.Handled = true;
-        Debug.WriteLine("KeeperDataGrid Released");
+        Debug.WriteLine($"DataGrid:Released Handled:{e.Handled}");
+
     }
     protected override void OnSelectionChanged(SelectionChangedEventArgs e)
     {

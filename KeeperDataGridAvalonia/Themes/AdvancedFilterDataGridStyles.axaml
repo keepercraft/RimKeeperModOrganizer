@@ -28,14 +28,14 @@
             </ResourceDictionary.ThemeDictionaries>
 
             <ControlTheme x:Key="{x:Type DataGridColumnHeader}" TargetType="DataGridColumnHeader">
-              <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
-              <!--<Setter Property="HorizontalContentAlignment" Value="Left" />-->
-              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-              <Setter Property="VerticalContentAlignment" Value="Center" />
-              <Setter Property="SeparatorBrush" Value="{DynamicResource ThemeControlLowColor}" />
-              <Setter Property="Padding" Value="4" />
-              <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}" />
-              <Setter Property="Template">
+			    <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
+                <!--<Setter Property="HorizontalContentAlignment" Value="Left" />-->
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="SeparatorBrush" Value="{DynamicResource ThemeControlLowColor}" />
+				<Setter Property="Padding" Value="4" />
+                <Setter Property="Background" Value="{DynamicResource ThemeControlMidBrush}" />
+                <Setter Property="Template">
                 <ControlTemplate>
                   <Border x:Name="HeaderBorder"
                           Background="{TemplateBinding Background}"
@@ -68,16 +68,18 @@
                                 Data="F1 M -5.215,6.099L 5.215,6.099L 0,0L -5.215,6.099 Z "
                                 Fill="{TemplateBinding Foreground}"
                                 Stretch="Uniform" />
+							
+							<!--<TextBlock Grid.Column="1" Text="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.Width?.Value,TargetNullValue='?',FallbackValue='-',UpdateSourceTrigger=PropertyChanged}" />-->
                         </Grid>               
 
                         <TextBox x:Name="FilterTextBox" Margin="0,0,0,0"
                                 Watermark="Filter..." 
-                                IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowFilter,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"
+                                IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowFilter,TargetNullValue=False,FallbackValue=False,UpdateSourceTrigger=PropertyChanged}"
                                 Text="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.FilterValue,TargetNullValue='',Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
 
                         <ComboBox x:Name="FilterSelectBox"
 								bahaviors:DragAndDropBehavior.BlockGridDrag="True"
-                                IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowSelectBoxFilter,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"
+                                IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowSelectBoxFilter,TargetNullValue=False,FallbackValue=False,UpdateSourceTrigger=PropertyChanged}"
                                 ItemsSource="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.SelectBoxFilterList,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"
                                 ItemTemplate="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.SelectBoxItemTemplate,UpdateSourceTrigger=PropertyChanged}"
                                 SelectedItem="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.FilterValue, Mode=TwoWay,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"/>
@@ -95,6 +97,7 @@
                 </ControlTemplate>
               </Setter>
 
+				
               <Style Selector="^:focus-visible /template/ Grid#FocusVisual">
                 <Setter Property="IsVisible" Value="True" />
               </Style>
@@ -109,7 +112,11 @@
 
               <Style Selector="^:dragIndicator">
                 <Setter Property="Opacity" Value="0.5" />
-              </Style>
+			  </Style>
+
+				<Style Selector="^:dragIndicator /template/ TextBox#FilterTextBox">
+					<!--<Setter Property="Background" Value="Red"/>-->
+				</Style>
 
               <Style Selector="^:sortascending /template/ Path#SortIcon">
                 <Setter Property="IsVisible" Value="True" />

@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Markup.Xaml.Templates;
@@ -18,7 +17,6 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
     {
         Width = new DataGridLength(1, DataGridLengthUnitType.Star);
         ColumnIndexProperty.Changed.AddClassHandler<AdvancedFilterDataGrid>((x, e) => x.OnColumnsColumnIndexChanged(e));
-        
         this.HeaderPointerPressed += (s, e) =>
         {
             if (e.GetCurrentPoint(null).Properties.IsRightButtonPressed)
@@ -29,8 +27,10 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
             }
         };
     }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        //Debug.WriteLine($"AdvancedFilterDataGrid:OnPropertyChanged {change.Property.Name}");
         base.OnPropertyChanged(change);
 
         if (change.Property == FilterValueProperty)
@@ -61,6 +61,7 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
                     break;
                 }
             }
+            //Debug.WriteLine($"AdvancedFilterDataGrid:ShowSelectBoxFilter");
         }
         //}
         //var property = change.Property.Name;
@@ -95,14 +96,15 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
     }
 
     private bool _isInternalUpdate;
+    private bool LockColumnsWidth => (OwningGrid as KeeperDataGrid)?.LockColumnsWidth ?? false;
 
     private void OnWidthTextChanged(string? newStr)
     {
+        if (LockColumnsWidth) return;
         if (_isInternalUpdate || string.IsNullOrWhiteSpace(newStr)) return;
         if (newStr.Equals("NaN", StringComparison.OrdinalIgnoreCase)) return;
         try
         {
-            Debug.WriteLine("AdvancedFilterDataGrid:OnWidthTextChanged: " + this.Key + " v" + newStr.ToString());
             var length = (DataGridLength?)_lengthConverter.ConvertFromInvariantString(newStr);
             if (length.HasValue)
             {
@@ -110,17 +112,16 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
                 Width = length.Value;
                 _isInternalUpdate = false;
             }
+            Debug.WriteLine($"AdvancedFilterDataGrid->Width: k:{this.Key} s:{newStr} l:{length?.Value} w:{Width}");
         }
-        catch { }
+        catch 
+        { 
+        }
     }
 
     private void OnWidthChanged(DataGridLength currentWidth)
     {
-        //Debug.WriteLine("AdvancedFilterDataGrid:OnWidthChanged: " + this.Key
-        //    + " v"       + currentWidth.Value 
-        //    + " display" + currentWidth.DisplayValue
-        //    + " desire"  + currentWidth.DesiredValue);
-
+        if (LockColumnsWidth) return;
         if (_isInternalUpdate) return;
         if (currentWidth.IsAbsolute && double.IsNaN(currentWidth.Value)) return;
         string newWidthText = currentWidth.ToXamlString();
@@ -129,6 +130,7 @@ public class AdvancedFilterDataGrid : DataGridTextColumn
             _isInternalUpdate = true;
             WidthText = newWidthText;
             _isInternalUpdate = false;
+           Debug.WriteLine($"AdvancedFilterDataGrid->WidthText: k:{this.Key} s:{currentWidth.Value} w:{WidthText}!={newWidthText}");
         }
     }
     #endregion

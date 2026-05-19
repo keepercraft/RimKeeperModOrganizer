@@ -144,6 +144,7 @@
         <Setter Property="ToolTip.ShowDelay" Value="0"/>
 		<Style Selector="^:not(.has_alert)">
 			<Setter Property="Background" Value="{Binding Data.Color}"/>
+			<Setter Property="IsHitTestVisible" Value="True"/>
 			<!--<Setter Property="Foreground" Value="{DynamicResource ThemeForegroundColor}"/>-->
 		</Style>
         <Style Selector="^.has_alert">
@@ -152,7 +153,7 @@
             <Setter Property="FontWeight" Value="Bold"/>
 			<Setter Property="ToolTip.ShowDelay" Value="0"/>
 			<Setter Property="ToolTip.BetweenShowDelay" Value="0"/>
-
+			
             <Setter Property="ToolTip.Tip">
                 <Template>
                     <Border IsHitTestVisible="False" Padding="5" Background="{Binding Alerts.Color}" BorderBrush="{DynamicResource ThemeBorderMidColor}" BorderThickness="1">

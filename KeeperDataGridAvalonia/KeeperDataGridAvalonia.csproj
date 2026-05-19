@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!--<ProjectReference Include="..\..\..\GitHub\Avalonia.Controls.DataGrid\src\Avalonia.Controls.DataGrid\Avalonia.Controls.DataGrid.csproj" />-->
     <ProjectReference Include="..\KeeperBaseSheredLib\KeeperBaseSheredLib.csproj" />
   </ItemGroup>
 

@@ -15,7 +15,10 @@ public static class DragAndDropBehavior
         {
             if ((bool)e.NewValue!)
             {
-                ctrl.PointerPressed += (_, ev) => ev.Handled = true;
+                ctrl.PointerPressed += (_, ev) =>
+                {
+                    ev.Handled = true;
+                };
             }
         });
     }
