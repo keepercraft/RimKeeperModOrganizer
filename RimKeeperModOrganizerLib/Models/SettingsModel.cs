@@ -24,7 +24,7 @@ public class SettingsModel : PropertyModel
         { new ColumnSettings("Name","label")  },
         { new ColumnSettings("Author","author") },
         { new ColumnSettings("Packageid","packageid") },
-        { new ColumnSettings("Varsion","versions") },
+        { new ColumnSettings("Version","versions") },
         { new ColumnSettings("","color") }
     };
 }

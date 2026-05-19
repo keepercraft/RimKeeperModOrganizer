@@ -452,6 +452,7 @@
                     CanUserReorderColumns="True"
                     CanUserResizeColumns="True"
                     IsReadOnly="True"
+					VerticalScrollBarVisibility="Visible"	
                     AutoGenerateColumns="False">  
               <DataGrid.Columns>
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Location}" x:DataType="ml:ModModel" Key="type"
@@ -489,6 +490,7 @@
                     CanUserReorderColumns="True"
                     CanUserResizeColumns="True"
                     IsReadOnly="True"
+					VerticalScrollBarVisibility="Visible"		
                     AutoGenerateColumns="False">  
               <DataGrid.Columns>
                 <kdg:AdvancedFilterDataGrid Binding="{Binding Location}" x:DataType="ml:ModModel"
