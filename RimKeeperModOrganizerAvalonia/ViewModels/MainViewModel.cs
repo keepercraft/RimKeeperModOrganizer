@@ -32,6 +32,8 @@ public class MainViewModel : PropertyModel
     public ObservableCollection<ModModel> Items { get; set; } = new();
     public IDataGridCollectionView ModsConfigCollection { get; }
     public IDataGridCollectionView ModsCollection { get; }
+
+    public ObservableCollection<ModModel> SelectedMods { get; set; } = new();  //public IEnumerable<ModModel> SelectedMods => SelectedItems?.Cast<ModModel>() ?? (SelectedMod != null ? [SelectedMod] : Enumerable.Empty<ModModel>());
     private ModModel? _selectedMod;
     public ModModel? SelectedMod
     {
@@ -43,10 +45,12 @@ public class MainViewModel : PropertyModel
             OnPropertyChanged(nameof(IsSelectedMod));
         }
     }
-    public bool IsSelectedMod => SelectedMod != null;
+    public bool IsSelectedMod => SelectedMod != null;//|| SelectedMods.Any();
+
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
     public List<string> ModTypeIconsList { get; set; } = new();
+    public List<string> ModColorIconsList => [string.Empty, ..ModColors];
     public bool SteamServiceReady => _steamService?.IsLibraryLoaded ?? false;
 
     private readonly JsonAutoSaver _autoSaver;
@@ -108,7 +112,10 @@ public class MainViewModel : PropertyModel
 
         ModsCollection.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(GetModListStaticLable));
         ModsConfigCollection.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(GetModConfigStaticLable));
-
+        ModColors.CollectionChanged += (s, e) =>
+        {
+            //RaisePropertyChanged(nameof(ModColorIconsList));
+        };
         ModTypeIconsList.AddRange(new[]
         {
             string.Empty,
@@ -193,6 +200,7 @@ public class MainViewModel : PropertyModel
         RaisePropertyChanged(nameof(GetModConfigStaticColor));
         RaisePropertyChanged(nameof(GetModConfigStaticLable));
         RaisePropertyChanged(nameof(GetModListStaticLable));
+        //RaisePropertyChanged(nameof(ModColorIconsList));
     }
     #endregion
 
@@ -322,16 +330,8 @@ public class MainViewModel : PropertyModel
     }));
     public CustomCommand ChangeColorCommand => new CustomCommand(p => UILock(() =>
     {
-        if (p != null && p is ModModel model) SelectedMod = model;
-        if (SelectedMod == null) return;
-        ModColors.Clear();
-        foreach (var item in Items
-            .Where(x => x.Data != null).Where(x => x.Data.IsNotNull())
-            .Select(s => s.Data.Color).Where(w => !string.IsNullOrEmpty(w)).Distinct())
-        {
-            ModColors.Add(item);
-        }
-        //new ChangeColorWindow(this).ShowDialog();
+        //if (p != null && p is ModModel model) SelectedMod = model;
+        if (!SelectedMods.Any() || SelectedMod == null) return;
         OpenDialog.ShowDialog<ChangeColorWindow>(this);       
     }));
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
@@ -463,7 +463,10 @@ public class MainViewModel : PropertyModel
                 {
                     if (result == MessageBoxResult.Yes)
                     {
-                        model.Data = null;
+                        foreach (var model in SelectedMods)
+                        {
+                            model.Data = null;
+                        }
                     }
                 }
             );
@@ -476,7 +479,11 @@ public class MainViewModel : PropertyModel
         {
             Task.Run(() => UILock(() =>
             {
-                _modsServices.RefreshMod(model);
+                foreach (var model in SelectedMods)
+                {
+                    _modsServices.RefreshMod(model);
+                }
+                //_modsServices.RefreshMod(model);
             }));
         }
     });
@@ -487,16 +494,19 @@ public class MainViewModel : PropertyModel
         {
             Task.Run(() => UILock(async () =>
             {
-                bool result = _steamService.TryInitializeParse(SelectedMod = model, (c, p) => c.SubscribeItem(p));
-                if (result)
+                foreach (var model in SelectedMods)
                 {
-                    //string xpath = _settingsService.Settings.PathDirModsSteam + ID
-                    string xpath = model.Path;
-                    await Task.Delay(1000);
-                    bool fileExists = await TaskHelper.WaitDirectoryExist(xpath);
-                    var newmod = new ModModel(xpath, ModLocation.Steam);
-                    model.Update(newmod);
-                    model.RaisePropertyChanged();
+                    bool result = _steamService.TryInitializeParse(SelectedMod = model, (c, p) => c.SubscribeItem(p));
+                    if (result)
+                    {
+                        //string xpath = _settingsService.Settings.PathDirModsSteam + ID
+                        string xpath = model.Path;
+                        await Task.Delay(1000);
+                        bool fileExists = await TaskHelper.WaitDirectoryExist(xpath);
+                        var newmod = new ModModel(xpath, ModLocation.Steam);
+                        model.Update(newmod);
+                        model.RaisePropertyChanged();
+                    }
                 }
             }));
         }
@@ -507,14 +517,17 @@ public class MainViewModel : PropertyModel
         {
             Task.Run(() => UILock(async () =>
             {
-                bool result = _steamService.TryInitializeParse(SelectedMod = model, (c, p) => c.UnsubscribeItem(p));
-                if (result)
+                foreach (var model in SelectedMods)
                 {
-                    //await Task.Delay(1000);
-                    //Directory.Delete(model.Path);
-                    //bool fileExists = await TaskHelper.WaitDirectoryNotExist(model.Path);
-                    model.Location = model.Data != null ? ModLocation.MetaData : ModLocation.Unknow;
-                    model.RaisePropertyChanged();
+                    bool result = _steamService.TryInitializeParse(SelectedMod = model, (c, p) => c.UnsubscribeItem(p));
+                    if (result)
+                    {
+                        //await Task.Delay(1000);
+                        //Directory.Delete(model.Path);
+                        //bool fileExists = await TaskHelper.WaitDirectoryNotExist(model.Path);
+                        model.Location = model.Data != null ? ModLocation.MetaData : ModLocation.Unknow;
+                        model.RaisePropertyChanged();
+                    }
                 }
             }));
         }

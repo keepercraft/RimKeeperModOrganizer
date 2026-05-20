@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media.TextFormatting;
 namespace KeeperDataGridAvalonia.Behaviors;
 
 public static class DragAndDropBehavior

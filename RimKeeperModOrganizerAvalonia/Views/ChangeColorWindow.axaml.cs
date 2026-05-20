@@ -2,9 +2,11 @@
 using Avalonia.Interactivity;
 using ColorPicker;
 using RimKeeperModOrganizerAvalonia.Converters;
+using RimKeeperModOrganizerAvalonia.Extensions;
 using RimKeeperModOrganizerAvalonia.ViewModels;
 using RimKeeperModOrganizerLib.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 namespace RimKeeperModOrganizerAvalonia.Views;
 
@@ -23,8 +25,9 @@ public partial class ChangeColorWindow : Window
     {
         if (DataContext is MainViewModel vm)
         {
-            Title = vm.SelectedMod?.About?.Name ?? "NO MOD";
+            Title = vm.SelectedMods.Count > 1 ? $"({vm.SelectedMods.Count}) Mods Selected" : vm.SelectedMod?.About?.Name ?? "NO MOD";
             SetStringColor(ModColorActualSelected);
+            UpdateColor(vm);
             BtnList.IsEnabled = !string.IsNullOrEmpty(ModColorListSelected);
         }
     }
@@ -33,14 +36,40 @@ public partial class ChangeColorWindow : Window
 
     public string? ModColorActualSelected
     {
-        get => (DataContext as MainViewModel)?.SelectedMod?.Data?.Color;
+        get
+        {
+            if (DataContext is not MainViewModel vm) return null;
+            if (vm.SelectedMods != null && vm.SelectedMods.Count > 1)
+            {
+                var color = vm.SelectedMods
+                    .GroupBy(s => s?.Data?.Color)
+                    .OrderByDescending(s => s.Count())
+                    .Select(s => s.Key)
+                    .Where(s => s != null)
+                    .FirstOrDefault();
+                if (!string.IsNullOrEmpty(color)) return color;
+            }
+            return vm.SelectedMod?.Data?.Color; //return (DataContext as MainViewModel)?.SelectedMod?.Data?.Color;
+        }
         set
         {
             if (DataContext is not MainViewModel vm) return;
-            if (vm.SelectedMod?.Data == null) vm.SelectedMod?.MakeData();
-            if (vm.SelectedMod?.Data == null) return;
-            vm.SelectedMod.Data.Color = value;
+            if (vm.SelectedMods != null)
+            {
+                foreach (var item in vm.SelectedMods)
+                {
+                    if (item == null) continue;
+                    if (item?.Data == null) item?.MakeData();
+                    item.Data.Color = value;
+                }
+            }
+            else //maybe never happens, but just in case
+            {
+                if (vm.SelectedMod?.Data == null) vm.SelectedMod?.MakeData();
+                vm.SelectedMod?.Data?.Color = value;
+            }
             vm.SelectedMod.RaisePropertyChanged();
+            UpdateColor(vm);
         }
     }
 
@@ -122,5 +151,17 @@ public partial class ChangeColorWindow : Window
                 item.Data.Color = null;
             }
         }
+    }
+
+    private bool UpdateColor(MainViewModel vm)
+    {
+        IEnumerable<string> items = vm.Items
+            .Where(x => x.Data != null && x.Data.IsNotNull())
+            .Select(x => x.Data.Color)
+            .Where(color => !string.IsNullOrEmpty(color))
+            .Distinct();
+        var b = vm.ModColors.SyncWith<string>(items);
+        if (b) vm.RaisePropertyChanged(nameof(MainViewModel.ModColorIconsList));
+        return b;
     }
 }

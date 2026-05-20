@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Generators;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -11,7 +12,7 @@ using KeeperBaseSheredLib.Reflection;
 using KeeperDataGridAvalonia.Extensions;
 using KeeperDataGridAvalonia.Models;
 using System.Collections;
-using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;   
 using System.Collections.Specialized;
 using System.Diagnostics;
 namespace KeeperDataGridAvalonia;
@@ -27,6 +28,14 @@ public class KeeperDataGrid : DataGrid
     {
         add { AddHandler(PointerPressedSelectionEvent, value); }
         remove { RemoveHandler(PointerPressedSelectionEvent, value); }
+    }
+
+    public static readonly StyledProperty<IEnumerable?> GridSelectedItemsProperty =
+        AvaloniaProperty.Register<AdvancedFilterDataGrid, IEnumerable?>(nameof(GridSelectedItems));
+    public IEnumerable? GridSelectedItems
+    {
+        get => GetValue(GridSelectedItemsProperty);
+        set => SetValue(GridSelectedItemsProperty, value);
     }
 
     public bool LockColumnsWidth { get; set; } = false;
@@ -45,6 +54,7 @@ public class KeeperDataGrid : DataGrid
         VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
         [ToolTip.TipProperty] = "Reset",
         Margin = new Thickness(0,3,6,0)
+
     };
 
     protected override Type StyleKeyOverride => typeof(DataGrid);
@@ -66,6 +76,14 @@ public class KeeperDataGrid : DataGrid
             this.LogicalChildren.Add(item);
             AdornerLayer.SetAdornedElement(item, this);
             layer.Children.Add(item);          
+        };
+        KeyDown += (sender, e) =>
+        {
+            if (e.Key == Key.Apps)
+            {
+                DataGridRow? rowContainer = this.GetVisualDescendants().FirstOrDefault(w => w is DataGridRow row && Equals(row.DataContext, SelectedItem)) as DataGridRow;
+                rowContainer?.ContextMenu?.Open(rowContainer);
+            }
         };
     }
 
@@ -112,10 +130,9 @@ public class KeeperDataGrid : DataGrid
         }
         else
         {
-            RisePointerPressedSelectionEvent();
+            if (e.Properties.IsLeftButtonPressed) RisePointerPressedSelectionEvent();
             e.Handled = true;
             _isHandlingPointerSelection = true;
-
         }
 
         //var header = (e.Source as Visual)?.FindAncestorOfType<DataGridColumnHeader>();
@@ -148,6 +165,7 @@ public class KeeperDataGrid : DataGrid
         if (contextSource.FindAncestorOfType<DataGridRow>() is not DataGridRow row) return;
 
         bool overGrid = this.IsPointerOver;
+
         if (row != null && row.IsPointerOver)
         {
         }
@@ -157,6 +175,8 @@ public class KeeperDataGrid : DataGrid
             Debug.WriteLine($"DataGrid:Released Handled:{e.Handled} IsPointerOver");
             return;
         }
+
+        if (e.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased) return;
 
         var contextRow = contextSource.FindAncestorOfType<DataGridRow>()?.DataContext;
         if (contextRow != null)
@@ -183,6 +203,9 @@ public class KeeperDataGrid : DataGrid
                 RisePointerPressedSelectionEvent();
             }
         }
+
+        
+
         //e.Handled = true;
         Debug.WriteLine($"DataGrid:Released Handled:{e.Handled}");
 
@@ -194,6 +217,18 @@ public class KeeperDataGrid : DataGrid
         {
             Debug.WriteLine("KeeperDataGrid Pinter-Selection");
             RisePointerPressedSelectionEvent();
+        }
+        
+        if (GridSelectedItems is IList targetList) //GridSelectedItems = base.SelectedItems.Cast<object>().ToList();
+        {
+            foreach (var removedItem in e.RemovedItems)  
+                targetList.Remove(removedItem);
+            foreach (var addedItem in e.AddedItems) 
+                targetList.Add(addedItem);
+        }
+        else if (GridSelectedItems == null && base.SelectedItems.Count > 0)
+        {
+            GridSelectedItems = base.SelectedItems.Cast<object>().ToList();
         }
     }
 

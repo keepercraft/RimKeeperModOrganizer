@@ -41,6 +41,17 @@ public partial class MainWindow : Window
         ModsGrid.AddHandler(PointerMovedEvent, DataGrid_Popup_PointerMoved, RoutingStrategies.Tunnel);
         ModsGridConfig.AddHandler(PointerMovedEvent, DataGrid_Popup_PointerMoved, RoutingStrategies.Tunnel);
         //this.PointerMoved += DataGrid_Popup_PointerMoved; 
+
+        ModsGrid.AddHandler(PointerPressedEvent, DataGrid_PointerPressedSelection_ComboBox, RoutingStrategies.Tunnel);
+        ModsGridConfig.AddHandler(PointerPressedEvent, DataGrid_PointerPressedSelection_ComboBox, RoutingStrategies.Tunnel);
+    }
+
+    private async void DataGrid_PointerPressedSelection_ComboBox(object? sender, PointerPressedEventArgs e)
+    {
+        if (DataContext is not MainViewModel context) return;
+        if ((e.Source as Visual)?.FindAncestorOfType<ComboBox>() is not ComboBox comboBox) return;
+        if (comboBox.Name == "FilterSelectBox") 
+            context.RaisePropertyChanged(nameof(MainViewModel.ModColorIconsList));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -57,8 +68,8 @@ public partial class MainWindow : Window
             ModsGridConfig?.LockColumnsWidth = (Content == null);
         }
 
-        var property = change.Property.Name;
-        var newvalue = change.NewValue;
+        //var property = change.Property.Name;
+        //var newvalue = change.NewValue;
         //Debug.WriteLine(">>"+ property+" - "+ newvalue + " :::: " + this.Position.X +":"+ this.Position.Y);
     }
 

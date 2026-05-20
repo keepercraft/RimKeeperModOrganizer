@@ -77,7 +77,7 @@
                                 IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowFilter,TargetNullValue=False,FallbackValue=False,UpdateSourceTrigger=PropertyChanged}"
                                 Text="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.FilterValue,TargetNullValue='',Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <ComboBox x:Name="FilterSelectBox"
+                        <ComboBox x:Name="FilterSelectBox" Padding="0,0,0,0" Height="25" MaxWidth="25"
 								bahaviors:DragAndDropBehavior.BlockGridDrag="True"
                                 IsVisible="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.ShowSelectBoxFilter,TargetNullValue=False,FallbackValue=False,UpdateSourceTrigger=PropertyChanged}"
                                 ItemsSource="{Binding $parent[DataGridColumnHeader]?.OwningColumn?.SelectBoxFilterList,TargetNullValue=False,UpdateSourceTrigger=PropertyChanged}"

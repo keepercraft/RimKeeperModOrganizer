@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 namespace RimKeeperModOrganizerAvalonia.Extensions;
 
 public static class ListExtension
@@ -27,5 +29,25 @@ public static class ListExtension
         foreach (T item in collection)
             selector(item)?.PropertyChanged -= handler;
         collection.Clear();
+    }
+
+    public static bool SyncWith<T>(this IList<T> target, IEnumerable<T> source)
+    {
+        var srcSet = source as HashSet<T> ?? source.ToHashSet();
+        bool changed = false;
+        for (int i = target.Count - 1; i >= 0; i--)
+            if (!srcSet.Contains(target[i]))
+            {
+                target.RemoveAt(i);
+                changed = true;
+            }
+
+        foreach (var item in srcSet)
+            if (!target.Contains(item))
+            {
+                target.Add(item);
+                changed = true;
+            }
+        return changed;
     }
 }
