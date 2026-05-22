@@ -1,10 +1,12 @@
-﻿using System;
-using System.ComponentModel;
-using Avalonia;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Styling;
 using RimKeeperModOrganizerLib.Models;
 using RimKeeperModOrganizerLib.Services;
+using System;
+using System.ComponentModel;
+using System.Linq;
 namespace RimKeeperModOrganizerAvalonia.Services;
 
 public class ThemeService
@@ -13,7 +15,7 @@ public class ThemeService
     private Application _application => Application.Current!;
     private SettingsModel _settingsModel => _settingsService.Settings;
 
-    public bool ReloadMainwindow { get; set; } = true;
+    private bool ReloadMainwindowStyle { get; set; } = true;
 
     public ThemeService(SettingsService SettingsService)    
     {
@@ -49,7 +51,7 @@ public class ThemeService
             _settingsModel.RaisePropertyChanged(nameof(_settingsModel.WindowTheme));
             _settingsService.Save();
         }
-        if (ReloadMainwindow) ReloadMainWindow();
+        if (ReloadMainwindowStyle) ReloadMainWindowStyle();
     }
 
     public void SetTheme(ThemeVariant theme) => _application.RequestedThemeVariant = theme;
@@ -60,7 +62,7 @@ public class ThemeService
         ? ThemeVariant.Dark
         : ThemeVariant.Light);
 
-    public void ReloadMainWindow()
+    public void ReloadMainWindowContent()
     {
         var desktop = _application.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
         var window = desktop?.MainWindow;
@@ -69,5 +71,15 @@ public class ThemeService
         window.Content = null;
         window.Content = content;
         window.InvalidateVisual();
+    }
+
+    public void ReloadMainWindowStyle()
+    {
+        var app = Application.Current;
+        if (app == null) return;
+        var oldStyles = app.Styles.ToList();
+        app.Styles.Clear();
+        foreach (var style in oldStyles)
+            app.Styles.Add(style);
     }
 }

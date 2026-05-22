@@ -113,6 +113,7 @@ public partial class MainWindow : Window
     private async void DataGrid_PointerPressedSelection(object? sender, PointerPressedEventArgs e)
     {
         if (sender is not DataGrid context) return;
+        if (!e.Properties.IsLeftButtonPressed) return;
         _drag_Popup_Start_Position = e.GetPosition(this);
         Debug.WriteLine("DataGrid_OnPointerPressed> items:" + context.SelectedItems.Count);
     }
@@ -120,6 +121,7 @@ public partial class MainWindow : Window
     {
         if (sender is not DataGrid drag_source) return;
         if (_drag_Popup_Start_Position == null) return;
+        if (!e.Properties.IsLeftButtonPressed) return;
         if (_drag_Popup != null)
         {
             var tt = (sender as DataGrid);
