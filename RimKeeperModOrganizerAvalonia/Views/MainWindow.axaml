@@ -426,20 +426,27 @@
 					</Viewbox>
 				</MenuItem.Header>
 			</MenuItem>-->
-            <MenuItem ToolTip.Tip="Refresh" Width="30" Command="{Binding RefreshCommand}">
+            <MenuItem ToolTip.Tip="Refresh Mod List" Width="30" Command="{Binding RefreshCommand}">
                 <MenuItem.Header>
                     <Viewbox>
                         <Image Source="{StaticResource RefreshIcon}"/>
                     </Viewbox>
                 </MenuItem.Header>
             </MenuItem>
-            <MenuItem ToolTip.Tip="Save" Width="30" Command="{Binding SaveActiveModlistCommand}">
+            <MenuItem ToolTip.Tip="Save Loudout" Width="30" Command="{Binding SaveActiveModlistCommand}">
                 <MenuItem.Header>
                     <Viewbox>
                         <Image Source="{StaticResource SaveIcon}"/>
                     </Viewbox>
                 </MenuItem.Header>
             </MenuItem>
+			<MenuItem ToolTip.Tip="Run Rimworld" Width="30" Command="{Binding RunAppCommand}">
+				<MenuItem.Header>
+					<Viewbox>
+						<Image Source="{StaticResource RunAppIcon}"/>
+					</Viewbox>
+				</MenuItem.Header>
+			</MenuItem>
         </Menu>
 
         <kdg:KeeperDataGrid Grid.Column="2" Grid.Row="1" x:Name="ModsGrid" 

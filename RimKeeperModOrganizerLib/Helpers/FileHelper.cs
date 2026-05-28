@@ -1,7 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using KeeperBaseSheredLib.Reflection;
+using Microsoft.Win32;
 using RimKeeperModOrganizerLib.Models;
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 namespace RimKeeperModOrganizerLib.Helpers;
 
 public static class FileHelper
@@ -231,6 +234,19 @@ public static class FileHelper
         if (path is string txt && !string.IsNullOrEmpty(txt))
             OpenLink($"steam://openurl/{txt}");
     }
+
+    public static void OpenRimworldGame(object? gamePath)
+    {
+        if (gamePath is string path && !string.IsNullOrEmpty(path))
+        {
+            var exePath = Directory.GetFiles(path, "RimWorld*.exe")
+                .OrderByDescending(Path.GetFileName)
+                .FirstOrDefault();
+            if (!string.IsNullOrEmpty(exePath))
+                OpenLink(exePath);
+        }
+    }
+
     public static void OpenLink(object? path)
     {
         if(path is string txt && !string.IsNullOrEmpty(txt))

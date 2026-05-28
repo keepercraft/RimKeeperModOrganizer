@@ -46,6 +46,7 @@ public class MainViewModel : PropertyModel
         }
     }
     public bool IsSelectedMod => SelectedMod != null;//|| SelectedMods.Any();
+    public ModDataCopyModel? ModDataCopy { get; set; }
 
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
@@ -310,6 +311,17 @@ public class MainViewModel : PropertyModel
     public CustomCommand ChangeTheme => new CustomCommand(_themeService.SwitchTheme);
     public CustomCommand OpenSteamLinkCommand => new CustomCommand(FileHelper.OpenSteamLink);
     public CustomCommand OpenLinkCommand => new CustomCommand(FileHelper.OpenLink);
+    public CustomCommand RunAppCommand => new CustomCommand(()=>FileHelper.OpenRimworldGame(_settingsService.Settings.PathDirGame));
+    public CustomCommand MoveToLocalCommand => new CustomCommand(p => UILock(() =>
+    {
+        foreach (var mod in SelectedMods)
+        {
+
+
+
+
+        }
+    }));
     public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() =>
     {
         //    new ModDetailWindow(this).ShowDialog(); 

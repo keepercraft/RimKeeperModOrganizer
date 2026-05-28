@@ -81,3 +81,11 @@ public class ModDataModel : PropertyModel
         }
     }
 }
+
+public class ModDataCopyModel
+{
+    public string? Color { get; set; }
+    public string? Comment { get; set; }
+    public string[]? Groups { get; set; }
+    public string[]? PackageGroups { get; set; }
+}
