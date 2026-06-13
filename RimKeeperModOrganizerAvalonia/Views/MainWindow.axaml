@@ -426,6 +426,13 @@
 					</Viewbox>
 				</MenuItem.Header>
 			</MenuItem>-->
+			<!--<MenuItem ToolTip.Tip="TEST" Width="30" Command="{Binding TestCommand}">
+				<MenuItem.Header>
+					<Viewbox>
+						<Image Source="{StaticResource BugIcon}"/>
+					</Viewbox>
+				</MenuItem.Header>
+			</MenuItem>-->
             <MenuItem ToolTip.Tip="Refresh Mod List" Width="30" Command="{Binding RefreshCommand}">
                 <MenuItem.Header>
                     <Viewbox>

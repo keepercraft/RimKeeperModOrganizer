@@ -8,7 +8,7 @@
 		x:DataType="vm:SettingsViewModel"
 		mc:Ignorable="d"
 		CanResize="False"
-		Height="450" Width="800"
+		Height="500" Width="800"
         Title="RimKeeper - ModOrganizer - Avalonia : Settings">
 	<Window.Styles>
 		<Style Selector="GroupBox">
@@ -24,51 +24,93 @@
 				<ScrollViewer>
 					<StackPanel Margin="5" VerticalAlignment="Top">
 
+						<GroupBox Header="Application Directory Localization">
+							<DockPanel>
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="LocalDirectory" />
+								<TextBox Text="{Binding LocalDirectory, Mode=OneWay}" IsReadOnly="True" />
+							</DockPanel>
+						</GroupBox>
+
 						<GroupBox Header="PathSettings">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathSettings}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathSettings" />
+								<Button ToolTip.Tip="change file" Height="27" Command="{Binding OpenFileCommand}" CommandParameter="PathSettings">
+									<Viewbox>
+										<Image Source="{StaticResource FileIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathSettings, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>
 
 						<GroupBox Header="PathModData">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathModData}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathModData" />
+								<Button ToolTip.Tip="change file" Height="27" Command="{Binding OpenFileCommand}" CommandParameter="PathModData">
+									<Viewbox>
+										<Image Source="{StaticResource FileIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathModData, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>
 
 						<GroupBox Header="PathDirSteam">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathDirSteam}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathDirSteam" />
+								<Button ToolTip.Tip="change directory" Height="27" Command="{Binding OpenFolderCommand}" CommandParameter="PathDirSteam">
+									<Viewbox>
+										<Image Source="{StaticResource FolderIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathDirSteam, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>
 
 						<GroupBox Header="PathDirGame">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathDirGame}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathDirGame" />
+								<Button ToolTip.Tip="change directory" Height="27" Command="{Binding OpenFolderCommand}" CommandParameter="PathDirGame">
+									<Viewbox>
+										<Image Source="{StaticResource FolderIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathDirGame, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>
 
 						<GroupBox Header="PathDirGameConfig">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathDirGameConfig}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathDirGameConfig" />
+								<Button ToolTip.Tip="change directory" Height="27" Command="{Binding OpenFolderCommand}" CommandParameter="PathDirGameConfig">
+									<Viewbox>
+										<Image Source="{StaticResource FolderIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathDirGameConfig, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>
 
 						<GroupBox Header="PathDirModsSteam">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathDirModsSteam}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathDirModsSteam" />
+								<Button ToolTip.Tip="change directory" Height="27" Command="{Binding OpenFolderCommand}" CommandParameter="PathDirModsSteam">
+									<Viewbox>
+										<Image Source="{StaticResource FolderIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathDirModsSteam, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>
 
 						<GroupBox Header="PathDirModsLocal">
 							<DockPanel>
-								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Data.PathDirModsLocal}" />
+								<Button Content="Open" Command="{Binding OpenLinkCommand}" CommandParameter="PathDirModsLocal" />
+								<Button ToolTip.Tip="change directory" Height="27" Command="{Binding OpenFolderCommand}" CommandParameter="PathDirModsLocal">
+									<Viewbox>
+										<Image Source="{StaticResource FolderIcon}" />
+									</Viewbox>
+								</Button>
 								<TextBox Text="{Binding Data.PathDirModsLocal, Mode=TwoWay}" behaviors:PathValidatorBehavior.Validate="True" />
 							</DockPanel>
 						</GroupBox>

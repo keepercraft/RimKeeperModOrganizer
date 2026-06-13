@@ -1,5 +1,5 @@
-﻿using System.Windows.Input;
-
+﻿using System.Diagnostics;
+using System.Windows.Input;
 namespace KeeperBaseSheredLib;
 
 public class CustomCommand : ICommand
@@ -8,6 +8,11 @@ public class CustomCommand : ICommand
     private readonly Action<object?> _execute;
     public event EventHandler? CanExecuteChanged;
 
+    public CustomCommand(Func<object?, object?> execute)
+    {
+        _execute = _ => execute(_);
+        _canExecute = _ => true;
+    }
     public CustomCommand(Action execute)
     {
         _execute = _ => execute();

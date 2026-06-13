@@ -1,10 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Collections;
+using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using KeeperBaseSharedLib.Models;
 using KeeperBaseSheredLib;
 using KeeperDataGridAvalonia.Extensions;
 using KeeperDataGridAvalonia.Models;
+using Microsoft.Extensions.DependencyInjection;
 using RimKeeperModOrganizerAvalonia.Extensions;
 using RimKeeperModOrganizerAvalonia.Helpers;
 using RimKeeperModOrganizerAvalonia.Services;
@@ -325,26 +329,28 @@ public class MainViewModel : PropertyModel
     public CustomCommand ModDetailCommand => new CustomCommand(p => UILock(() =>
     {
         //    new ModDetailWindow(this).ShowDialog(); 
-        OpenDialog.ShowDialog<ModDetailWindow>(this);
+        DialogService.ShowDialogWindow<ModDetailWindow>(this);
     }));
-    public CustomCommand OptionsCommand => new CustomCommand(p => UILock(() =>
+    public CustomCommand OptionsCommand => new CustomCommand(p =>//UILock(() =>
     {
         //    Program.Services.GetRequiredService<SettingsWindow>().ShowDialog();
         //OpenDialog.ShowDialog<SettingsWindow, SettingsViewModel>();
-        OpenDialog.ShowServiceDialog<SettingsWindow>();
+        DialogService.ShowDialogWindow<SettingsWindow>();
         //Program.Services.GetRequiredService<SettingsWindow>().ShowDialog();
         RaisePropertyChanged(nameof(ModColumnData));
-    }));
+    }
+    //)
+        );
     public CustomCommand AboutCommand => new CustomCommand(p => UILock(() =>
     {
-    //    Program.Services.GetRequiredService<AboutWindow>().ShowDialog();
-        OpenDialog.ShowDialog<AboutWindow>();
+        //    Program.Services.GetRequiredService<AboutWindow>().ShowDialog();
+        DialogService.ShowDialogWindow<AboutWindow>();
     }));
     public CustomCommand ChangeColorCommand => new CustomCommand(p => UILock(() =>
     {
         //if (p != null && p is ModModel model) SelectedMod = model;
         if (!SelectedMods.Any() || SelectedMod == null) return;
-        OpenDialog.ShowDialog<ChangeColorWindow>(this);       
+        DialogService.ShowDialogWindow<ChangeColorWindow>(this);       
     }));
     public CustomCommand RefreshCommand => new CustomCommand(p => LoadMods());
     public CustomCommand LoadActiveModlistCommand => new CustomCommand(p => UILock(() => ReloadModsConfig()));
@@ -359,16 +365,31 @@ public class MainViewModel : PropertyModel
 
     public CustomCommand LoadFileActiveModlistCommand => new CustomCommand(p => UILock(() =>
     {
-        var dialog = new OpenFileDialog
+        //var dialog = new OpenFileDialog
+        //{
+        //    InitialDirectory = _settingsService.Settings.PathModSettingsArchive,
+        //    Title = "Open file",
+        //    Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
+        //    FileName = "ModsConfig.xml"
+        //};
+        //dialog.ShowDialog((ok,filename) =>
+        //{
+        //    if (!ok) return;
+        //    if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
+        //    if (Items.Any())
+        //        ReloadModsConfig(filename);
+        //    else
+        //        LoadMods(filename);
+        //});
+        StorageDialog.OpenFileDialog(
+            filters: "XML (*.xml)|*.xml|All files (*.*)|*.*",
+            SuggestedFileName: "ModsConfig.xml",
+            startLocation: _settingsService.Settings.PathModSettingsArchive
+        ).ContinueWith(t =>
         {
-            InitialDirectory = _settingsService.Settings.PathModSettingsArchive,
-            Title = "Open file",
-            Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
-            FileName = "ModsConfig.xml"
-        };
-        dialog.ShowDialog((ok,filename) =>
-        {
-            if (!ok) return;
+            var result = t.Result;
+            if (result == null || !result.Any()) return;
+            var filename = result.First();
             if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
             if (Items.Any())
                 ReloadModsConfig(filename);
@@ -378,17 +399,29 @@ public class MainViewModel : PropertyModel
     }));
     public CustomCommand SaveFileActiveModlistCommand => new CustomCommand(p => UILock(() =>
     {
-        var dialog = new SaveFileDialog
+        //var dialog = new SaveFileDialog
+        //{
+        //    InitialDirectory = _settingsService.Settings.PathModSettingsArchive,
+        //    Title = "Save file",
+        //    Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
+        //    DefaultExt = ".xml",
+        //    FileName = "ModsConfig.xml"
+        //};
+        //dialog.ShowDialog((ok, filename) =>
+        //{
+        //    if (!ok) return;
+        //    if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
+        //    _modsServices.SaveConfig(Items, filename);
+        //});
+        StorageDialog.SaveFileDialog(
+            filters: "XML (*.xml)|*.xml|All files (*.*)|*.*",
+            SuggestedFileName: "ModsConfig.xml",
+            defaultExtension: ".xml",
+            startLocation: _settingsService.Settings.PathModSettingsArchive
+        ).ContinueWith(t =>
         {
-            InitialDirectory = _settingsService.Settings.PathModSettingsArchive,
-            Title = "Save file",
-            Filter = "XML (*.xml)|*.xml|All files (*.*)|*.*",
-            DefaultExt = ".xml",
-            FileName = "ModsConfig.xml"
-        };
-        dialog.ShowDialog((ok, filename) =>
-        {
-            if (!ok) return;
+            var filename = t.Result;
+            if (string.IsNullOrEmpty(filename)) return;
             if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathModSettingsArchive) _settingsService.Settings.PathModSettingsArchive = dir;
             _modsServices.SaveConfig(Items, filename);
         });
@@ -396,16 +429,31 @@ public class MainViewModel : PropertyModel
 
     public CustomCommand LoadRimpyColorsCommand => new CustomCommand(p => UILock(() =>
     {
-        var dialog = new OpenFileDialog
+        //var dialog = new OpenFileDialog
+        //{
+        //    InitialDirectory = _settingsService.Settings.PathRimpyManager,
+        //    Title = "Open file",
+        //    Filter = "ini |*.ini",
+        //    FileName = "config.ini"
+        //};
+        //dialog.ShowDialog((ok, filename) =>
+        //{
+        //    if (!ok) return;
+        //    if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathRimpyManager) _settingsService.Settings.PathRimpyManager = dir;
+        //    var data = _modsServices.LoadRimPyColors(filename);
+        //    foreach (var item in Items)
+        //        if (item.Path != null && item.Data != null && data.ContainsKey(item.Path))
+        //            item.Data.Color = data[item.Path];
+        //});
+        StorageDialog.OpenFileDialog(
+            filters: "ini |*.ini",
+            SuggestedFileName: "config.ini",
+            startLocation: _settingsService.Settings.PathRimpyManager
+            ).ContinueWith(t =>
         {
-            InitialDirectory = _settingsService.Settings.PathRimpyManager,
-            Title = "Open file",
-            Filter = "ini |*.ini",
-            FileName = "config.ini"
-        };
-        dialog.ShowDialog((ok, filename) =>
-        {
-            if (!ok) return;
+            var result = t.Result;
+            if (result == null || !result.Any()) return;
+            var filename = result.First();
             if (Path.GetDirectoryName(filename) is string dir && dir != _settingsService.Settings.PathRimpyManager) _settingsService.Settings.PathRimpyManager = dir;
             var data = _modsServices.LoadRimPyColors(filename);
             foreach (var item in Items)
@@ -415,32 +463,56 @@ public class MainViewModel : PropertyModel
     }));
     public CustomCommand ModsToCSVCommand => new CustomCommand(p => UILock(() =>
     {
-        if (!Items.Any()) return;
-        var dialog = new SaveFileDialog
+        //if (!Items.Any()) return;
+        //var dialog = new SaveFileDialog
+        //{
+        //    Title = "Zapisz plik",
+        //    Filter = "CSV (*.csv)|*.csv",
+        //    DefaultExt = ".xml",
+        //    FileName = "Mods.csv"
+        //};
+        //dialog.ShowDialog((ok, filename) =>
+        //{
+        //    if (!ok) return;
+        //    _modsServices.ExportCSVMods(Items, filename);
+        //});
+        StorageDialog.SaveFileDialog(
+            filters: "CSV (*.csv)|*.csv",
+            SuggestedFileName: "Mods.csv",
+            defaultExtension: ".csv"
+        ).ContinueWith(t =>
         {
-            Title = "Zapisz plik",
-            Filter = "CSV (*.csv)|*.csv",
-            DefaultExt = ".xml",
-            FileName = "Mods.csv"
-        };
-        dialog.ShowDialog((ok, filename) =>
-        {
-            if (!ok) return;
+            var filename = t.Result;
+            if (string.IsNullOrEmpty(filename)) return;
             _modsServices.ExportCSVMods(Items, filename);
         });
     }));
 
     public CustomCommand LoadMetaDataCommand => new CustomCommand(p => UILock(() =>
     {
-        var dialog = new OpenFileDialog
+        //var dialog = new OpenFileDialog
+        //{
+        //    Title = "Load local data",
+        //    Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
+        //    FileName = "RimKeeperModOrganizer LocalData.json"
+        //};
+        //dialog.ShowDialog((ok, filename) =>
+        //{
+        //    if (!ok) return;
+        //    if (p is string mode && mode == "reload")
+        //        ReloadModsData(filename);
+        //    else
+        //        LoadModsData(filename);
+        //    _modsServices.SaveLocalData(Items);
+        //});
+        StorageDialog.OpenFileDialog(
+            filters: "JSON (*.json)|*.json|All files (*.*)|*.*",
+            SuggestedFileName: "RimKeeperModOrganizer LocalData.json"
+            ).ContinueWith(t =>
         {
-            Title = "Load local data",
-            Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
-            FileName = "RimKeeperModOrganizer LocalData.json"
-        };
-        dialog.ShowDialog((ok, filename) =>
-        {
-            if (!ok) return;
+            var result = t.Result;
+            if (result == null || !result.Any()) return;
+            var filename = result.First();
             if (p is string mode && mode == "reload")
                 ReloadModsData(filename);
             else
@@ -450,16 +522,26 @@ public class MainViewModel : PropertyModel
     }));
     public CustomCommand SaveMetaDataCommand => new CustomCommand(p => UILock(() =>
     {
-        var dialog = new SaveFileDialog
+        //var dialog = new SaveFileDialog
+        //{
+        //    Title = "Save local data",
+        //    Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
+        //    DefaultExt = ".json",
+        //    FileName = "RimKeeperModOrganizer LocalData.json"
+        //};
+        //dialog.ShowDialog((ok, filename) =>
+        //{
+        //    if (!ok) return;
+        //    _modsServices.SaveLocalData(Items, filename);
+        //});
+        StorageDialog.SaveFileDialog(
+            filters: "JSON (*.json)|*.json|All files (*.*)|*.*",
+            SuggestedFileName: "RimKeeperModOrganizer LocalData.json",
+            defaultExtension: ".json"
+        ).ContinueWith(t =>
         {
-            Title = "Save local data",
-            Filter = "JSON (*.json)|*.json|All files (*.*)|*.*",
-            DefaultExt = ".json",
-            FileName = "RimKeeperModOrganizer LocalData.json"
-        };
-        dialog.ShowDialog((ok, filename) =>
-        {
-            if (!ok) return;
+            var filename = t.Result;
+            if (string.IsNullOrEmpty(filename)) return;
             _modsServices.SaveLocalData(Items, filename);
         });
     }));
@@ -545,32 +627,122 @@ public class MainViewModel : PropertyModel
         }
     });
 
-    public CustomCommand TestCommand => new CustomCommand(p => UILock(async () =>
+    public CustomCommand TestCommand => new CustomCommand(async p =>// UILock(async () =>
     {
-        var test_list = ModsCollectionColumns;
-        var t = Items
-            .Select(s => s.About?.SteamId)
-            .Where(w => !string.IsNullOrEmpty(w))
-            .Take(5)
-            .ToList();
+        return;
 
-        var pid = this.SelectedMod.About.SteamId;
-        if (ulong.TryParse(pid, out ulong pid_long))
+        var data = await StorageDialog.OpenFolderDialog( 
+            startLocation: _settingsService.Settings.PathDirSteam
+            );
+        return;
+
+
+        var window = Program.Services.GetRequiredService<MainWindow>();
+        var topLevel = TopLevel.GetTopLevel(window);
+        var options = new FolderPickerOpenOptions { Title = "test" };
+        options.SuggestedStartLocation = await topLevel.StorageProvider.TryGetFolderFromPathAsync(_settingsService.Settings.PathDirSteam);
+        await Dispatcher.UIThread.InvokeAsync(() => { });
+        var dialog = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+        await Dispatcher.UIThread.InvokeAsync(() => { });
+        var paths = dialog.Select(s => s.Path.LocalPath).ToList();
+        var counts = dialog.Count;
+
+        await Task.Yield();
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+
+        Dispatcher.UIThread.Post(() =>
         {
-            //_steamService.TryInitialize(c => c.UnsubscribeItem(pid_long));
+            //var st = new SettingsViewModel(_settingsService);
+            //var tt = new SettingsWindow(st);
+            var tt = new AboutWindow();
+           
+            tt.Closing += (sender, e) =>
+            {
+                if (sender is Window w && !w.Tag?.Equals("closing") == true)
+                {
+                    e.Cancel = true; // Zatrzymaj synchroniczne zamknięcie
+                    w.Tag = "closing";
 
-            //var a = _steamService.Initialize();
-            //var b = _steamService.UnsubscribeItem(pid_long);
-            //_steamService.DeInitialize();
+                    // Zamknij w następnym ticku, poza WndProc
+                    Dispatcher.UIThread.Post(() => w.Close(), DispatcherPriority.Background);
+                }
+            };
+            tt.Closed += (_, _) =>
+            {
+                var stackTrace = new System.Diagnostics.StackTrace(true);
+                Debug.WriteLine($"[Closed] UI thread: {Dispatcher.UIThread.CheckAccess()}, Stack:\n{stackTrace}");
+            };
 
-            //Task.Run(() =>
-            //{
-            //    var a = _steamService.Initialize();
-            //    var b = _steamService.UnsubscribeItem(pid_long);
-            //    _steamService.DeInitialize();
-            //});
-        }
+            var watchdog = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(100);
+                    var sw = Stopwatch.StartNew();
 
-    }));
+                    await Dispatcher.UIThread.InvokeAsync(() => sw.Stop());
+
+                    if (sw.ElapsedMilliseconds > 100)
+                    {
+                        Debug.WriteLine($"[WATCHDOG] UI blocked {sw.ElapsedMilliseconds}ms");
+                        // Zrób snapshot wątku
+                        foreach (ProcessThread t in Process.GetCurrentProcess().Threads)
+                        {
+                            Debug.WriteLine($"  Thread {t.Id} state: {t.ThreadState}");
+                        }
+                    }
+                }
+            });
+
+
+            tt.Show(window);
+        }, DispatcherPriority.Background);
+
+
+        // 2. Pokazujemy nasze własne okno dialogowe i czekamy na nie
+        //OpenDialog.ShowServiceDialog<SettingsWindow>();
+
+        //var fds = new FolderDialogService();
+        //fds.ShowDialog("test", Path.GetFullPath(_settingsService.Settings.PathDirSteam), (ok, path) =>
+        //{
+        //    if (!ok) return;
+        //});
+
+        //new OpenFolderDialog
+        //{
+        //    Title = "test",
+        //    InitialDirectory = Path.GetFullPath(_settingsService.Settings.PathDirSteam)
+        //}.ShowDialog((ok, path) =>
+        //{
+        //    if (!ok) return;
+        //});
+
+        //var test_list = ModsCollectionColumns;
+        //var t = Items
+        //    .Select(s => s.About?.SteamId)
+        //    .Where(w => !string.IsNullOrEmpty(w))
+        //    .Take(5)
+        //    .ToList();
+
+        //var pid = this.SelectedMod.About.SteamId;
+        //if (ulong.TryParse(pid, out ulong pid_long))
+        //{
+        //    //_steamService.TryInitialize(c => c.UnsubscribeItem(pid_long));
+
+        //    //var a = _steamService.Initialize();
+        //    //var b = _steamService.UnsubscribeItem(pid_long);
+        //    //_steamService.DeInitialize();
+
+        //    //Task.Run(() =>
+        //    //{
+        //    //    var a = _steamService.Initialize();
+        //    //    var b = _steamService.UnsubscribeItem(pid_long);
+        //    //    _steamService.DeInitialize();
+        //    //});
+        //}
+
+    }//)
+    );
     #endregion CustomCommand
 }

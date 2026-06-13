@@ -229,13 +229,13 @@ public static class FileHelper
         return File.ReadLines(aboutFile).FirstOrDefault();
     }
 
-    public static void OpenSteamLink(object? path)
-    {
-        if (path is string txt && !string.IsNullOrEmpty(txt))
-            OpenLink($"steam://openurl/{txt}");
-    }
+    public static Process? OpenSteamLink(object? path)
+        => path is string txt && !string.IsNullOrEmpty(txt)
+        ? OpenLink($"steam://openurl/{txt}")
+        : null;
 
-    public static void OpenRimworldGame(object? gamePath)
+
+    public static Process? OpenRimworldGame(object? gamePath)
     {
         if (gamePath is string path && !string.IsNullOrEmpty(path))
         {
@@ -243,17 +243,39 @@ public static class FileHelper
                 .OrderByDescending(Path.GetFileName)
                 .FirstOrDefault();
             if (!string.IsNullOrEmpty(exePath))
-                OpenLink(exePath);
+                return OpenLink(exePath);
         }
+        return null;
     }
 
-    public static void OpenLink(object? path)
+    public static Process? OpenLink(object? path)
     {
-        if(path is string txt && !string.IsNullOrEmpty(txt))
-            Process.Start(new ProcessStartInfo
+        if (path is string txt && !string.IsNullOrEmpty(txt))
+            try
             {
-                FileName = txt,
-                UseShellExecute = true
-            });
+                return Process.Start(new ProcessStartInfo
+                {
+                    FileName = txt,
+                    UseShellExecute = true
+                });
+            } catch {}
+        return null;
     }
+    
+    public static string NormalizeBaseDirectoryPath(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return string.Empty;
+
+        var fullPath = Path.GetFullPath(path);
+        var basePath = Path.GetFullPath(AppContext.BaseDirectory);
+
+        if (fullPath.StartsWith(basePath, StringComparison.OrdinalIgnoreCase))
+        {
+            var relative = fullPath.Substring(basePath.Length);
+            return relative.TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
+
+        return fullPath;
+    }
+
 }

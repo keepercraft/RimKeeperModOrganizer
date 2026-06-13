@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RimKeeperModOrganizerAvalonia.Services;
 using RimKeeperModOrganizerAvalonia.ViewModels;
 using RimKeeperModOrganizerAvalonia.Views;
@@ -26,6 +27,9 @@ internal class Program
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.ModsServices>();
         builder.Services.AddSingleton<RimKeeperModOrganizerLib.Services.SteamService>();
         builder.Services.AddSingleton<ThemeService>();
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+        builder.Logging.AddDebug();      
         //builder.Services.AddSingleton<MainWindow>(sp => new MainWindow
         //{
         //    DataContext = sp.GetRequiredService<MainViewModel>()
@@ -33,6 +37,7 @@ internal class Program
         using IHost host = builder.Build();
         AppHost = host;
         Services = host.Services;
+        DialogService.Init(host.Services);
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 
         //var appBuilder = BuildAvaloniaApp();
@@ -50,6 +55,15 @@ internal class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+
+            //.With(new Win32PlatformOptions //fix OPENDIALOLG not working on windows 11
+            //{
+            //    CompositionMode = new[]
+            //    {
+            //        Win32CompositionMode.RedirectionSurface
+            //    }
+            //})
+
             //.ConfigureFonts(fontManager =>
             //{
             //    fontManager.AddFontCollection(new MyFontCollection());
