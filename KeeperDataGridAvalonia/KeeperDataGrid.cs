@@ -324,6 +324,11 @@ public class KeeperDataGrid : DataGrid
         if (obj == null || base.Columns == null) return true;
         foreach (var col in base.Columns.OfType<AdvancedFilterDataGrid>())
         {
+            if (col.FilterValue == "#")
+            {
+                return col.GetRowValue(obj)?.ToString() == null;
+            }
+
             if (string.IsNullOrEmpty(col.FilterValue)) continue;
             var value = col.GetRowValue(obj)?.ToString();
             if (value == null || !value.Contains(col.FilterValue, StringComparison.OrdinalIgnoreCase))

@@ -55,7 +55,7 @@ public class MainViewModel : PropertyModel
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
     public List<string> ModTypeIconsList { get; set; } = new();
-    public List<string> ModColorIconsList => [string.Empty, ..ModColors];
+    public List<string> ModColorIconsList => [string.Empty, "#", ..ModColors];
     public bool SteamServiceReady => _steamService?.IsLibraryLoaded ?? false;
 
     private readonly JsonAutoSaver _autoSaver;

@@ -50,6 +50,12 @@ public class ModIconConverter : IValueConverter
         else if (value is string txt)
         {
             if (string.IsNullOrEmpty(txt)) return Get("DashIcon");
+
+            if (txt.StartsWith("#")) //FOR COLOR FILTER
+            {
+                return txt.Length > 1 ? null : Get("DashReverse2Icon");
+            }
+
             Enum.TryParse(txt, out location);
         }
         else if (value is ModModel mod)
