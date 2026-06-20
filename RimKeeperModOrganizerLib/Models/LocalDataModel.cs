@@ -1,4 +1,5 @@
 ﻿using KeeperBaseSharedLib.Models;
+using RimKeeperModOrganizerLib.Extensions;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Text.Json.Serialization;
@@ -88,4 +89,31 @@ public class ModDataCopyModel
     public string? Comment { get; set; }
     public string[]? Groups { get; set; }
     public string[]? PackageGroups { get; set; }
+}
+
+public static class ModDataCopyExtension
+{
+    public static ModDataCopyModel Copy(this ModModel mod)
+    {
+        if (mod?.Data == null) return new ModDataCopyModel();
+        var copy = new ModDataCopyModel
+        {
+            Color = mod.Data.Color,
+            Comment = mod.Data.Comment,
+           // Groups = mod.Data.Groups.ToArray(),
+           // PackageGroups = mod.Data.PackageGroups.ToArray()
+        };
+        return copy;
+    }
+
+    public static void Paste(this ModModel mod, ModDataCopyModel? context)
+    {
+        if (mod == null) return;
+        if (mod.Data == null) mod.MakeData();
+        if (mod.Data == null) return;
+        mod.Data.Color = context?.Color;
+        mod.Data.Comment = context?.Comment;
+      //  mod.Data.Groups = new ObservableCollection<string>(context.Groups ?? Array.Empty<string>());
+      //  mod.Data.PackageGroups = new ObservableCollection<string>(context.PackageGroups ?? Array.Empty<string>());
+    }
 }

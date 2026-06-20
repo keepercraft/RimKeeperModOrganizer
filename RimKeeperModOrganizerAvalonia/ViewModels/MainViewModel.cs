@@ -627,6 +627,25 @@ public class MainViewModel : PropertyModel
         }
     });
 
+    public CustomCommand CopyModDataCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel model)
+        {
+            ModDataCopy = model.Copy();
+        }
+    });
+
+    public CustomCommand PasteModDataCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel)
+        {
+            foreach (var model in SelectedMods)
+            {
+                model.Paste(ModDataCopy);
+            } 
+        }
+    });
+
     public CustomCommand TestCommand => new CustomCommand(async p =>// UILock(async () =>
     {
         return;

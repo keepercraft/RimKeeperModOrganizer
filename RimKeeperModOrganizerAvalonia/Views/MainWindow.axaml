@@ -74,6 +74,21 @@
         <ContextMenu x:Key="DataGridContextMenu" x:DataType="vm:MainViewModel"
                      DataContext="{Binding $parent[DataGrid].DataContext}">
 
+			<MenuItem Header="Copy mod data"
+                      Command="{Binding CopyModDataCommand}"
+                      CommandParameter="{Binding Path=SelectedMod}">
+				<MenuItem.Icon>
+					<Image Source="{StaticResource CopyIcon}" Width="16" Height="16"/>
+				</MenuItem.Icon>
+			</MenuItem>
+			<MenuItem Header="Paste mod data"
+                      Command="{Binding PasteModDataCommand}"
+                      CommandParameter="{Binding Path=SelectedMod}">
+				<MenuItem.Icon>
+					<Image Source="{StaticResource PasteIcon}" Width="16" Height="16"/>
+				</MenuItem.Icon>
+			</MenuItem>
+			
             <MenuItem Header="Refresh mod data"
                       Command="{Binding RefreshModCommand}"
                       CommandParameter="{Binding Path=SelectedMod}">
