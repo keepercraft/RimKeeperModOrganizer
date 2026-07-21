@@ -23,6 +23,7 @@
             <c:PathToBitmapConverter x:Key="PathToBitmapConverter" />
 			<c:ModIconConverter x:Key="ModIconConverter" />
 			<c:ContrastTextColorConverter x:Key="ContrastTextColorConverter" />
+			<c:NullToBoolConverter x:Key="NullToBoolConverter" />
         </ResourceDictionary>	
     </Application.Resources>
     <Application.Styles>

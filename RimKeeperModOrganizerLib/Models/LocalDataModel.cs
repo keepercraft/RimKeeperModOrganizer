@@ -91,29 +91,81 @@ public class ModDataCopyModel
     public string[]? PackageGroups { get; set; }
 }
 
+[Flags]
+public enum ModDataCopySelection : byte
+{
+    All = Color | Comment | Groups,// | PackageGroups,
+    None = 0,
+    Color = 1,
+    Comment = 2,
+    Groups = 4,
+    PackageGroups = 8,
+}
+
 public static class ModDataCopyExtension
 {
-    public static ModDataCopyModel Copy(this ModModel mod)
+    public static void Clear(this ModDataCopyModel context)
     {
-        if (mod?.Data == null) return new ModDataCopyModel();
-        var copy = new ModDataCopyModel
-        {
-            Color = mod.Data.Color,
-            Comment = mod.Data.Comment,
-           // Groups = mod.Data.Groups.ToArray(),
-           // PackageGroups = mod.Data.PackageGroups.ToArray()
-        };
-        return copy;
+        context.Color = null;
+        context.Comment = null;
+        context.Groups = null;
+        context.PackageGroups = null;
     }
 
-    public static void Paste(this ModModel mod, ModDataCopyModel? context)
+    public static void Cut(this ModDataCopyModel context, ModModel? mod, ModDataCopySelection selection = ModDataCopySelection.All)
+    {
+        if (mod == null) return;
+        context.Copy(mod, selection);
+        if (mod.Data == null) return;
+        if (selection.HasFlag(ModDataCopySelection.Color)) mod.Data.Color = null;
+        if (selection.HasFlag(ModDataCopySelection.Comment)) mod.Data.Comment = null;
+        if (selection.HasFlag(ModDataCopySelection.Groups)) mod.Data.Groups.Clear();
+        if (selection.HasFlag(ModDataCopySelection.PackageGroups)) mod.Data.PackageGroups.Clear();
+    }
+
+    public static void Copy(this ModDataCopyModel context, ModModel? mod, ModDataCopySelection selection = ModDataCopySelection.All)
+    {
+        if (mod == null) return;
+        context.Color = selection.HasFlag(ModDataCopySelection.Color) ? mod.Data?.Color : null;
+        context.Comment = selection.HasFlag(ModDataCopySelection.Comment) ? mod.Data?.Comment : null;
+        context.Groups = selection.HasFlag(ModDataCopySelection.Groups) ? mod.Data?.Groups.ToArray() : null;
+        context.PackageGroups = selection.HasFlag(ModDataCopySelection.PackageGroups) ? mod.Data?.PackageGroups.ToArray() : null;
+    }
+
+    public static void Paste(this ModDataCopyModel context, ModModel? mod, ModDataCopySelection selection = ModDataCopySelection.All)
     {
         if (mod == null) return;
         if (mod.Data == null) mod.MakeData();
-        if (mod.Data == null) return;
-        mod.Data.Color = context?.Color;
-        mod.Data.Comment = context?.Comment;
-      //  mod.Data.Groups = new ObservableCollection<string>(context.Groups ?? Array.Empty<string>());
-      //  mod.Data.PackageGroups = new ObservableCollection<string>(context.PackageGroups ?? Array.Empty<string>());
+        if (selection.HasFlag(ModDataCopySelection.Color)) mod.Data.Color = context.Color ;
+        if (selection.HasFlag(ModDataCopySelection.Comment)) mod.Data.Comment = context.Comment;
+        if (selection.HasFlag(ModDataCopySelection.Groups))
+        {
+            mod.Data.Groups.Clear();
+            if (context.Groups != null)
+            {
+                foreach (var group in context.Groups)
+                {
+                    mod.Data.Groups.Add(group);
+                }
+            }
+        }
+        if (selection.HasFlag(ModDataCopySelection.PackageGroups))
+        {
+            mod.Data.PackageGroups.Clear();
+            if (context.PackageGroups != null)
+            {
+                foreach (var packageGroup in context.PackageGroups)
+                {
+                    mod.Data.PackageGroups.Add(packageGroup);
+                }
+            }
+        }
+    }
+    public static void Paste(this ModDataCopyModel context, IEnumerable<ModModel> mods, ModDataCopySelection selection = ModDataCopySelection.All)
+    {
+        foreach (var mod in mods)
+        {
+            Paste(context, mod, selection);
+        }
     }
 }

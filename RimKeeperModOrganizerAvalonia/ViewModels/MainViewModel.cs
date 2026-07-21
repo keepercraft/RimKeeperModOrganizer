@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 namespace RimKeeperModOrganizerAvalonia.ViewModels;
 
 public class MainViewModel : PropertyModel
@@ -50,8 +51,7 @@ public class MainViewModel : PropertyModel
         }
     }
     public bool IsSelectedMod => SelectedMod != null;//|| SelectedMods.Any();
-    public ModDataCopyModel? ModDataCopy { get; set; }
-
+    
     public List<ColumnSettings> ModColumnData => _settingsService.Settings.ModColumnData;
     public MainWidowSettings MainWidowSettings => _settingsService.Settings.MainWidow;
     public List<string> ModTypeIconsList { get; set; } = new();
@@ -623,26 +623,7 @@ public class MainViewModel : PropertyModel
                         model.RaisePropertyChanged();
                     }
                 }
-            }));
-        }
-    });
-
-    public CustomCommand CopyModDataCommand => new CustomCommand(p =>
-    {
-        if (p != null && p is ModModel model)
-        {
-            ModDataCopy = model.Copy();
-        }
-    });
-
-    public CustomCommand PasteModDataCommand => new CustomCommand(p =>
-    {
-        if (p != null && p is ModModel)
-        {
-            foreach (var model in SelectedMods)
-            {
-                model.Paste(ModDataCopy);
-            } 
+            }));    
         }
     });
 
@@ -764,4 +745,88 @@ public class MainViewModel : PropertyModel
     }//)
     );
     #endregion CustomCommand
+
+    #region ModDataCopy
+    public ModDataCopyModel ModDataCopy { get; } = new();
+    public ModDataCopySelection CopyModDataSelection { get; set; } = ModDataCopySelection.All;
+
+    public bool CopyModDataColor
+    {
+        get => CopyModDataSelection.HasFlag(ModDataCopySelection.Color);
+        set => CopyModDataSetFlag(ModDataCopySelection.Color, value);
+    }
+    public bool CopyModDataComment
+    {
+        get => CopyModDataSelection.HasFlag(ModDataCopySelection.Comment);
+        set => CopyModDataSetFlag(ModDataCopySelection.Comment, value);
+    }
+    public bool CopyModDataGroups
+    {
+        get => CopyModDataSelection.HasFlag(ModDataCopySelection.Groups);
+        set => CopyModDataSetFlag(ModDataCopySelection.Groups, value);
+    }
+    public bool CopyModDataPackageGroups
+    {
+        get => CopyModDataSelection.HasFlag(ModDataCopySelection.PackageGroups);
+        set => CopyModDataSetFlag(ModDataCopySelection.PackageGroups, value);
+    }
+    public bool CopyModDataColorNotempty => !string.IsNullOrEmpty(ModDataCopy.Color);
+    public bool CopyModDataCommentNotempty => !string.IsNullOrEmpty(ModDataCopy.Comment);
+    public bool CopyModDataGroupsNotempty => ModDataCopy.Groups != null && ModDataCopy.Groups.Any();
+    public bool CopyModDataPackageGroupsNotempty => ModDataCopy.PackageGroups != null && ModDataCopy.PackageGroups.Any();
+    private void CopyModDataSetFlag(ModDataCopySelection flag, bool value)
+    {
+        if (value)
+            CopyModDataSelection |= flag;
+        else
+            CopyModDataSelection &= ~flag;
+        CopyModDataRefresh();
+    }
+    private void CopyModDataRefresh()
+    {
+        OnPropertyChanged(nameof(ModDataCopy));
+        OnPropertyChanged(nameof(CopyModDataSelection));
+        OnPropertyChanged(nameof(CopyModDataColor));
+        OnPropertyChanged(nameof(CopyModDataComment));
+        OnPropertyChanged(nameof(CopyModDataGroups));
+        OnPropertyChanged(nameof(CopyModDataPackageGroups));
+        OnPropertyChanged(nameof(CopyModDataColorNotempty));
+        OnPropertyChanged(nameof(CopyModDataCommentNotempty));
+        OnPropertyChanged(nameof(CopyModDataGroupsNotempty));
+        OnPropertyChanged(nameof(CopyModDataPackageGroupsNotempty));
+    }
+
+    public CustomCommand CopyModDataSelectAllCommand => new CustomCommand(p => CopyModDataSetFlag(ModDataCopySelection.All, true));
+    public CustomCommand CopyModDataUnselectCommand => new CustomCommand(p => CopyModDataSetFlag(ModDataCopySelection.All, false));
+    public CustomCommand CopyModDataToggleCommand => new CustomCommand(p => CopyModDataSetFlag(ModDataCopySelection.All, !CopyModDataSelection.HasFlag(ModDataCopySelection.All)));
+    public CustomCommand CopyModDataClearCommand => new CustomCommand(p => 
+    { 
+        ModDataCopy.Clear();
+        CopyModDataRefresh();
+    });
+    public CustomCommand CutModDataCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel model)
+        {
+            ModDataCopy.Cut(model, CopyModDataSelection);
+            CopyModDataRefresh();
+        }
+    });
+    public CustomCommand CopyModDataCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel model)
+        {
+            ModDataCopy.Copy(model, CopyModDataSelection);
+            CopyModDataRefresh();
+        }
+    });
+    public CustomCommand PasteModDataCommand => new CustomCommand(p =>
+    {
+        if (p != null && p is ModModel model)
+        {
+            ModDataCopy.Paste(SelectedMods, CopyModDataSelection);
+            CopyModDataRefresh();
+        }
+    });
+    #endregion ModDataCopy
 }

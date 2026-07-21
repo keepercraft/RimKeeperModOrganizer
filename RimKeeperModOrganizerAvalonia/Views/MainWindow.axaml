@@ -74,6 +74,21 @@
         <ContextMenu x:Key="DataGridContextMenu" x:DataType="vm:MainViewModel"
                      DataContext="{Binding $parent[DataGrid].DataContext}">
 
+			<MenuItem Header="Refresh mod data"
+                      Command="{Binding RefreshModCommand}"
+                      CommandParameter="{Binding Path=SelectedMod}">
+				<MenuItem.Icon>
+					<Image Source="{StaticResource RefreshIcon}" Width="16" Height="16"/>
+				</MenuItem.Icon>
+			</MenuItem>			
+			
+			<MenuItem Header="Cut mod data"
+		              Command="{Binding CutModDataCommand}"
+		              CommandParameter="{Binding Path=SelectedMod}">
+				<MenuItem.Icon>
+					<Image Source="{StaticResource CutIcon}" Width="16" Height="16"/>
+				</MenuItem.Icon>
+			</MenuItem>
 			<MenuItem Header="Copy mod data"
                       Command="{Binding CopyModDataCommand}"
                       CommandParameter="{Binding Path=SelectedMod}">
@@ -88,14 +103,6 @@
 					<Image Source="{StaticResource PasteIcon}" Width="16" Height="16"/>
 				</MenuItem.Icon>
 			</MenuItem>
-			
-            <MenuItem Header="Refresh mod data"
-                      Command="{Binding RefreshModCommand}"
-                      CommandParameter="{Binding Path=SelectedMod}">
-                <MenuItem.Icon>
-                    <Image Source="{StaticResource RefreshIcon}" Width="16" Height="16"/>
-                </MenuItem.Icon>
-            </MenuItem>
 
             <Separator />
             <MenuItem Header="Open in Steam" 
@@ -381,6 +388,72 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
+			<!--<Button Content="Copy" FontSize="12" Margin="-7, -5, -8, -2" Padding="3">
+				<Button.Flyout>
+					<Flyout>
+						<StackPanel Margin="10" Spacing="6">
+							<TextBlock FontWeight="Bold" Text="Copy section"/>
+							<CheckBox Content="Color"   IsChecked="{Binding CopyModDataColor}"/>
+							<CheckBox Content="Comment" IsChecked="{Binding CopyModDataComment}"/>
+							<CheckBox Content="Groups"  IsChecked="{Binding CopyModDataGroups}"/>
+							<CheckBox Content="Package Groups" IsChecked="{Binding CopyModDataPackageGroups}"/>
+							<Separator/>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<Button Content="All" Command="{Binding CopyModDataSelectAllCommand}"/>
+								<Button Content="Clear" Command="{Binding CopyModDataClearCommand}"/>
+							</StackPanel>
+						</StackPanel>
+					</Flyout>
+				</Button.Flyout>
+			</Button>-->
+			<MenuItem Header="Copy">
+				<MenuItem StaysOpenOnClick="True">
+					<MenuItem.Header>
+						<Grid Margin="10" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="15,*">
+							<Grid.Styles>
+								<Style Selector="TextBlock">
+									<Setter Property="Margin" Value="0,0,0,8"/>
+									<Setter Property="VerticalAlignment" Value="Center"/>
+								</Style>
+								<Style Selector="CheckBox">
+									<Setter Property="Margin" Value="3,0,0,8"/>
+								</Style>
+								<Style Selector="Button">
+									<Setter Property="Margin" Value="2"/>
+								</Style>
+							</Grid.Styles>
+							<TextBlock Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="Copy section"/>
+							<TextBlock Grid.Row="1" Grid.Column="0" Text="●" IsVisible="{Binding CopyModDataColorNotempty}"/>
+							<CheckBox Grid.Row="1" Grid.Column="1" Content="Color" IsChecked="{Binding CopyModDataColor}"/>
+							<TextBlock Grid.Row="2" Grid.Column="0" Text="●" IsVisible="{Binding CopyModDataCommentNotempty}"/>
+							<CheckBox Grid.Row="2" Grid.Column="1" Content="Comment" IsChecked="{Binding CopyModDataComment}"/>
+							<TextBlock Grid.Row="3" Grid.Column="0" Text="●" IsVisible="{Binding CopyModDataGroupsNotempty}"/>
+							<CheckBox Grid.Row="3" Grid.Column="1" Content="Groups" IsChecked="{Binding CopyModDataGroups}"/>
+							<!--<TextBlock Grid.Row="4" Grid.Column="0" Text="●" IsVisible="{Binding CopyModDataPackageGroupsNotempty}"/>
+							<CheckBox Grid.Row="4" Grid.Column="1" Content="Package Groups" IsChecked="{Binding CopyModDataPackageGroups}"/>-->
+							<DockPanel Grid.Row="5" Grid.ColumnSpan="2">
+								<Button Content="Tobble select" Command="{Binding CopyModDataToggleCommand}"/>
+								<Button Content="Clear" Command="{Binding CopyModDataClearCommand}"/>
+							</DockPanel>
+						</Grid>
+						<!--<StackPanel Margin="10" Spacing="6">
+							<TextBlock FontWeight="Bold" Text="Copy section"/>
+							<DockPanel>
+								<TextBlock Text="●" VerticalAlignment="Center" />
+								<CheckBox Content="Color" IsChecked="{Binding CopyModDataColor}"/>
+							</DockPanel>
+							<CheckBox Content="Comment" IsChecked="{Binding CopyModDataComment}"/>
+							<CheckBox Content="Groups"  IsChecked="{Binding CopyModDataGroups}"/>
+							<CheckBox Content="Package Groups" IsChecked="{Binding CopyModDataPackageGroups}"/>
+							<Separator/>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<Button Content="Tobble select" Command="{Binding CopyModDataToggleCommand}"/>
+								<Button Content="Clear" Command="{Binding CopyModDataClearCommand}"/>
+							</StackPanel>
+						</StackPanel>-->
+					</MenuItem.Header>
+				</MenuItem>
+			</MenuItem>
             <MenuItem Header="Tools">
                 <MenuItem Header="Import colors from Rimpy" Command="{Binding LoadRimpyColorsCommand}">
                     <MenuItem.Icon>
@@ -403,10 +476,10 @@
             <!--<MenuItem Header="[Test]" Command="{Binding TestCommand}"/>-->
         </Menu>
         <Menu Grid.Row="0" Grid.Column="2" Background="Transparent" HorizontalAlignment="Right">
-            <MenuItem Header="{Binding GetModListStaticLable}" HorizontalAlignment="Right" />
+			<MenuItem Header="{Binding GetModListStaticLable}" HorizontalAlignment="Right" />
         </Menu>
-        <Menu Grid.Row="0" Grid.Column="5">
-            <MenuItem Header="{Binding GetModConfigStaticLable}" 
+        <Menu Grid.Row="0" Grid.Column="5">	
+			<MenuItem Header="{Binding GetModConfigStaticLable}" 
                       Background="{Binding GetModConfigStaticColor}"
                       ToolTip.ShowDelay="100">
 				<ToolTip.Tip>

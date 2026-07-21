@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 namespace RimKeeperModOrganizerAvalonia.Views;
 
 public partial class MainWindow : Window
@@ -34,6 +35,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         //AvaloniaXamlLoader.Load(this);
 
+        var assembly = Assembly.GetExecutingAssembly();
+        var version = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version ?? "0.0.0.0";
+        Title = string.Format("{0} v{1}", Title, version);
+
         ModsGrid.AddHandler(KeeperDataGridAvalonia.KeeperDataGrid.PointerPressedSelectionEvent, DataGrid_PointerPressedSelection, RoutingStrategies.Tunnel);
         ModsGridConfig.AddHandler(KeeperDataGridAvalonia.KeeperDataGrid.PointerPressedSelectionEvent, DataGrid_PointerPressedSelection, RoutingStrategies.Tunnel);
         ModsGrid.AddHandler(PointerReleasedEvent, DataGrid_PointerReleasedSelection, RoutingStrategies.Tunnel);
@@ -44,6 +49,9 @@ public partial class MainWindow : Window
 
         ModsGrid.AddHandler(PointerPressedEvent, DataGrid_PointerPressedSelection_ComboBox, RoutingStrategies.Tunnel);
         ModsGridConfig.AddHandler(PointerPressedEvent, DataGrid_PointerPressedSelection_ComboBox, RoutingStrategies.Tunnel);
+
+        ModsGrid.AddHandler(InputElement.KeyDownEvent, DataGrid_KeyDown, RoutingStrategies.Tunnel);
+        ModsGridConfig.AddHandler(InputElement.KeyDownEvent, DataGrid_KeyDown, RoutingStrategies.Tunnel);
     }
 
     private async void DataGrid_PointerPressedSelection_ComboBox(object? sender, PointerPressedEventArgs e)
@@ -52,6 +60,19 @@ public partial class MainWindow : Window
         if ((e.Source as Visual)?.FindAncestorOfType<ComboBox>() is not ComboBox comboBox) return;
         if (comboBox.Name == "FilterSelectBox") 
             context.RaisePropertyChanged(nameof(MainViewModel.ModColorIconsList));
+    }
+
+    private void DataGrid_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (!e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;      
+        if (DataContext is not MainViewModel context) return;
+        (e.Key switch
+        {
+            Key.X => context.CutModDataCommand,
+            Key.C => context.CopyModDataCommand,
+            Key.V => context.PasteModDataCommand,
+            _ => null
+        })?.Execute(context.SelectedMod);      
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
