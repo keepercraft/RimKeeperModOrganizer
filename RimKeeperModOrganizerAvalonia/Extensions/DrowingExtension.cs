@@ -33,4 +33,7 @@ public static class DrowingExtension
 
         return new DrawingImage { Drawing = cloned };
     }
+
+    public static string ToRGBString(this Color color) => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+    public static string? NormalizeRGB(string? value) => Color.TryParse(value, out var color) ? color.ToRGBString() : null;
 }

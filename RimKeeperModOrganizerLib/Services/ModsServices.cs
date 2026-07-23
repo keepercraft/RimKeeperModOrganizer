@@ -119,7 +119,7 @@ public class ModsServices
             //.Select(x => x.About.PackageId)
             .Select(x => 
             {
-                if(x.Location == ModLocation.Steam && modlist.Any(w => w.About.PackageId == x.About.PackageId && w.Location == ModLocation.Local))
+                if(x.Location == ModLocation.Steam && modlist.Any(w => w.About?.PackageId == x.About.PackageId && w.Location == ModLocation.Local))
                 {
                     return x.About.PackageId.ToSteamSuffix();
                 }

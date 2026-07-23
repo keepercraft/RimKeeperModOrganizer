@@ -68,7 +68,7 @@ public partial class ChangeColorWindow : Window
                 if (vm.SelectedMod?.Data == null) vm.SelectedMod?.MakeData();
                 vm.SelectedMod?.Data?.Color = value;
             }
-            vm.SelectedMod.RaisePropertyChanged();
+            vm.SelectedMod?.RaisePropertyChanged();
             UpdateColor(vm);
         }
     }
@@ -98,7 +98,7 @@ public partial class ChangeColorWindow : Window
 
     private void Ok_Click(object sender, RoutedEventArgs e)
     {
-        ModColorActualSelected = StandardColorPicker.SelectedColor.ToString();
+        ModColorActualSelected = StandardColorPicker.SelectedColor.ToRGBString();
        // DialogResult = true;
         Close();
     }
@@ -118,7 +118,7 @@ public partial class ChangeColorWindow : Window
     private void List_Update_Click(object sender, RoutedEventArgs e)
     {
         var colorOld = ModColorListSelected;
-        var colorNew = StandardColorPicker.SelectedColor.ToString();
+        var colorNew = StandardColorPicker.SelectedColor.ToRGBString();
         if (DataContext is MainViewModel vm && vm != null && !string.IsNullOrEmpty(colorOld))
         {
             int index = vm.ModColors.IndexOf(colorOld);
@@ -130,6 +130,14 @@ public partial class ChangeColorWindow : Window
             foreach (var item in vm.Items.Where(w => w.Data != null && w.Data?.Color == colorOld))
             {
                 item.Data.Color = colorNew;
+            }
+            for (int i = 0; i < vm.ModColors.Count; i++)
+            {
+                if (i == index) continue;
+                if (vm.ModColors[i] == colorNew)
+                {
+                    vm.ModColors.RemoveAt(i);
+                }
             }
         }
     }
