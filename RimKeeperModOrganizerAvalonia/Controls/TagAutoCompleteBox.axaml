@@ -52,9 +52,8 @@
 			    Padding="6"	 	
                 ItemsSource="{Binding AvailableTags, RelativeSource={RelativeSource AncestorType=local:TagAutoCompleteBox}}"
                 FilterMode="Contains"
-                MinimumPrefixLength="0" 
-                Watermark="Add tag..."
-                SelectionChanged="AutoCompleteBox_SelectionChanged"/>
+                MinimumPrefixLength="0"		  	 
+                Watermark="Add tag..."/>
         </StackPanel>
 	</Border>
 </UserControl>

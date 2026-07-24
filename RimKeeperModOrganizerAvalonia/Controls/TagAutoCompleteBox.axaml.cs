@@ -1,11 +1,13 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.VisualTree;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Styling;
+using Avalonia.VisualTree;
 using System.Collections.ObjectModel;
 using System.Linq;
-
 namespace RimKeeperModOrganizerAvalonia.Controls;
 
 public partial class TagAutoCompleteBox : UserControl
@@ -32,27 +34,49 @@ public partial class TagAutoCompleteBox : UserControl
     {
         InitializeComponent();
 
-        // Szukamy wewnętrznego TextBoxa po załadowaniu kontrolki
         var ac = this.FindControl<AutoCompleteBox>("Part_AutoComplete");
         ac.Loaded += (s, e) =>
         {
             var tb = ac.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
-            if (tb != null)
+            tb?.KeyDown += (sender, e) =>
             {
-                tb.KeyDown += (sender, args) =>
+                switch (e.Key)
                 {
-                    if (args.Key == Key.Enter)
-                    {
-                        AddTag(tb.Text);
-                        tb.Text = string.Empty;
-                        ac.IsDropDownOpen = false;
-                        args.Handled = true;
-                    }
-                };
-            }
+                    case Key.Enter:
+                        //ac.IsDropDownOpen = false;
+                        e.Handled = AddTag(tb);
+                        break;
+                    case Key.Up or Key.Down:
+                        ac.IsDropDownOpen = true;
+                        e.Handled = true;
+                        ac.Focus();
+                        break;
+                }
+            };
+            ac?.KeyUp += (sender, e) =>
+            {
+                switch (e.Key)
+                {
+                    case Key.Enter:
+                        e.Handled = AddTag(tb);
+                        break;
+                }
+            };
+            ac?.PointerReleased += (sender, e) =>
+            {
+                if (e.Source is ContentPresenter accc)
+                    e.Handled = AddTag(tb);
+                else if (!ac.IsDropDownOpen && (AvailableTags?.Any() ?? false))
+                    ac.IsDropDownOpen = true;
+            };
         };
     }
-
+    private bool AddTag(TextBox tb)
+    {
+        AddTag(tb.Text);
+        tb.Text = string.Empty;
+        return true;
+    }
     private void AddTag(string? tag)
     {
         if (string.IsNullOrWhiteSpace(tag)) return;
@@ -65,24 +89,6 @@ public partial class TagAutoCompleteBox : UserControl
         if (AvailableTags != null && !AvailableTags.Contains(cleanTag))
         {
             AvailableTags.Add(cleanTag);
-        }
-    }
-
-    private void AutoCompleteBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        if (e.AddedItems.Count > 0 && e.AddedItems[0] is string selected)
-        {
-            AddTag(selected);
-            // Czyścimy tekst po wyborze z listy
-            var ac = sender as AutoCompleteBox;
-            if (ac != null)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-                {
-                    ac.SelectedItem = null;
-                    ac.Text = string.Empty;
-                });
-            }
         }
     }
 
