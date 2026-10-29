@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -6,12 +7,19 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+using RimKeeperModOrganizerAvalonia.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Xml.Linq;
 namespace RimKeeperModOrganizerAvalonia.Controls;
 
-public partial class TagAutoCompleteBox : UserControl
+public partial class TagAutoCompleteBox : UserControl, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     public static readonly StyledProperty<ObservableCollection<string>?> AvailableTagsProperty =
         AvaloniaProperty.Register<TagAutoCompleteBox, ObservableCollection<string>?>(nameof(AvailableTags));
 
@@ -29,6 +37,8 @@ public partial class TagAutoCompleteBox : UserControl
         get => GetValue(SelectedTagsProperty);
         set => SetValue(SelectedTagsProperty, value);
     }
+
+    public IEnumerable<string>? AvailableTagsSort => AvailableTags?.OrderBy(tag => tag, StringComparer.OrdinalIgnoreCase);
 
     public TagAutoCompleteBox()
     {
@@ -69,6 +79,10 @@ public partial class TagAutoCompleteBox : UserControl
                 else if (!ac.IsDropDownOpen && (AvailableTags?.Any() ?? false))
                     ac.IsDropDownOpen = true;
             };
+            ac?.GotFocus += (sender, e) =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(AvailableTagsSort)));
+            };
         };
     }
     private bool AddTag(TextBox tb)
@@ -84,11 +98,11 @@ public partial class TagAutoCompleteBox : UserControl
 
         if (SelectedTags != null && !SelectedTags.Contains(cleanTag))
         {
-            SelectedTags.Add(cleanTag);
+            SelectedTags.InsertSorted(cleanTag);
         }
         if (AvailableTags != null && !AvailableTags.Contains(cleanTag))
         {
-            AvailableTags.Add(cleanTag);
+            AvailableTags.InsertSorted(cleanTag);
         }
     }
 

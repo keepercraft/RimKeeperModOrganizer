@@ -25,8 +25,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
-using System.Windows.Input;
 namespace RimKeeperModOrganizerAvalonia.ViewModels;
 
 public class MainViewModel : PropertyModel
@@ -305,10 +305,10 @@ public class MainViewModel : PropertyModel
         var data = modlist.Select(s => s.Data).Where(s => s.IsNotNull());
         foreach (var item in data.SelectMany(s => s.Groups).Where(w => !string.IsNullOrEmpty(w)).Distinct())
             if (!ModGroups.Contains(item))
-                ModGroups.Add(item);
+                ModGroups.InsertSorted(item);
         foreach (var item in data.Select(s => s.Color).Where(w => !string.IsNullOrEmpty(w)).Distinct())
             if (!ModColors.Contains(item))
-                ModColors.Add(item);
+                ModColors.InsertSorted(item);
     }
 
     #region CustomCommand

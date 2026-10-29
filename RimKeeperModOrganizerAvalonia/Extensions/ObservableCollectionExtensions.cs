@@ -62,5 +62,48 @@ public static class ObservableCollectionExtensions
         {
             collection.Add(item);
         }
-    }    
+    }
+
+    /// <summary>
+    /// Wstawia element do kolekcji w odpowiednie miejsce, zachowując jej porządek.
+    /// </summary>
+    /// <typeparam name="T">Typ elementów w kolekcji.</typeparam>
+    /// <param name="list">Kolekcja, do której następuje wstawienie (musi implementować IList<T>).</param>
+    /// <param name="item">Wstawiany element.</param>
+    /// <param name="descending">Jeśli true, sortuje malejąco; jeśli false (domyślnie), rosnąco.</param>
+    /// <param name="comparer">Opcjonalny comparer do porównywania elementów.</param>
+    //public static void InsertSorted<T>(
+    //    this IList<T> list,
+    //    T item,
+    //    bool descending = false,
+    //    IComparer<T>? comparer = null)
+    //{
+    //    if (list == null) throw new ArgumentNullException(nameof(list));
+    //    comparer ??= Comparer<T>.Default;
+    //    int index = 0;
+
+    //    while (index < list.Count)
+    //    {
+    //        int comparisonResult = comparer.Compare(list[index], item);
+    //        if (descending ? comparisonResult < 0 : comparisonResult > 0)
+    //        {
+    //            break;
+    //        }
+
+    //        index++;
+    //    }
+    //    list.Insert(index, item);
+    //}
+    public static void InsertSorted<T>(this IList<T> list, T item, bool descending = false) where T : IComparable<T>
+    {
+        if (list == null) throw new ArgumentNullException(nameof(list));
+        int index = 0;
+        while (index < list.Count)
+        {
+            int comparisonResult = list[index].CompareTo(item);
+            if (descending ? comparisonResult < 0 : comparisonResult > 0)  break;
+            index++;
+        }
+        list.Insert(index, item);
+    }
 }
