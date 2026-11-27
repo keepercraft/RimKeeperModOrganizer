@@ -19,6 +19,9 @@ public class SettingsService
             JsonHelper.Options,
             true);
         StartLoad();
+
+        var version = FileHelper.GetRimworldVersion(Settings.PathDirGame);
+        if (!string.IsNullOrEmpty(version)) Settings.GameVersion = version;
     }
 
     public void Load()
@@ -116,6 +119,7 @@ public class SettingsService
     }
     public void AutoFind()
     {
+        Settings.GameVersion = FileHelper.GetRimworldVersion(Settings.PathDirGame) ?? "0";
         if (string.IsNullOrEmpty(Settings.PathDirSteam))
             Settings.PathDirSteam = FileHelper.FindSteamInstallPath() ?? "";
         if (string.IsNullOrEmpty(Settings.PathDirGame))
@@ -126,8 +130,6 @@ public class SettingsService
             Settings.PathDirModsLocal = FileHelper.FindRimWorldLocalModsPath(Settings.PathDirGame) ?? "";
         if (string.IsNullOrEmpty(Settings.PathDirGameConfig))
             Settings.PathDirGameConfig = FileHelper.FindRimWorldConfigPath() ?? "";
-
-        Settings.GameVersion = FileHelper.GetRimworldVersion(Settings.PathDirGame) ?? "0";
     }
 
     public void CreateCopy<T>(T copy) where T : class => CopyTo<T>(copy, GetValueOfType<T>(DataSettings));
